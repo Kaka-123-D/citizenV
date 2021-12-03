@@ -1,20 +1,26 @@
+const User = require('../model/User');
 const {checkNumberString} = require('../logic/CheckNumberString')
 
+
 class UserMiddleware {
-  index(req, res, next) {
-    const query = req.url.split('/').filter((url, index) => index >= 2).join('/');
-    if (!checkNumberString(req.username)) {
-      req.url = '/a1/' + query;
+  async index(req, res, next) {
+    const user = await User.findOne({
+      where: {
+        username: req.username
+    }});
+    if (user.role === 'admin') {
+      res.redirect('/admin/' + req.url);
+    } else if (!checkNumberString(req.username)) {
+      res.redirect('/a1/' + req.url);
     } else if (req.username.length == 2) {
-      req.url = '/a2/' + query;
+      res.redirect('/a2/' + req.url);
     } else if (req.username.length == 4) {
-      req.url = '/a3/' + query;
+      res.redirect('/a3/' + req.url);
     } else if (req.username.length == 6) {
-      req.url = '/b1/' + query;
+      res.redirect('/b1/' + req.url);
     } else if (req.username.length == 8) {
-      req.url = '/b2/' + query;
+      res.redirect('/b2/' + req.url);
     }
-    next();
   }
 }
 

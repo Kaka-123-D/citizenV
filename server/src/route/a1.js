@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const a1Controller = require('../app/controller/A1Controller');
 
-router.get('/home', a1Controller.index);
+router.get('/', a1Controller.index);
 router.post('/register', a1Controller.register);
 router.post('/declare', a1Controller.declare);
 router.get('/provinces', a1Controller.getProvinces);
