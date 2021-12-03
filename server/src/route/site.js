@@ -12,6 +12,7 @@ router.post('/api/register', loginMiddleware.index, userMiddleware.index);
 router.post('/api/declare', loginMiddleware.index, userMiddleware.index);
 router.get('/api/provinces', loginMiddleware.index, userMiddleware.index);
 router.post('/api/grantDeclare', loginMiddleware.index, userMiddleware.index);
+router.post('/register', siteController.register);
 router.get('/test', siteController.test);
 
 module.exports = router;
