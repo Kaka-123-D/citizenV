@@ -13,6 +13,16 @@ app.use(express.urlencoded({
 app.use(express.json());
 
 db.connect();
+
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
+
 route(app);
 
 app.listen(PORT, () => {

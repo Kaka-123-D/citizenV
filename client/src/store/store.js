@@ -3,16 +3,19 @@ import { configureStore } from "@reduxjs/toolkit";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-import authReducer from './reducers/auth'
+
+import authUserReducer from "./reducers/Auth/authUser";
+import authAdminReducer from "./reducers/Auth/authAdmin";
 
 const persistConfig = {
-  key: 'root',
-  storage, 
-  whitelist: ['auth'],
-}
+  key: "root",
+  storage,
+  whitelist: ["authUser", "authAdmin"],
+};
 
 const reducer = combineReducers({
-  auth: authReducer,
+  authUser: authUserReducer,
+  authAdmin: authAdminReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
