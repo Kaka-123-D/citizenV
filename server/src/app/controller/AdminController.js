@@ -1,6 +1,6 @@
 class AdminController {
   index(req, res) {
-    res.send('Hello Admin');
+    res.json({title: 'Hello Admin'});
   }
 }
 

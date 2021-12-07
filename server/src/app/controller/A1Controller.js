@@ -8,7 +8,7 @@ const Permission = require('../model/Permission');
 
 class A1Controller {
   index(req, res) {
-    res.send('Hello A1');
+    res.json({title: 'Hello A1'});
   }
 
   async declare(req, res) {

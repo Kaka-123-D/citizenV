@@ -1,7 +1,7 @@
 
 class A3Controller {
   index(req, res) {
-    res.send('Hello A3');
+    res.json({title: 'Hello A3'});
   }
 }
 
