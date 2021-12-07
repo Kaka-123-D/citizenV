@@ -6,8 +6,6 @@ const a2Router = require('./a2');
 const a3Router = require('./a3');
 const b1Router = require('./b1');
 const b2Router = require('./b2');
-const loginMiddleware = require('../app/middleware/LoginMiddleware');
-const userMiddleware = require('../app/middleware/UserMiddleware');
 
 module.exports = (app) => {
   app.use('/', siteRouter);

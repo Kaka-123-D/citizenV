@@ -1,10 +1,10 @@
 const path = require('path');
-const process = require('process');
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 
 const User = require('../model/User');
-const Token = require('../model/Token');
+
+const {SESS_NAME} = process.env;
+
 
 class SiteController {
 
@@ -45,32 +45,6 @@ class SiteController {
     }
   }
 
-  async refresh(req, res) {
-    const refreshToken = req.body.token;
-    const tokens = await Token.findAll({
-      attributes: ['refreshToken']
-    });
-    const refreshTokens = tokens.map((token) => {
-      return token.refreshToken;
-    });
-    if (!refreshToken) {
-      res.json({status: 0});
-    } else if (!(refreshTokens.includes(refreshToken))) {
-      res.json({status: 0});
-    } else {
-      jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, data) => {
-        if (err) {
-          res.json({ status: 0 });
-        } else {
-          const accessToken = jwt.sign({ username: data.username}, process.env.ACCESS_TOKEN_SECRET, {
-            expiresIn: '30m'
-          });
-          res.json({ accessToken });
-        }
-      });
-    }
-  }
-
   async login(req, res) {
     const data = req.body;
     if (!data) {
@@ -87,13 +61,8 @@ class SiteController {
             res.json({ status : 0 });
           } else {
             if (await bcrypt.compare(data.password, user.password)) {
-              const accessToken = jwt.sign({username: data.username}, process.env.ACCESS_TOKEN_SECRET, {
-                expiresIn: '30m'
-              });
-              const refreshToken = jwt.sign({username: data.username}, process.env.REFRESH_TOKEN_SECRET);
-              await Token.create({refreshToken : refreshToken});
-              res.json({ status : 1, accessToken, refreshToken});
-              return;
+              req.session.username = data.username;
+              return res.json({ status: 1});
             }
             res.json({ status : 0 });
           }
@@ -105,13 +74,13 @@ class SiteController {
   }
 
   async logout(req, res) {
-    const refreshToken = req.body.token;
-    await Token.destroy({
-      where: {
-        refreshToken: refreshToken
+    req.session.destroy(err => {
+      if (err) {
+        return res.json({status: 0});
       }
-    });
-    res.json({ status: 1 });
+      res.clearCookie(SESS_NAME);
+      res.json({status: 1});
+    })
   }
 
   async test(req, res) {
