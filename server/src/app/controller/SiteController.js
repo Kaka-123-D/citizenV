@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt');
 
 const User = require('../model/User');
 
-const {SESS_NAME} = process.env;
+const {SESS_NAME, SALT_ROUND} = process.env;
 
 
 class SiteController {
@@ -12,36 +12,20 @@ class SiteController {
     res.sendFile(path.join(process.cwd(), 'src/build', 'index.html'));
   }
 
-  async register(req, res) {
-    const data = req.body;
-    if (!data) {
-      res.json({ status: 0 });
-    } else {
-      if (!data.username || !data.password) {
-        res.json({ status: 0 });
-      } else {
-        const user = await User.findOne({
-          attributes: ['username'],
-          where: {
-            username: data.username
-          }
-        });
-        if (user) {
-          res.json({ status: 0 });
-        } else {
-          bcrypt.hash(data.password, parseInt(process.env.SALT_ROUND), async (err, hash) => {
-            await User.create({
-              username: data.username,
-              password: hash,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              phone: data.phone,
-              role: data.role
-            });
-            res.json({ status : 1 });
-          });
-        }
-      }
+  async register(data) {
+    try { 
+      const hash = bcrypt.hashSync(data.password, parseInt(SALT_ROUND));
+      await User.sync();
+      return await User.create({
+        username: data.username,
+        password: hash,
+        fullName: data.fullName,
+        phone: data.phone,
+        role: data.role,
+        group: data.group
+      });
+    } catch {
+      return null;
     }
   }
 
@@ -60,9 +44,9 @@ class SiteController {
           if (!user) {
             res.json({ status : 0 });
           } else {
-            if (await bcrypt.compare(data.password, user.password)) {
+            if (bcrypt.compareSync(data.password, user.password)) {
               req.session.username = data.username;
-              return res.json({ status: 1});
+              return res.json({ status: 1, group: user.group});
             }
             res.json({ status : 0 });
           }

@@ -22,14 +22,15 @@ User.init({
     type: DataTypes.STRING,
     allowNull: false
   },
-  firstName: {
-    type: DataTypes.STRING,
-  },
-  lastName: {
+  fullName: {
     type: DataTypes.STRING,
   },
   phone: {
     type: DataTypes.STRING,
+  },
+  group: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
   role: {
     type: DataTypes.STRING,

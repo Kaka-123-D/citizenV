@@ -17,7 +17,7 @@ Province.init({
     type: DataTypes.STRING,
     allowNull: false
   },
-  textDescription: {
+  textDes: {
     type: DataTypes.STRING
   }
 }, {
