@@ -1,4 +1,5 @@
 const User = require('../model/User');
+const Province = require('../model/Province');
 
 class Validation {
 
@@ -14,6 +15,9 @@ class Validation {
   }
 
   validationPassword(password) {
+    if (!password.match(/^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/g)) {
+      return false;
+    }
     return true;
   }
 
@@ -33,15 +37,40 @@ class Validation {
     return true;
   }
 
-  validationProvinceId(provinceId) {
+  async validationProvinceId(provinceId) {
+    if (!provinceId.match(/^[0-9]{2}/g)) return false;
+    const province = await Province.findOne({
+      where: {
+        provinceId: provinceId
+      }
+    });
+    if (province) return false;
     return true;
   }
 
   validationProvinceName(provinceName) {
+    // if (!provinceName.match(/^[]/g))
     return true;
   }
 
   validationTextDes(textDes) {
+    return true;
+  }
+
+  async validationUserProvinceId(provinceId) {
+    if (!provinceId.match(/^[0-9]{2}/g)) return false;
+    const province = await Province.findOne({
+      where: {
+        provinceId: provinceId
+      }
+    });
+    const user = await User.findOne({
+      where: {
+        username: provinceId
+      }
+    });
+    if (!province) return false;
+    if (user) return false;
     return true;
   }
 }

@@ -6,7 +6,7 @@ const Permission = require('../model/Permission');
 const siteController = require('./SiteController');
 
 const {validationProvinceId, validationProvinceName} = require('../validation');
-const {validationTextDes} = require('../validation');
+const {validationTextDes, validationUserProvinceId} = require('../validation');
 
 class A1Controller {
   index(req, res) {
@@ -15,7 +15,7 @@ class A1Controller {
 
   async declare(req, res) {
     const {provinceId, provinceName, textDes} = req.body;
-    if (!validationProvinceId(provinceId)) return res.json({ status: 0, error: 'PROVINCEID_ERROR'});
+    if (!await validationProvinceId(provinceId)) return res.json({ status: 0, error: 'PROVINCEID_ERROR'});
     if (!validationProvinceName(provinceName)) return res.json({ status: 0, error: 'PROVINCENAME_ERROR'});
     if (!validationTextDes(textDes)) return res.json({ status: 0, error: 'TEXTDES_ERROR'});
     try {
@@ -85,7 +85,7 @@ class A1Controller {
 
   async register(req, res) {
     const {provinceId} = req.body;
-    if (!validationProvinceId(provinceId)) return res.json({ status: 0, error: 'USERNAME_ERROR!'});
+    if (!await validationUserProvinceId(provinceId)) return res.json({ status: 0, error: 'USERNAME_ERROR!'});
     if (!await siteController.register({username: provinceId, password: provinceId, role:'view', group:'a2'})) {
       return res.json({ status: 0, error: 'REGISTER_ERROR'});
     }

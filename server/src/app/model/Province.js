@@ -24,6 +24,7 @@ Province.init({
   sequelize,
   modelName: 'Province',
   tableName: 'provinces',
+  charset: 'utf8',
 });
 
 module.exports = Province;

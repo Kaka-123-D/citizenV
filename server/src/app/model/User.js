@@ -40,6 +40,7 @@ User.init({
   sequelize,
   modelName: 'User',
   tableName: 'users',
+  charset: 'utf8',
 });
 
 User.hasMany(User, {

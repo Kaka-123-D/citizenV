@@ -13,7 +13,8 @@ const IN_PROD = NODE_ENV === 'production';
 db.connect();
 const sequelize = db.sequelize;
 const myStore = new SequelizeStore({
-  db: sequelize
+  db: sequelize,
+  tableName: 'sessions'
 });
 
 const app = express();
@@ -35,6 +36,8 @@ app.use(session({
     secure: IN_PROD
   }
 }))
+
+myStore.sync();
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
