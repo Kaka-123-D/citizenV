@@ -1,21 +1,21 @@
 import React, { useState } from "react";
 
 export default function Login({ login }) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
-    login({ email, password });
+    login({ username, password });
   }
 
   return (
     <form onSubmit={handleSubmit}>
       <input
-        type="email"
-        value={email}
-        onChange={(event) => setEmail(event.target.value)}
-        placeholder="enter your email address"
+        type="username"
+        value={username}
+        onChange={(event) => setUsername(event.target.value)}
+        placeholder="enter your username"
       />
       <input
         type="password"
