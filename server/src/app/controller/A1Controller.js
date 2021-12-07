@@ -86,7 +86,7 @@ class A1Controller {
   async register(req, res) {
     const {provinceId} = req.body;
     if (!validationProvinceId(provinceId)) return res.json({ status: 0, error: 'USERNAME_ERROR!'});
-    if (await !siteController.register({username: provinceId, password: provinceId, role:'view', group:'a2'})) {
+    if (!await siteController.register({username: provinceId, password: provinceId, role:'view', group:'a2'})) {
       return res.json({ status: 0, error: 'REGISTER_ERROR'});
     }
     return res.json({ status: 1})

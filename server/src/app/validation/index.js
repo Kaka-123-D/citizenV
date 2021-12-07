@@ -1,6 +1,15 @@
+const User = require('../model/User');
+
 class Validation {
 
-  validationUsername(username) {
+  async validationUsername(username) {
+    if (!username.match(/^[a-zA-Z0-9]{2,20}$/g)) return false;
+    const user = await User.findOne({
+      where: {
+        username: username
+      }
+    });
+    if (user) return false;
     return true;
   }
 
