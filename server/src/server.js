@@ -8,7 +8,7 @@ const db = require("./config/sequelizeConfig");
 const route = require("./route/route");
 dotenv.config();
 
-const { PORT, NODE_ENV, SESS_NAME, SESS_SECRET, SESS_LIFETIME } = process.env;
+const { PORT, NODE_ENV, SESS_NAME, SESS_SECRET, SESS_LIFETIME, SESS_REMOVE_DB_TIME } = process.env;
 const IN_PROD = NODE_ENV === "production";
 
 db.connect();
@@ -16,6 +16,7 @@ const sequelize = db.sequelize;
 const myStore = new SequelizeStore({
   db: sequelize,
   tableName: "sessions",
+  checkExpirationInterval: parseInt(SESS_REMOVE_DB_TIME),
 });
 
 const corsOptions = {
@@ -48,6 +49,7 @@ app.use(
       maxAge: Number(SESS_LIFETIME),
       sameSite: true,
       secure: IN_PROD,
+      httpOnly: false,
     },
   })
 );

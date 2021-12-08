@@ -1,6 +1,8 @@
 const path = require('path');
 const bcrypt = require('bcrypt');
+const dotenv = require("dotenv");
 
+dotenv.config();
 const User = require('../model/User');
 
 const {SESS_NAME, SALT_ROUND} = process.env;
