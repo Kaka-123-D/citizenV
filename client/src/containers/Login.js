@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
-import Login from "../../app/features/Login";
-import { login } from "../../store/reducers/Auth/authUser";
+import Login from "../app/features/Login";
+import { login } from "../store/reducers/Auth/";
 
 const mapActionToProps = { login };
 
