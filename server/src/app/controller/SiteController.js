@@ -9,7 +9,7 @@ const {SESS_NAME, SALT_ROUND} = process.env;
 class SiteController {
 
   home(req, res) {
-    res.sendFile(path.join(process.cwd(), 'src/build', 'index.html'));
+    res.sendFile(path.join(process.cwd(), 'src/dist', 'index.html'));
   }
 
   async register(data) {
