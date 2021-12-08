@@ -22,18 +22,26 @@ class Validation {
   }
 
   validationFullName(fullName) {
+    if (!fullName.match(/^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{4,50}$/g)) {
+      return false;
+    }
     return true;
   }
 
   validationPhone(phone) {
+    if (!phone.match(/^(\+84)([0-9]{9,10})$/g)) return false;
     return true;
   }
 
   validationRole(role) {
+    const roles = ['all', 'view', 'edit'];
+    if (!roles.includes(role)) return false;
     return true;
   }
 
   validationGroup(group) {
+    const groups = ['admin', 'a1', 'a2', 'a3', 'b1', 'b2'];
+    if (!groups.includes(group)) return false;
     return true;
   }
 
@@ -48,12 +56,23 @@ class Validation {
     return true;
   }
 
-  validationProvinceName(provinceName) {
-    // if (!provinceName.match(/^[]/g))
+  async validationProvinceName(provinceName) {
+    if (!provinceName.match(/^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g)) {
+      return false;
+    }
+    const province = await Province.findOne({
+      where: {
+        provinceName: provinceName
+      }
+    });
+    if (province) return false;
     return true;
   }
 
   validationTextDes(textDes) {
+    if (!textDes.match(/^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s0-9]{8,140}$/g)) {
+      return false;
+    }
     return true;
   }
 

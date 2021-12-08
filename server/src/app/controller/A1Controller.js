@@ -16,7 +16,7 @@ class A1Controller {
   async declare(req, res) {
     const {provinceId, provinceName, textDes} = req.body;
     if (!await validationProvinceId(provinceId)) return res.json({ status: 0, error: 'PROVINCEID_ERROR'});
-    if (!validationProvinceName(provinceName)) return res.json({ status: 0, error: 'PROVINCENAME_ERROR'});
+    if (!await validationProvinceName(provinceName)) return res.json({ status: 0, error: 'PROVINCENAME_ERROR'});
     if (!validationTextDes(textDes)) return res.json({ status: 0, error: 'TEXTDES_ERROR'});
     try {
       await Province.sync();
