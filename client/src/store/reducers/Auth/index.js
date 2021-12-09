@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import storage from "redux-persist/lib/storage";
 
 // khởi tạo state gồm 2 token
 // accessToken dùng để duy trì đăng nhập
@@ -28,9 +27,9 @@ const auth = createSlice({
     },
     logoutSuccess(state, action) {
       // storage.removeItem("persist:root");
-      state.group = null,
-      state.status = 0,
-      console.log("Logout Success ..");
+      (state.group = null),
+        (state.status = 0),
+        console.log("Logout Success ..");
     },
     logoutFailure(state, action) {
       alert("Logout failed");

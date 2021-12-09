@@ -4,7 +4,7 @@ import LogoutButton from '../../../containers/Logout'
 export default function Home() {
     return (
         <div>
-            Hello from Home!
+            Hello from Home User!
             <LogoutButton/>
         </div>
     )

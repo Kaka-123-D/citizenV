@@ -40,6 +40,7 @@ class Validation {
   }
 
   validationGroup(group) {
+    console.log("group on server: ", group);
     const groups = ['admin', 'a1', 'a2', 'a3', 'b1', 'b2'];
     if (!groups.includes(group)) return false;
     return true;
