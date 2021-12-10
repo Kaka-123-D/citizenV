@@ -13,6 +13,7 @@ import {
 import storage from "redux-persist/lib/storage";
 
 import authReducer from "./reducers/Auth/";
+import provideAccReducer from "./reducers/Provide/newAccount"
 
 // const router = routerMiddleware(browserHistory);
 
@@ -24,6 +25,7 @@ const persistConfig = {
 
 const reducer = combineReducers({
     auth: authReducer,
+    provideAcc: provideAccReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);

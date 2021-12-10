@@ -14,7 +14,7 @@ export default function Login({ login }) {
   return (
     <form onSubmit={handleSubmit}>
       <input
-        type="username"
+        type="text"
         value={username}
         onChange={(event) => setUsername(event.target.value)}
         placeholder="enter your username"
