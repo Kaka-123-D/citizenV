@@ -7,7 +7,6 @@ import axios from "axios";
 const initialState = {
   group: null,
   status: null,
-  // timeSetCookie: null,
 };
 
 // tạo slice auth chứa actions và reducer cho admin

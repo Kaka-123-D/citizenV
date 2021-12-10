@@ -21,7 +21,7 @@ const { createAccountSuccess, createAccountError } = newAccount.actions;
 
 export const createAccount =
   (username, password, fullName, phone, role, group) => async (dispatch) => {
-    console.log("group on client:", group);
+    console.log(username, password, fullName, phone, role, group);
     const res = await axios.post(
       "http://localhost:8080/admin/register",
       { username, password, fullName, phone, role, group },

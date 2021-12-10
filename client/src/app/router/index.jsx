@@ -18,7 +18,17 @@ export default function routes({ status, group, resetAuthState }) {
       <Routes>
         <Route
           path="/"
-          element={group === "admin" ? <Admin /> : <HomeUser />}
+          element={
+            status === 1 ? (
+              group === "admin" ? (
+                <Admin />
+              ) : (
+                <HomeUser />
+              )
+            ) : (
+              <Navigate replace to="/login" />
+            )
+          }
         />
         <Route
           path="/login"

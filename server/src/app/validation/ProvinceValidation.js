@@ -3,6 +3,7 @@ const User = require('../model/User');
 
 class ProvinceValidation {
   async validationProvinceId(provinceId, tag) {
+    if (!provinceId) return false;
     if (!provinceId.match(/^[0-9]{2}$/g)) return false;
     await Province.sync();
     const province = await Province.findOne({
@@ -30,6 +31,7 @@ class ProvinceValidation {
   }
 
   async validationProvinceName(provinceName) {
+    if (!provinceName) return false;
     if (
       !provinceName.match(
         /^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
