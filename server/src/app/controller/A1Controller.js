@@ -5,8 +5,8 @@ const Province = require('../model/Province');
 const Permission = require('../model/Permission');
 const siteController = require('./SiteController');
 
-const {validationProvinceId, validationProvinceName} = require('../validation');
-const {validationTextDes, validationUserProvinceId} = require('../validation');
+const {validationProvinceId, validationProvinceName, validationTextDes} = require('../validation/ProvinceValidation');
+const {validationTimeStart, validationHowLong} = require('../validation/ProvinceValidation');
 
 class A1Controller {
   index(req, res) {
@@ -14,13 +14,12 @@ class A1Controller {
   }
 
   async declare(req, res) {
-    const {provinceId, provinceName, textDes} = req.body;
-    if (!await validationProvinceId(provinceId)) return res.json({ status: 0, error: 'PROVINCEID_ERROR'});
-    if (!await validationProvinceName(provinceName)) return res.json({ status: 0, error: 'PROVINCENAME_ERROR'});
-    if (!validationTextDes(textDes)) return res.json({ status: 0, error: 'TEXTDES_ERROR'});
+    const {id, name, textDes} = req.body;
+    if (!await validationProvinceId(id, 'declare')) return res.json({ status: 0, error: 'PROVINCE_ID_ERROR'});
+    if (!await validationProvinceName(name)) return res.json({ status: 0, error: 'PROVINCE_NAME_ERROR'});
+    if (!validationTextDes(textDes)) return res.json({ status: 0, error: 'TEXT_DES_ERROR'});
     try {
-      await Province.sync();
-      await Province.create({provinceId, provinceName, textDes});
+      await Province.create({provinceId: id, provinceName: name, textDes});
       return res.json({status: 1});
     } catch {
       return res.json({ status: 0, error: 'DECLARE_ERROR'});
@@ -28,65 +27,65 @@ class A1Controller {
   }
 
   async grantDeclare(req, res) {
-    const data = req.body;
-    if (!data) {
-      res.json({status: 0});
-    } else {
-      if (!data.username || !data.dayStart || !data.monthStart || !data.yearStart
-        || !data.dayEnd || !data.monthEnd || !data.yearEnd) {
-          res.json({status: 0});
-        } else {
-          const timeStart = new Date(data.yearStart, data.monthStart - 1, data.dayStart, data.hourStart, data.minuteStart);
-          const timeEnd = new Date(data.yearEnd, data.monthEnd - 1, data.dayEnd, data.hourEnd, data.minuteEnd);
-          const now = new Date();
-          if (timeStart - now < 0 || timeEnd - now < 0 || timeEnd - timeStart < 0) {
-            console.log('thoi gian nho hon');
-            res.json({status: 0});
-          } else {
-            const currentUser = data.username;
-            const user = await User.findOne({where: {username: currentUser}});
-            if (!user) {
-              res.json({status: 0});
-            } else {
-              await Permission.sync();
-              const permission = await Permission.create({timeStart, timeEnd});
-              await user.setPermission(permission);
-              const startDeclare = schedule.scheduleJob(timeStart, async () => {
-                console.log('Bat dau dat lich!');
-                await User.update({role: 'edit'}, {
-                  where: {
-                    username: currentUser
-                  }
-                });
-              });
-
-              const endDeclare = schedule.scheduleJob(timeEnd, async () => {
-                console.log('Ket thuc lich');
-                await User.update({role: 'view'}, {
-                  where: {
-                    username: currentUser
-                  }
-                });
-              })
-
-              res.json({status: 1});
-            }
-          }
-        }
+    const {id, yearStart, monthStart, dayStart, hourStart, minuteStart, howLong} = req.body;
+    //
+    if (!await validationProvinceId(id, 'grantDeclare')) {
+      return res.json({ status: 0, error: "PROVINCE_ID_ERROR"});
     }
+    if (!validationTimeStart(yearStart, monthStart, dayStart, hourStart, minuteStart)) {
+      return res.json({ status: 0, error: "TIME_START_ERROR"});
+    }
+    if (!validationHowLong(howLong)) {
+      return res.json({ status: 0, error: "HOW_LONG_TIME_ERROR" });
+    }
+    //
+    const timeStart = new Date(yearStart, monthStart - 1, dayStart, hourStart, minuteStart);
+    const timeEnd = new Date(yearStart, monthStart - 1, dayStart, hourStart, minuteStart);
+    timeEnd.setTime(timeEnd.getTime() + howLong * 60 * 1000);
+    //
+    const user = await User.findOne({ where: { username: id } });
+    //
+    await Permission.sync();
+    const permission = await Permission.create({ timeStart, timeEnd });
+    await user.setPermission(permission);
+    //
+    schedule.scheduleJob(timeStart, async () => {
+      console.log("GRANT_DECLARE_START");
+      await User.update(
+        { role: "edit" },
+        {
+          where: {
+            username: id,
+          },
+        }
+      );
+    });
+    schedule.scheduleJob(timeEnd, async () => {
+      console.log("GRANT_DECLARE_END");
+      await User.update(
+        { role: "view" },
+        {
+          where: {
+            username: id,
+          },
+        }
+      );
+    });
+    //
+    res.json({ status: 1 });
   }
 
-  async getProvinces(req, res) {
+  async getRegions(req, res) {
     const provinces = await Province.findAll({
-      attributes: ['provinceId', 'provinceName']
+      attributes: ['provinceId', 'provinceName', 'textDes']
     });
-    res.json({provinces: provinces});
+    res.json({regions: provinces});
   }
 
   async register(req, res) {
-    const {provinceId} = req.body;
-    if (!await validationUserProvinceId(provinceId)) return res.json({ status: 0, error: 'USERNAME_ERROR!'});
-    if (!await siteController.register({username: provinceId, password: provinceId, role:'view', group:'a2'})) {
+    const {id} = req.body;
+    if (!await validationProvinceId(id, 'register')) return res.json({ status: 0, error: 'USERNAME_ERROR!'});
+    if (!await siteController.register({username: id, password: id, role:'view', group:'a2'})) {
       return res.json({ status: 0, error: 'REGISTER_ERROR'});
     }
     return res.json({ status: 1})

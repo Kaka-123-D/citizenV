@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 class SequelizeConnect {
   constructor(databaseName, username, password) {
     this.sequelize = new Sequelize(databaseName, username, password, {
-      host: 'sql6.freemysqlhosting.net',
+      host: 'localhost',
       dialect: 'mysql'
     });
   }
@@ -18,4 +18,4 @@ class SequelizeConnect {
   }
 }
 
-module.exports = new SequelizeConnect('sql6456079', 'sql6456079', 'f3t9c5UtgG');
+module.exports = new SequelizeConnect('citizens', 'root', null);

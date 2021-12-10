@@ -1,7 +1,7 @@
 const siteController = require('./SiteController');
-const {validationUsername, validationPassword} = require('../validation');
-const {validationFullName, validationPhone} = require('../validation');
-const {validationRole, validationGroup} = require('../validation');
+const {validationUsername, validationPassword} = require('../validation/UserValidation');
+const {validationFullName, validationPhone} = require('../validation/UserValidation');
+const {validationRole, validationGroup} = require('../validation/UserValidation');
 
 class AdminController {
   index(req, res) {
@@ -10,7 +10,7 @@ class AdminController {
 
   async register(req, res) {
     const {username, password, fullName, phone, role, group} = req.body;
-    if (!await validationUsername(username)) return res.json({ status: 0, error: 'USERNAME_ERROR'});
+    if (!await validationUsername(username, 'register')) return res.json({ status: 0, error: 'USERNAME_ERROR'});
     if (!validationPassword(password)) return res.json({ status: 0, error: 'PASSWORD_ERROR'});
     if (!validationFullName(fullName)) return res.json({ status: 0, error: 'FULLNAME_ERROR'});
     if (!validationPhone(phone)) return res.json({ status: 0, error: 'PHONE_ERROR'});

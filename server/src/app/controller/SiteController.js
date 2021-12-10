@@ -6,6 +6,7 @@ dotenv.config();
 const User = require('../model/User');
 
 const {SESS_NAME, SALT_ROUND} = process.env;
+const {validationUsername, validationPassword} = require('../validation/UserValidation');
 
 
 class SiteController {
@@ -32,31 +33,18 @@ class SiteController {
   }
 
   async login(req, res) {
-    const data = req.body;
-    if (!data) {
-      res.json({ status: 0 });
-    } else {
-      if (!data.username || !data.password) {
-        res.json({ status: 0 });
-      } else {
-        try {
-          const user = await User.findOne({
-            where: {username: data.username}
-          });
-          if (!user) {
-            res.json({ status : 0 });
-          } else {
-            if (bcrypt.compareSync(data.password, user.password)) {
-              req.session.username = data.username;
-              return res.json({ status: 1, group: user.group});
-            }
-            res.json({ status : 0 });
-          }
-        } catch(err) {
-          res.json({ status: 0 });
-        }
-      }
+    const {username, password} = req.body;
+    if (!await validationUsername(username, 'login')) {
+      return res.json({ status: 0, error: "USERNAME_ERROR!" });
     }
+    const user = await User.findOne({
+      where: { username: username },
+    });
+    if (!validationPassword(password || !bcrypt.compareSync(password, user.password))) {
+      return res.json({ status: 0, error: "PASSWORD_ERROR!" });
+    }
+    req.session.username = username;
+    return res.json({ status: 1, group: user.group });
   }
 
   async logout(req, res) {
@@ -70,8 +58,9 @@ class SiteController {
   }
 
   async test(req, res) {
-    const date1 = new Date();
-    const date2 = new Date(2021, 11, 28, 20 ,0, 0);
+    const date1 = new Date('abc');
+    const date2 = new Date();
+    date2.setTime(date2.getTime() + 24*60*60*1000);
     console.log(date2, date1,date2 - date1);
     res.json({status: 1});
   }
