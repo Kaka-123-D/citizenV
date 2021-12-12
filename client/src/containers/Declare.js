@@ -1,15 +1,11 @@
 import { connect } from "react-redux";
-import Declare from "../components/Declare/";
-import {
-  setRegionListToState,
-  declareRegion,
-} from "../store/reducers/Declare/regions";
+import Declare from "../components/Declare.Form/";
+import { declareRegion } from "../store/reducers/Declare/regions";
 
 const mapStateToProps = (state) => ({
-    regions: state.region.regions,
-    declarer: state.auth.group,
-}); 
+  declarer: state.auth.group,
+});
 
-const mapActionToProps = { setRegionListToState, declareRegion };
+const mapActionToProps = { declareRegion };
 
 export default connect(mapStateToProps, mapActionToProps)(Declare);
