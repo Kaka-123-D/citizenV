@@ -8,13 +8,19 @@ class SequelizeConnect {
     });
   }
 
-  async connect() {
+  async testConnect() {
     try {
       await this.sequelize.authenticate();
-      console.log('Connect to citizens success!');
+      console.log('--------->Test connect to citizens success!');
+      return Promise.resolve();
     } catch (error) {
-      console.error('Unable to connect to the database!');
+      console.error("--------->Unable to connect to citizens!");
+      return Promise.reject();
     }
+  }
+
+  async disConnectDb() {
+    await this.sequelize.close();
   }
 }
 

@@ -4,19 +4,26 @@ class UserValidation {
   async validationUsername(username, tag) {
     if (!username) return false;
     if (!username.match(/^[a-zA-Z0-9]{2,20}$/g)) return false;
-    await User.sync();
-    const user = await User.findOne({
-      where: {
-        username: username,
-      },
-    });
-    if (tag == 'register') {
-      if (user) return false;
+    try {
+      //
+      await User.sync();
+      const user = await User.findOne({
+        where: {
+          username: username,
+        },
+      });
+      //Check tag
+      if (tag == "register") {
+        if (user) return false;
+      }
+      if (tag == "login") {
+        if (!user) return false;
+      }
+      //
+      return true;
+    } catch (e) {
+      return false;
     }
-    if (tag == 'login') {
-      if (!user) return false;
-    }
-    return true;
   }
 
   validationPassword(password) {
