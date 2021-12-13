@@ -36,8 +36,15 @@ class A1Controller {
       const provinces = await Province.findAll({
         attributes: ["provinceId", "provinceName", "textDes"],
       });
-      res.json({ status: 1, regions: provinces });
+      const result = provinces.map((province) => {
+        const regex =
+          /^(tỉnh |thành phố )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
+        const provinceNames = regex.exec(province.provinceName);
+        return {provinceId: province.provinceId, provinceName: provinceNames[2], textDes: province.textDes}
+      })
+      res.json({ status: 1, regions: result });
     } catch (e) {
+      console.log(e);
       res.json({ status: 0, error: "GET_REGIONS_ERROR!" });
     }
   }
