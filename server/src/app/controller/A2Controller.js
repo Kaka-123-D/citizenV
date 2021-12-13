@@ -48,7 +48,17 @@ class A2Controller {
         },
         attributes: ["districtId", "districtName", "textDes"],
       });
-      res.json({ status: 1, regions: districts });
+      const result = districts.map((district) => {
+        const regex =
+          /^(quận |huyện |thành phố )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
+        const districtNames = regex.exec(district.districtName);
+        return {
+          districtId: district.districtId,
+          districtName: districtNames[2],
+          textDes: district.textDes,
+        };
+      });
+      res.json({ status: 1, regions: result });
     } catch (e) {
       res.json({ status: 0, error: "GET_REGIONS_ERROR!" });
     }
