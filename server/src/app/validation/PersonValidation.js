@@ -25,13 +25,13 @@ class PersonValidation {
       if (group == "a2") {
         const province = await Province.findOne({
           where: {
-            username,
+            provinceId: username
           },
         });
         if (!province) return false;
         const person = await Person.findOne({
           where: {
-            stt,
+            stt: stt,
             thuongTru: {
               [Op.like]: `%${province.provinceName}%`,
             },
@@ -44,7 +44,7 @@ class PersonValidation {
       if (group == "a3") {
         const district = await District.findOne({
           where: {
-            username,
+            districtId: username
           },
         });
         if (!district) return false;
@@ -64,7 +64,7 @@ class PersonValidation {
       if (group == "b1") {
         const ward = await Ward.findOne({
           where: {
-            username,
+            wardId: username,
           },
         });
         if (!ward) return false;
@@ -84,7 +84,7 @@ class PersonValidation {
       if (group == "b2") {
         const village = await Village.findOne({
           where: {
-            username,
+            villageId: username,
           },
         });
         if (!village) return false;
