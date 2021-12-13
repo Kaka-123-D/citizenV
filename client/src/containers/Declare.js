@@ -3,7 +3,7 @@ import Declare from "../components/Declare.Form/";
 import { declareRegion } from "../store/reducers/Declare/regions";
 
 const mapStateToProps = (state) => ({
-  declarer: state.auth.group,
+  executor: state.auth.group,
 });
 
 const mapActionToProps = { declareRegion };
