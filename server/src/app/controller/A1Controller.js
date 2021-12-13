@@ -40,7 +40,7 @@ class A1Controller {
         const regex =
           /^(tỉnh |thành phố )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
         const provinceNames = regex.exec(province.provinceName);
-        return {provinceId: province.provinceId, provinceName: provinceNames[2], textDes: province.textDes}
+        return {id: province.provinceId, name: provinceNames[2], textDes: province.textDes}
       })
       res.json({ status: 1, regions: result });
     } catch (e) {

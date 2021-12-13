@@ -53,8 +53,8 @@ class A2Controller {
           /^(quận |huyện |thành phố )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
         const districtNames = regex.exec(district.districtName);
         return {
-          districtId: district.districtId,
-          districtName: districtNames[2],
+          id: district.districtId,
+          name: districtNames[2],
           textDes: district.textDes,
         };
       });
