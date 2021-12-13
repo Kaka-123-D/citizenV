@@ -1,10 +1,22 @@
 const { DataTypes, Model } = require("sequelize");
 const db = require("../../config/sequelizeConfig");
 const District = require("./District");
+const Province = require("./Province");
 
 const sequelize = db.sequelize;
 
-class Ward extends Model {}
+class Ward extends Model {
+
+  async getAddress() {
+    const district = await District.findOne({
+      where: {
+        districtId: this.districtId
+      }
+    })
+    const districtAddress = await district.getAddress();
+    return `${this.wardName}, ${districtAddress}`;
+  }
+}
 
 Ward.init(
   {

@@ -7,10 +7,15 @@ class Person extends Model {}
 
 Person.init(
   {
-    personId: {
-      type: DataTypes.STRING,
+    stt: {
+      type: DataTypes.INTEGER,
       primaryKey: true,
       allowNull: false,
+      autoIncrement: true
+    },
+    personId: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
     fullName: {
       type: DataTypes.STRING,
@@ -22,11 +27,11 @@ Person.init(
     },
     sex: {
       type: DataTypes.BOOLEAN,
-      allowNull: false
+      allowNull: false,
     },
     village: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     thuongTru: {
       type: DataTypes.STRING,
@@ -38,16 +43,16 @@ Person.init(
     },
     religion: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     educationLevel: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     job: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   },
   {
     sequelize,

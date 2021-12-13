@@ -4,7 +4,16 @@ const Province = require('./Province');
 
 const sequelize = db.sequelize;
 
-class District extends Model {}
+class District extends Model {
+  async getAddress() {
+    const province = await Province.findOne({
+      where: {
+        provinceId: this.provinceId,
+      },
+    });
+    return `${this.districtName}, ${province.provinceName}`;
+  }
+}
 
 District.init(
   {

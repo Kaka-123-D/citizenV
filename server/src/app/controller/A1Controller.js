@@ -1,16 +1,13 @@
-const schedule = require("node-schedule");
+const { Op } = require("sequelize");
 
-const User = require("../model/User");
 const Province = require("../model/Province");
-const Permission = require("../model/Permission");
+const Person = require("../model/Person");
 const siteController = require("./SiteController");
 
 const {
   validationProvinceId,
   validationProvinceName,
   validationTextDes,
-  validationTimeStart,
-  validationHowLong,
 } = require("../validation/ProvinceValidation");
 
 class A1Controller {
@@ -34,85 +31,6 @@ class A1Controller {
     }
   }
 
-  async grantDeclare(req, res) {
-    const {
-      id,
-      yearStart,
-      monthStart,
-      dayStart,
-      hourStart,
-      minuteStart,
-      howLong,
-    } = req.body;
-    //
-    if (!(await validationProvinceId(id, "grantDeclare"))) {
-      return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
-    }
-    if (
-      !validationTimeStart(
-        yearStart,
-        monthStart,
-        dayStart,
-        hourStart,
-        minuteStart
-      )
-    ) {
-      return res.json({ status: 0, error: "TIME_START_ERROR!" });
-    }
-    if (!validationHowLong(howLong)) {
-      return res.json({ status: 0, error: "HOW_LONG_TIME_ERROR!" });
-    }
-    //
-    const timeStart = new Date(
-      yearStart,
-      monthStart - 1,
-      dayStart,
-      hourStart,
-      minuteStart
-    );
-    const timeEnd = new Date(
-      yearStart,
-      monthStart - 1,
-      dayStart,
-      hourStart,
-      minuteStart
-    );
-    timeEnd.setTime(timeEnd.getTime() + howLong * 60 * 1000);
-    try {
-      //
-      const user = await User.findOne({ where: { username: id } });
-      const permission = await Permission.create({ timeStart, timeEnd });
-      await user.setPermission(permission);
-      //
-      schedule.scheduleJob(timeStart, async () => {
-        console.log("GRANT_DECLARE_START!");
-        await User.update(
-          { role: "edit" },
-          {
-            where: {
-              username: id,
-            },
-          }
-        );
-      });
-      schedule.scheduleJob(timeEnd, async () => {
-        console.log("GRANT_DECLARE_END!");
-        await User.update(
-          { role: "view" },
-          {
-            where: {
-              username: id,
-            },
-          }
-        );
-      });
-      //
-      res.json({ status: 1 });
-    } catch (e) {
-      return res.json({ status: 0, error: "GRANT_DECLARE_ERROR!" });
-    }
-  }
-
   async getRegions(req, res) {
     try {
       const provinces = await Province.findAll({
@@ -120,7 +38,7 @@ class A1Controller {
       });
       res.json({ status: 1, regions: provinces });
     } catch (e) {
-      res.json({ status: 0, error: "GET_REGIONS_ERROR!"})
+      res.json({ status: 0, error: "GET_REGIONS_ERROR!" });
     }
   }
 
@@ -139,6 +57,47 @@ class A1Controller {
       return res.json({ status: 0, error: "REGISTER_ERROR!" });
     }
     return res.json({ status: 1 });
+  }
+
+  //Lấy danh sách dân số toàn quốc
+  async getPersonAll(req, res) {
+    try {
+      const persons = await Person.findAll();
+      return res.json({ status: 1, persons });
+    } catch (e) {
+      return res.json({ status: 0, error: "GET_PERSON_ALL_ERROR!" });
+    }
+  }
+
+  //Lấy danh sách dân số theo tỉnh/nhóm tỉnh
+  async getPersonByProvince(req, res) {
+    const { provinceIds = [] } = req.body;
+    try {
+      const provinceNames = [];
+      var personsResult = [];
+      for (const provinceId of provinceIds) {
+        if (await validationProvinceId(provinceId, "ac")) {
+          const province = await Province.findOne({
+            where: { provinceId: provinceId },
+          });
+          provinceNames.push(province.provinceName);
+        }
+      }
+
+      for (const provinceName of provinceNames) {
+        const persons = await Person.findAll({
+          where: {
+            thuongTru: {
+              [Op.like]: `%tỉnh ${provinceName}%`,
+            },
+          },
+        });
+        personsResult = personsResult.concat(persons);
+      }
+      return res.json({ status: 1, persons: personsResult });
+    } catch (e) {
+      return res.json({ status: 0, error: "GET_PERSON_BY_PROVINCE_ERROR!" });
+    }
   }
 }
 

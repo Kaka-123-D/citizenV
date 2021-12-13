@@ -18,6 +18,7 @@ class SiteController {
 
   async register(data) {
     try {
+      console.log(data);
       const hash = bcrypt.hashSync(data.password, parseInt(SALT_ROUND));
       await User.sync();
       return await User.create({
@@ -44,18 +45,39 @@ class SiteController {
         where: { username: username },
       });
       //
-      if (
-        !validationPassword(password) ||
-        !bcrypt.compareSync(password, user.password)
-      ) {
+      if (!bcrypt.compareSync(password, user.password)) {
         return res.json({ status: 0, error: "PASSWORD_ERROR!" });
       }
       //Create session to user
       req.session.username = username;
+      req.session.group = user.group;
+      req.session.role = user.role;
       //
       return res.json({ status: 1, group: user.group });
     } catch (e) {
       return res.json({ status: 0, error: "LOGIN_ERROR!" });
+    }
+  }
+
+  async changePassword(req, res) {
+    const {curPassword, newPassword} = req.body;
+    try {
+      const user = await User.findOne({
+        where: { username: req.session.username },
+      });
+      if (!bcrypt.compareSync(curPassword, user.password)) {
+        return res.json({ status: 0, error: "CURRENT_PASSWORD_ERROR!" });
+      }
+      if (!validationPassword(newPassword)) {
+        return res.json({ status: 0, error: "NEW_PASSWORD_ERROR!" });
+      }
+      const hash = bcrypt.hashSync(newPassword, parseInt(SALT_ROUND));
+      await User.update({password: hash}, {
+        where: { username: req.session.username}
+      });
+      return res.json({ status: 1 });
+    } catch (e) {
+      return res.json({ status: 0, error: "CHANGE_PASSWORD_ERROR!" });
     }
   }
 
@@ -73,10 +95,8 @@ class SiteController {
   }
 
   async test(req, res) {
-    const date1 = new Date("abc");
-    const date2 = new Date();
-    date2.setTime(date2.getTime() + 24 * 60 * 60 * 1000);
-    console.log(date2, date1, date2 - date1);
+    const date = new Date("2021-12-13T15:24:00");
+    console.log(date);
     res.json({ status: 1 });
   }
 }

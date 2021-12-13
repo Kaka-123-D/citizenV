@@ -4,7 +4,17 @@ const Ward = require("./Ward");
 
 const sequelize = db.sequelize;
 
-class Village extends Model {}
+class Village extends Model {
+  async getAddress() {
+    const ward = await Ward.findOne({
+      where: {
+        wardId: this.wardId
+      }
+    })
+    const wardAddress = await ward.getAddress();
+    return `${this.villageName}, ${wardAddress}`;
+  }
+}
 
 Village.init(
   {

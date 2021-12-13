@@ -27,7 +27,7 @@ class ProvinceValidation {
         if (!province) return false;
         if (user) return false;
       }
-      if (tag == "grantDeclare") {
+      if (tag == "grantDeclare" || tag == "ac") {
         if (!province) return false;
         if (!user) return false;
       }
@@ -41,7 +41,7 @@ class ProvinceValidation {
     if (!provinceName) return false;
     if (
       !provinceName.match(
-        /^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
+        /^(tỉnh|thành phố)[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
       )
     ) {
       return false;
@@ -73,11 +73,16 @@ class ProvinceValidation {
     return true;
   }
 
-  validationTimeStart(year, month, day, hour, minute) {
-    return true;
-  }
-
-  validationHowLong(howLong) {
+  validationTime(timeStart, timeEnd) {
+    if (!timeStart || !timeEnd) return false;
+    timeStart = timeStart.toString();
+    timeEnd = timeEnd.toString();
+    const timeStartD = new Date(timeStart);
+    const timeEndD = new Date(timeEnd);
+    const now = new Date();
+    if (isNaN(timeStartD.getTime()) || isNaN(timeEndD.getTime())) return false;
+    if (timeStartD - now < 0 || timeEndD - now <= 0 || timeEndD - timeStartD <= 0)
+      return false;
     return true;
   }
 }
