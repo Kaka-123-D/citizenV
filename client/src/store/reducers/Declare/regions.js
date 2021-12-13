@@ -15,6 +15,8 @@ const region = createSlice({
   reducers: {
     // các actions
     declareSuccess(state, action) {
+      // console.log(action);
+      state.regions.push(action.payload);
       console.log("declare success");
     },
     declareError(state, action) {
@@ -39,13 +41,16 @@ export const declareRegion =
     const res = await axios.post(
       URL,
       {
-        id, name, textDes
+        id,
+        name,
+        textDes,
       },
       { withCredentials: true }
     );
 
     if (res.data.status === 1) {
-      dispatch(declareSuccess(res.data));
+      const newRegion = {provinceId: id, provinceName: name, textDes: textDes};
+      dispatch(declareSuccess(newRegion));
     } else {
       dispatch(declareError(res.data));
     }
