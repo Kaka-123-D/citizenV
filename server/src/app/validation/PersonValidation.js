@@ -105,21 +105,116 @@ class PersonValidation {
     }
     return true;
   }
-  async validationPersonId(personId, tag) {
+  async validationPersonId(personId, tag, username, group) {
     if (!personId) return true;
     personId = personId.toString();
     if (!personId.match(/^[\d]{9,12}$/g)) return false;
     try {
-      const person = await Person.findOne({
-        where: {
-          personId
-        }
-      })
       if (tag == 'add') {
+        const person = await Person.findOne({
+          where: {
+            personId,
+          },
+        });
         if (person) return false;
       } 
       if (tag == 'update') {
+        const person = await Person.findOne({
+          where: {
+            personId,
+          },
+        });
         if (!person) return false;
+      }
+      if (tag == 'getPerson') {
+        if (group == "a1" || group == "admin") {
+          const person = await Person.findOne({
+            where: {
+              personId,
+            },
+          });
+          if (!person) return false;
+          return true;
+        }
+
+        if (group == "a2") {
+          const province = await Province.findOne({
+            where: {
+              provinceId: username,
+            },
+          });
+          if (!province) return false;
+          const person = await Person.findOne({
+            where: {
+              personId,
+              thuongTru: {
+                [Op.like]: `%${province.provinceName}%`,
+              },
+            },
+          });
+          if (!person) return false;
+          return true;
+        }
+
+        if (group == "a3") {
+          const district = await District.findOne({
+            where: {
+              districtId: username,
+            },
+          });
+          if (!district) return false;
+          const address = district.getAddress();
+          const person = await Person.findOne({
+            where: {
+              personId,
+              thuongTru: {
+                [Op.like]: `%${address}%`,
+              },
+            },
+          });
+          if (!person) return false;
+          return true;
+        }
+
+        if (group == "b1") {
+          const ward = await Ward.findOne({
+            where: {
+              wardId: username,
+            },
+          });
+          if (!ward) return false;
+          const address = await ward.getAddress();
+          const person = await Person.findOne({
+            where: {
+              personId,
+              thuongTru: {
+                [Op.like]: `%${address}%`,
+              },
+            },
+          });
+          if (!person) return false;
+          return true;
+        }
+
+        if (group == "b2") {
+          const village = await Village.findOne({
+            where: {
+              villageId: username,
+            },
+          });
+          if (!village) return false;
+          const address = await village.getAddress();
+          const person = await Person.findOne({
+            where: {
+              personId,
+              thuongTru: {
+                [Op.like]: `%${address}%`,
+              },
+            },
+          });
+          if (!person) return false;
+          return true;
+        }
       }
       return true;
     } catch (e) {

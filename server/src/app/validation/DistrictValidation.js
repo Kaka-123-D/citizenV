@@ -2,10 +2,12 @@ const District = require("../model/District");
 const User = require("../model/User");
 
 class DistrictValidation {
-  async validationDistrictId(districtId, tag, username) {
+  async validationDistrictId(districtId, tag, username, group) {
     if (!districtId) return false;
     if (!districtId.match(/^[0-9]{4}$/g)) return false;
-    if (!districtId.includes(username)) return false;
+    if (group != 'a1' || group != 'admin') {
+      if (!districtId.startWith(username)) return false;
+    }
     try {
       //Delete in product
       await District.sync();
@@ -28,7 +30,7 @@ class DistrictValidation {
         if (!district) return false;
         if (user) return false;
       }
-      if (tag == "grantDeclare" || tag == "ac") {
+      if (tag == "grantDeclare" || tag == "getPerson") {
         if (!district) return false;
         if (!user) return false;
       }

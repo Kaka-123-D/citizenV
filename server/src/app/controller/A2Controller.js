@@ -1,6 +1,9 @@
+const {Op} = require("sequelize");
+
 const District = require('../model/District');
 const User = require('../model/User');
 const Province = require('../model/Province');
+const Person = require('../model/Person');
 
 const siteController = require("./SiteController");
 
@@ -29,10 +32,14 @@ class A2Controller {
     try {
       const province = await Province.findOne({
         where: {
-          provinceId: req.session.username
-        }
-      })
-      const district = await District.create({ districtId: id, districtName: name, textDes });
+          provinceId: req.session.username,
+        },
+      });
+      const district = await District.create({
+        districtId: id,
+        districtName: name,
+        textDes,
+      });
       await province.addDistrict(district);
       return res.json({ status: 1 });
     } catch {
@@ -43,8 +50,8 @@ class A2Controller {
   async getRegions(req, res) {
     try {
       const districts = await District.findAll({
-        where: { 
-          provinceId: req.session.username
+        where: {
+          provinceId: req.session.username,
         },
         attributes: ["districtId", "districtName", "textDes"],
       });
@@ -75,16 +82,38 @@ class A2Controller {
       group: "a3",
     });
     try {
-      if (!districtUser) return res.json({ status: 0, error: "REGISTER_ERROR!" });
+      if (!districtUser)
+        return res.json({ status: 0, error: "REGISTER_ERROR!" });
       const user = await User.findOne({
         where: {
-          username: req.session.username
-        }
+          username: req.session.username,
+        },
       });
       await user.addUser(districtUser);
       return res.json({ status: 1 });
-    } catch(e) {
+    } catch (e) {
       return res.json({ status: 0, error: "REGISTER_ERROR!" });
+    }
+  }
+
+  //Lấy danh sách dân số toàn tỉnh
+  async getPersonProvinceAll(req, res) {
+    try {
+      const province = await Province.findOne({
+        where: {
+          provinceId: req.session.username,
+        },
+      });
+      const persons = await Person.findAll({
+        where: {
+          thuongTru: {
+            [Op.like]: `%${province.provinceName}%`,
+          },
+        },
+      });
+      return res.json({ status: 1, persons });
+    } catch (e) {
+      return res.json({ status: 0, error: "GET_PERSON_PROVINCE_ALL_ERROR!" });
     }
   }
 }

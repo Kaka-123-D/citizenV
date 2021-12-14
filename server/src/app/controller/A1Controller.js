@@ -2,6 +2,8 @@ const { Op } = require("sequelize");
 
 const Province = require("../model/Province");
 const Person = require("../model/Person");
+const District = require("../model/District");
+const Ward = require("../model/Ward")
 const siteController = require("./SiteController");
 
 const {
@@ -40,8 +42,12 @@ class A1Controller {
         const regex =
           /^(tỉnh |thành phố )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
         const provinceNames = regex.exec(province.provinceName);
-        return {id: province.provinceId, name: provinceNames[2], textDes: province.textDes}
-      })
+        return {
+          id: province.provinceId,
+          name: provinceNames[2],
+          textDes: province.textDes,
+        };
+      });
       res.json({ status: 1, regions: result });
     } catch (e) {
       console.log(e);
@@ -78,14 +84,14 @@ class A1Controller {
 
   //Lấy danh sách dân số theo tỉnh/nhóm tỉnh
   async getPersonByProvince(req, res) {
-    const { provinceIds = [] } = req.body;
+    const { ids = [] } = req.body;
     try {
       const provinceNames = [];
       var personsResult = [];
-      for (const provinceId of provinceIds) {
-        if (await validationProvinceId(provinceId, "ac")) {
+      for (const id of ids) {
+        if (await validationProvinceId(id, "getPerson")) {
           const province = await Province.findOne({
-            where: { provinceId: provinceId },
+            where: { provinceId: id },
           });
           provinceNames.push(province.provinceName);
         }
@@ -95,7 +101,7 @@ class A1Controller {
         const persons = await Person.findAll({
           where: {
             thuongTru: {
-              [Op.like]: `%tỉnh ${provinceName}%`,
+              [Op.like]: `%${provinceName}%`,
             },
           },
         });

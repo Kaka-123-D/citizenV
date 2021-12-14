@@ -27,7 +27,7 @@ class ProvinceValidation {
         if (!province) return false;
         if (user) return false;
       }
-      if (tag == "grantDeclare" || tag == "ac") {
+      if (tag == "grantDeclare" || tag == "getPerson") {
         if (!province) return false;
         if (!user) return false;
       }

@@ -18,7 +18,6 @@ class SiteController {
 
   async register(data) {
     try {
-      console.log(data);
       const hash = bcrypt.hashSync(data.password, parseInt(SALT_ROUND));
       await User.sync();
       return await User.create({
@@ -94,8 +93,7 @@ class SiteController {
   }
 
   async test(req, res) {
-    const date = new Date("2021-12-13T15:24:00");
-    console.log(date);
+    await UpdateRoleAll('03');
     res.json({ status: 1 });
   }
 }
