@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 
-export default function forA1({ createAccount}) {
+export default function forA1({ createAccount, executor}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [fullName, setFullName] = useState("");
@@ -10,7 +10,7 @@ export default function forA1({ createAccount}) {
 
     function handleSubmit(event) {
       event.preventDefault();
-      createAccount(username, password, fullName, phone, role, group);
+      createAccount(executor, username, password, fullName, phone, role, group);
     }
 
     return (

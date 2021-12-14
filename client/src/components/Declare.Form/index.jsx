@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
 
-export default function Declare({
-  declareRegion,
-  declarer,
-}) {
+export default function Declare({ declareRegion, executor }) {
   const [id, setID] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
-    declareRegion(id, name, description, declarer);
+    declareRegion(executor, id, name, description);
   }
 
   return (

@@ -20,15 +20,15 @@ const newAccount = createSlice({
 const { createAccountSuccess, createAccountError } = newAccount.actions;
 
 export const createAccount =
-  (username, password, fullName, phone, role, group) => async (dispatch) => {
-    console.log(username, password, fullName, phone, role, group);
-    const res = await axios.post(
-      "http://localhost:8080/admin/register",
-      { username, password, fullName, phone, role, group },
-      {
-        withCredentials: true,
-      }
-    );
+  (executor, username, password, fullName, phone, role, group) =>
+  async (dispatch) => {
+    let data = { username, password, fullName, phone, role, group };
+
+    if (executor !== "admin") data = { id: username };
+    const URL = "http://localhost:8080/" + executor + "/register";
+    const res = await axios.post(URL, data, {
+      withCredentials: true,
+    });
     if (res.data.status === 1) {
       dispatch(createAccountSuccess());
     } else {

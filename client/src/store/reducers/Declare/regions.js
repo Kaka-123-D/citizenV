@@ -24,7 +24,7 @@ const region = createSlice({
     },
     setRegionList(state, action) {
       state.regions = action.payload.regions;
-      console.log("set ProvincesList success");
+      console.log("set ProvincesList success", action.payload.regions);
     },
   },
 });
@@ -35,33 +35,35 @@ const { declareSuccess, declareError, setRegionList } = region.actions;
 // gửi username với password lên server để xác thực
 // nếu status của res trả về là 1 thì gọi hàm loginSuccess.
 // ngược lại gọi hàm loginFailure
-export const declareRegion =
-  (id, name, textDes, declarer) => async (dispatch) => {
-    const URL = "http://localhost:8080/" + declarer + "/declare";
-    const res = await axios.post(
-      URL,
-      {
-        id,
-        name,
-        textDes,
-      },
-      { withCredentials: true }
-    );
+export const declareRegion = (executor, id, name, textDes) => async (dispatch) => {
+  const URL = "http://localhost:8080/" + executor + "/declare";
+  const res = await axios.post(
+    URL,
+    {
+      id,
+      name,
+      textDes,
+    },
+    { withCredentials: true }
+  );
 
-    if (res.data.status === 1) {
-      const newRegion = {provinceId: id, provinceName: name, textDes: textDes};
-      dispatch(declareSuccess(newRegion));
-    } else {
-      dispatch(declareError(res.data));
-    }
-  };
+  if (res.data.status === 1) {
+    const newRegion = { id: id, name: name, textDes: textDes };
+    dispatch(declareSuccess(newRegion));
+  } else {
+    dispatch(declareError(res.data));
+  }
+};
 
-export const setRegionListToState = (declarer) => async (dispatch) => {
-  let tailURL = "";
-  if (declarer === "a1") tailURL = "/regions";
-  const URL = "http://localhost:8080/" + declarer + tailURL;
+export const setRegionListToState = (executor) => async (dispatch) => {
+  let tailURL = "/regions";
+  // if (executor === "a1" || executor === "a2") tailURL = "/regions";
+
+  const URL = "http://localhost:8080/" + executor + tailURL;
   const res = await axios.get(URL, { withCredentials: true });
-  dispatch(setRegionList(res.data));
+  if (res.data.status === 1) {
+    dispatch(setRegionList(res.data));
+  }
 };
 
 export default region.reducer;

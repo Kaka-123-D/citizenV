@@ -7,9 +7,9 @@ import {
 import Login from "../../containers/Login";
 import Admin from "../features/Admin/home";
 import HomeUser from "../features/Home";
-export default function routes({ status, group, resetAuthState }) {
+export default function routes({ status, executor, resetAuthState }) {
   console.log("status: ", status);
-  console.log("group: ", group);
+  console.log("group: ", executor);
   if (!document.cookie.includes("sid")) {
     resetAuthState();
   }
@@ -20,7 +20,7 @@ export default function routes({ status, group, resetAuthState }) {
           path="/"
           element={
             status === 1 ? (
-              group === "admin" ? (
+              executor === "admin" ? (
                 <Admin />
               ) : (
                 <HomeUser />

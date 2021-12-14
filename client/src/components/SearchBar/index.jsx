@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import "./searchBar.scss";
 
-export default function index({ regions, setRegionListToState }) {
+export default function index({ regions, setRegionListToState, executor }) {
   const [input, setInput] = useState("");
 
   useEffect(() => {
-    setRegionListToState("a1");
+    setRegionListToState(executor);
   }, []);
 
   return (
@@ -18,9 +18,11 @@ export default function index({ regions, setRegionListToState }) {
         onChange={(e) => setInput(e.target.value)}
       />
       <datalist id="regions">
-        {regions.map((region) => (
-          <option key={region.provinceId}>{region.provinceName}</option>
-        ))}
+        {Array.isArray(regions) && regions.length == 0
+          ? null
+          : regions.map((region) => (
+              <option key={region.id}>{region.name}</option>
+            ))}
       </datalist>
     </div>
   );
