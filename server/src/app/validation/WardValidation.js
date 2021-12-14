@@ -6,7 +6,7 @@ class WardValidation {
     if (!wardId) return false;
     if (!wardId.match(/^[0-9]{6}$/g)) return false;
     if (group != 'a1' || group != 'admin') {
-      if (!wardId.startWith(username)) return false;
+      if (!wardId.startsWith(username)) return false;
     }
     try {
       //Delete in product

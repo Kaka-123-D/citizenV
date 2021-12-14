@@ -6,7 +6,7 @@ class VillageValidation {
     if (!villageId) return false;
     if (!villageId.match(/^[0-9]{8}$/g)) return false;
     if (group != 'a1' || group != 'admin') {
-      if (!villageId.startWith(username)) return false;
+      if (!villageId.startsWith(username)) return false;
     }
     try {
       //Delete in product

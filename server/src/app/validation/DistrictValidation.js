@@ -6,7 +6,7 @@ class DistrictValidation {
     if (!districtId) return false;
     if (!districtId.match(/^[0-9]{4}$/g)) return false;
     if (group != 'a1' || group != 'admin') {
-      if (!districtId.startWith(username)) return false;
+      if (!districtId.startsWith(username)) return false;
     }
     try {
       //Delete in product
