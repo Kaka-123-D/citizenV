@@ -9,7 +9,7 @@ router.post("/register", a2Controller.register);
 router.post("/declare", a2Controller.declare);
 router.get("/regions", a2Controller.getRegions);
 router.post("/grantDeclare", userController.grantDeclare);
-router.get("/personProvinceAll", a2Controller.getPersonProvinceAll);
+router.get("/personAll", a2Controller.getPersonProvinceAll);
 router.get("/personByDistrict", userController.getPersonByDistrict);
 router.get("/personByWard", userController.getPersonByWard);
 router.get("/personByPersonId", userController.getPersonByPersonId);

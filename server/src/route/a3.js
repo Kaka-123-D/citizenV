@@ -8,7 +8,7 @@ router.get("/", a3Controller.index);
 router.post("/register", a3Controller.register);
 router.post("/declare", a3Controller.declare);
 router.get("/regions", a3Controller.getRegions);
-router.get("/personDistrictAll", a3Controller.getPersonDistrictAll);
+router.get("/personAll", a3Controller.getPersonDistrictAll);
 router.get("/personByWard", userController.getPersonByWard);
 router.get("/personByPersonId", userController.getPersonByPersonId);
 router.post("/person", userMiddleware.roleCUD, userController.addPerson);
