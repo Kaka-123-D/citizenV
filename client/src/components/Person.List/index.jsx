@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Crud from "./crud";
 
 export default function PersonList({
@@ -8,8 +8,12 @@ export default function PersonList({
   updatePerson,
   deletePerson,
   getPersonList,
-  getListAllPersonInVN,
+  getListAllPersonInRegion,
 }) {
+  useEffect(() => {
+    if (executor === "a1") getListAllPersonInRegion(executor);
+  }, []);
+
   return (
     <div>
       <Crud
@@ -33,21 +37,24 @@ export default function PersonList({
           </tr>
         </thead>
         <tbody>
-          {Array.isArray(personList) && personList.length > 0
-            ? personList.map((person) => {
-                <tr key={person.personId}>
-                  <td>{person.fullName}</td>
-                  <td>{person.birthday}</td>
-                  <td>{person.sex}</td>
-                  <td>{person.village}</td>
-                  <td>{person.thuongTru}</td>
-                  <td>{person.tamTru}</td>
-                  <td>{person.religion}</td>
-                  <td>{person.educationLevel}</td>
-                  <td>{person.job}</td>
-                </tr>;
-              })
-            : null}
+          {console.log(personList)}
+          {Array.isArray(personList) && personList.length == 0
+            ? null
+            : personList.map((person) => {
+                return (
+                  <tr key={person.personId}>
+                    <td>{person.fullName}</td>
+                    <td>{person.birthday}</td>
+                    <td>{person.sex}</td>
+                    <td>{person.village}</td>
+                    <td>{person.thuongTru}</td>
+                    <td>{person.tamTru}</td>
+                    <td>{person.religion}</td>
+                    <td>{person.educationLevel}</td>
+                    <td>{person.job}</td>
+                  </tr>
+                );
+              })}
         </tbody>
       </table>
     </div>

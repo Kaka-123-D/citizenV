@@ -5,7 +5,7 @@ import {
   updatePerson,
   deletePerson,
   getPersonList,
-  getListAllPersonInVN,
+  getListAllPersonInRegion,
 } from "../store/reducers/Person/";
 
 const mapStateToProps = (state) => ({
@@ -18,7 +18,7 @@ const mapActionToProps = {
   updatePerson,
   deletePerson,
   getPersonList,
-  getListAllPersonInVN,
+  getListAllPersonInRegion,
 };
 
 export default connect(mapStateToProps, mapActionToProps)(PersonList);

@@ -1,12 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import {setMessageError} from '../Message'
 
 // khởi tạo state gồm 2 token
 // accessToken dùng để duy trì đăng nhập
 // refreshToken dùng để
 const initialState = {
   group: null,
-  status: null,
+  status: 0,
 };
 
 // tạo slice auth chứa actions và reducer cho admin
@@ -21,11 +22,7 @@ const auth = createSlice({
       // state.timeSetCookie = Date.now()
       console.log("Login success with ", state.group);
     },
-    loginFailure(state, action) {
-      alert("Login failed");
-    },
     logoutSuccess(state, action) {
-      // storage.removeItem("persist:root");
       (state.group = null),
         (state.status = 0),
         console.log("Logout Success ..");
@@ -37,7 +34,7 @@ const auth = createSlice({
 });
 
 // lấy hàm loginSuccess và loginFailure trong slice để sau khi fetch data thì sử dụng
-const { loginSuccess, loginFailure, logoutSuccess, logoutFailure } =
+const { loginSuccess, logoutSuccess, logoutFailure } =
   auth.actions;
 
 // gửi username với password lên server để xác thực
@@ -59,7 +56,7 @@ export const login =
       dispatch(loginSuccess(res.data));
       navigate("/" + res.data.group);
     } else {
-      dispatch(loginFailure(res.data));
+      dispatch(setMessageError(res.data.error));
     }
   };
 

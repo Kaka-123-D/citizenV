@@ -12,7 +12,7 @@ const person = createSlice({
     // các actions
     getSuccess(state, action) {
       console.log("get list success");
-      state.personList = action.payload.person;
+      state.personList = action.payload.persons;
     },
     getError(state, action) {
       console.log("get list error");
@@ -46,12 +46,13 @@ const {
   updateSuccess,
   updateError,
   deleteSuccess,
-  deleteError
+  deleteError,
 } = person.actions;
 
-export const getListAllPersonInVN = () => async (dispatch) => {
-  const URL = "http://localhost:8080/" + declarer + "/personAll";
-  const res = await axios.get(URL, {}, { withCredentials: true });
+export const getListAllPersonInRegion = (executor) => async (dispatch) => {
+  console.log(document.cookie);
+  const URL = "http://localhost:8080/" + executor + "/personAll";
+  const res = await axios.get(URL, { withCredentials: true });
 
   if (res.data.status === 1) {
     dispatch(getSuccess(res.data));
@@ -60,22 +61,17 @@ export const getListAllPersonInVN = () => async (dispatch) => {
   }
 };
 
-export const getPersonList =
-  (executor, provinceIds) => async (dispatch) => {
-    let tailURL = "/personByProvince";
-    const URL = "http://localhost:8080/" + executor + tailURL;
-    const res = await axios.post(
-      URL,
-      { provinceIds },
-      { withCredentials: true }
-    );
+export const getPersonList = (executor, tailURL, ids) => async (dispatch) => {
+  // let tailURL = "/personByProvince";
+  const URL = "http://localhost:8080/" + executor + tailURL;
+  const res = await axios.post(URL, { ids }, { withCredentials: true });
 
-    if (res.data.status === 1) {
-      dispatch(getSuccess(res.data));
-    } else {
-      dispatch(getError(res.data));
-    }
-  };
+  if (res.data.status === 1) {
+    dispatch(getSuccess(res.data));
+  } else {
+    dispatch(getError(res.data));
+  }
+};
 
 export const addPerson =
   (
@@ -161,27 +157,22 @@ export const updatePerson =
     }
   };
 
-export const deletePerson =
-  (
-    executor,
-    stt,
-  ) =>
-  async (dispatch) => {
-    let tailURL = "/person";
-    const URL = "http://localhost:8080/" + executor + tailURL;
-    const res = await axios.put(
-      URL,
-      {
-        stt,
-      },
-      { withCredentials: true }
-    );
+export const deletePerson = (executor, stt) => async (dispatch) => {
+  let tailURL = "/person";
+  const URL = "http://localhost:8080/" + executor + tailURL;
+  const res = await axios.put(
+    URL,
+    {
+      stt,
+    },
+    { withCredentials: true }
+  );
 
-    if (res.data.status === 1) {
-      dispatch(deleteSuccess(res.data));
-    } else {
-      dispatch(deleteError(res.data));
-    }
-  };
+  if (res.data.status === 1) {
+    dispatch(deleteSuccess(res.data));
+  } else {
+    dispatch(deleteError(res.data));
+  }
+};
 
 export default person.reducer;

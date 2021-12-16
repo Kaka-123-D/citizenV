@@ -4,7 +4,7 @@ export default function crud({addPerson, updatePerson, deletePerson, executor}) 
     const [id, setId] = useState("");
     const [fullName, setFullName] = useState("");
     const [birthday, setBirthday] = useState("");
-    const [gender, setGender] = useState("");
+    const [gender, setGender] = useState(true);
     const [hometown, setHometown] = useState("");
     const [permanent, setPermanent] = useState("");
     const [temporary, setTemporary] = useState("");
@@ -32,12 +32,17 @@ export default function crud({addPerson, updatePerson, deletePerson, executor}) 
           placeholder="Ngày sinh"
           onChange={(e) => setBirthday(e.target.value)}
         />
-        <input
+        <select onChange={(e) => setGender(e.target.value === "Nam" ? true : false)}>
+          <option value="Nam">Nam</option>
+          <option value="Nu">Nữ</option>
+          <option value="Khac">Khác</option>
+        </select>
+        {/* <input
           type="text"
           value={gender}
           placeholder="Giới tính"
           onChange={(e) => setGender(e.target.value)}
-        />
+        /> */}
         <input
           type="text"
           value={hometown}

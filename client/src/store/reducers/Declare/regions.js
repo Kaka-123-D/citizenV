@@ -57,12 +57,13 @@ export const declareRegion = (executor, id, name, textDes) => async (dispatch) =
 
 export const setRegionListToState = (executor) => async (dispatch) => {
   let tailURL = "/regions";
-  // if (executor === "a1" || executor === "a2") tailURL = "/regions";
-
   const URL = "http://localhost:8080/" + executor + tailURL;
   const res = await axios.get(URL, { withCredentials: true });
   if (res.data.status === 1) {
     dispatch(setRegionList(res.data));
+  } else {
+    const data = {regions: []}
+    dispatch(setRegionList(data));
   }
 };
 

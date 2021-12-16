@@ -6,12 +6,12 @@ import store, { persistor } from "../store/store";
 import { PersistGate } from "redux-persist/integration/react";
 
 ReactDOM.render(
-  <React.StrictMode>
+  <React.Fragment>
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <Router /> 
+        <Router />
       </PersistGate>
     </Provider>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById("root")
 );

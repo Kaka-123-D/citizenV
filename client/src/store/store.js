@@ -17,6 +17,7 @@ import provideAccReducer from "./reducers/Provide/newAccount";
 import regionReducer from "./reducers/Declare/regions";
 import timeDeclareReducer from "./reducers/Declare/time";
 import personReducer from "./reducers/Person/"
+import messageReducer from "./reducers/Message"
 
 // const router = routerMiddleware(browserHistory);
 
@@ -32,6 +33,7 @@ const reducer = combineReducers({
   provideAcc: provideAccReducer,
   region: regionReducer,
   person: personReducer,
+  message: messageReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducer);
