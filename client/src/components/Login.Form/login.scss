@@ -1,26 +1,100 @@
-form {
-  margin: 0 auto;
-  width: 100%;
+.form-group {
+  width: 400px;
+  margin: 150px auto;
+
+  // background-color: #222222;
 
   .alert {
-      color: red;
+    color: red;
   }
 
-  .icon {
-    display: inline-block;
-    right: 0px;
-    bottom: 0;
-    width: 53px;
-    height: 50px;
-    text-align: center;
-    background: #65b4f5;
-    border-radius: 3px;
-    border: 1px solid rgb(144, 188, 230);
+  .input-field {
+    background-color: rgb(200, 200, 200);
+    min-width: 200px;
+    max-width: 400px;
+    min-height: 50px;
+    margin-bottom: 10px;
+    border: 2px solid #00ff4c71;
+    border-radius: 25px;
 
-    i {
-      color: #f0f0f0;
-      font-size: 19px;
-      line-height: 49px;
+    &:active {
+      border: 3px solid #0c6928bd;
+    }
+
+    .icon {
+      display: inline-block;
+      width: 53px;
+      height: 50px;
+      text-align: center;
+      i {
+        color: #1b30ee;
+        font-size: 25px;
+        line-height: 49px;
+      }
+    }
+    .input {
+      width: 300px;
+      height: 40px;
+      display: inline-block;
+      input {
+        background-color: rgb(200, 200, 200);
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border: none;
+        width: 300px;
+        font-size: 16px;
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+  .submitBtn {
+    margin-top: 10px;
+    align-items: center;
+    background-color: #fac7c0;
+    border: 2px solid #111;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #111;
+    cursor: pointer;
+    font-family: sans-serif;
+    font-size: 16px;
+    height: 48px;
+    justify-content: center;
+    line-height: 24px;
+    max-width: 100%;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+
+    &:after {
+      background-color: #111;
+      border-radius: 8px;
+      content: "";
+      display: block;
+      height: 48px;
+      left: 0;
+      width: 100%;
+      position: absolute;
+      top: -2px;
+      transform: translate(8px, 8px);
+      transition: transform 0.2s ease-out;
+      z-index: -1;
+    }
+    &:hover:after {
+      transform: translate(0, 0);
+    }
+    &:active {
+      background-color: #ffdeda;
+      outline: 0;
+    }
+    &:hover {
+      outline: 0;
     }
   }
 }

@@ -50,7 +50,7 @@ const {
 } = person.actions;
 
 export const getListAllPersonInRegion = (executor) => async (dispatch) => {
-  console.log(document.cookie);
+  // console.log(document.cookie);
   const URL = "http://localhost:8080/" + executor + "/personAll";
   const res = await axios.get(URL, { withCredentials: true });
 

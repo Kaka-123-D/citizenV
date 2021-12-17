@@ -37,7 +37,6 @@ export default function PersonList({
           </tr>
         </thead>
         <tbody>
-          {console.log(personList)}
           {Array.isArray(personList) && personList.length == 0
             ? null
             : personList.map((person) => {

@@ -54,9 +54,10 @@ export const login =
 
     if (res.data.status === 1) {
       dispatch(loginSuccess(res.data));
+      dispatch(setMessageError(null));
       navigate("/" + res.data.group);
     } else {
-      dispatch(setMessageError(res.data.error));
+      dispatch(setMessageError("Username or password is incorrect"));
     }
   };
 

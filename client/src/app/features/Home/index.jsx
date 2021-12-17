@@ -5,12 +5,16 @@ import ProviderAcc from "../../../containers/ProvideAcc";
 import SearchBar from "../../../containers/SearchBar";
 import TimeDeclareForm from "../../../containers/Time";
 import PersonList from "../../../containers/personList";
+import Navbar from "../../../containers/Navbar"; 
+
+
+import "./home.scss"
 
 export default function Home() {
   return (
-    <div>
+    <div className="home-wrap">
+      <Navbar />
       Hello from Home User!
-      <LogoutButton />
       <br />
       <br />
       Cấp tài khoản cho cấp dưới
@@ -27,9 +31,9 @@ export default function Home() {
       <br />
       Mở thời gian khai báo
       <TimeDeclareForm />
-      <br/>
-      <br/>
-      Danh sách dân số: 
+      <br />
+      <br />
+      Danh sách dân số:
       <PersonList />
     </div>
   );

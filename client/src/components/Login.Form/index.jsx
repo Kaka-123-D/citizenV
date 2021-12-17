@@ -25,7 +25,6 @@ export default function Login({ login, message }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
       login({ username, password }, navigate);
@@ -33,39 +32,44 @@ export default function Login({ login, message }) {
   }
 
   return (
-    <Form onSubmit={handleSubmit} ref={form}>
+    <Form onSubmit={handleSubmit} ref={form} className="form-group">
+      <h1>Sign in</h1>
       <div className="input-field">
-        <Input
-          type="text"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-          placeholder="enter your username"
-          validations={[required]}
-        />
         <div className="icon">
           <i className="fa fa-user" aria-hidden="true"></i>
         </div>
+        <div className="input">
+          <Input
+            type="text"
+            value={username}
+            onChange={(event) => setUsername(event.target.value)}
+            placeholder="Enter your username"
+            validations={[required]}
+          />
+        </div>
       </div>
       <div className="input-field">
-        <Input
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          placeholder="enter your password"
-          validations={[required]}
-        />
         <div className="icon">
           <i className="fa fa-unlock-alt" aria-hidden="true"></i>
         </div>
+        <div className="input">
+          <Input
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            placeholder="Enter your password"
+            validations={[required]}
+          />
+        </div>
       </div>
       {message && (
-        <div >
+        <div>
           <div className="alert" role="alert">
             {message}
           </div>
         </div>
       )}
-      <button>Login</button>
+      <button className="submitBtn">Login</button>
       <CheckButton style={{ display: "none" }} ref={checkBtn} />
     </Form>
   );

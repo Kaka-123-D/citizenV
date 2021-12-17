@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import Router from "../containers/Router.js";
 import { Provider } from "react-redux";
+import "bootstrap/dist/css/bootstrap.min.css";
 import store, { persistor } from "../store/store";
 import { PersistGate } from "redux-persist/integration/react";
 

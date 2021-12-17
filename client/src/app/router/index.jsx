@@ -4,7 +4,7 @@ import {
   Routes,
   Navigate,
 } from "react-router-dom";
-import Login from "../../containers/Login";
+import Login from "../features/Login";
 import Admin from "../features/Admin/home";
 import HomeUser from "../features/Home";
 export default function routes({ status, executor, resetAuthState }) {
@@ -32,7 +32,7 @@ export default function routes({ status, executor, resetAuthState }) {
         />
         <Route
           path="/login"
-          element={status === 1 ? <Navigate replace to="/admin" /> : <Login />}
+          element={status === 1 ? <Navigate replace to="/" /> : <Login />}
         />
         <Route path="*" element={<Navigate replace to="/" />} />
       </Routes>

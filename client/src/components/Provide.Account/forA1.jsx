@@ -1,5 +1,21 @@
 import React, {useState} from 'react';
 
+const strongPassword = (value) => {
+  if (
+    validator.isStrongPassword(value, {
+      minLength: 8,
+      minLowercase: 1,
+      minUppercase: 1,
+      minNumbers: 1,
+      minSymbols: 1,
+    })
+  ) {
+    setErrorMessage("Is Strong Password");
+  } else {
+    setErrorMessage("Is Not Strong Password");
+  }
+};
+
 export default function forA1({ createAccount, executor}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
