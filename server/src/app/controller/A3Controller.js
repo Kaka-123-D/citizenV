@@ -64,13 +64,16 @@ class A3Controller {
             username: ward.wardId,
           },
         });
-        await Permission.sync();
-        const permission = await Permission.findOne({
-          attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
-          where: {
-            userId: user.userId,
-          },
-        });
+        var permission = null;
+        if (user) {
+          await Permission.sync();
+          permission = await Permission.findOne({
+            attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+            where: {
+              userId: user.userId,
+            },
+          });
+        }
         result.push({
           id: ward.wardId,
           name: wardNames[2],

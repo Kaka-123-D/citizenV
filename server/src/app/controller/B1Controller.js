@@ -63,13 +63,16 @@ class B1Controller {
             username: village.villageId,
           },
         });
-        await Permission.sync();
-        const permission = await Permission.findOne({
-          attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
-          where: {
-            userId: user.userId,
-          },
-        });
+        var permission = null;
+        if (user) {
+          await Permission.sync();
+          permission = await Permission.findOne({
+            attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+            where: {
+              userId: user.userId,
+            },
+          });
+        }
         result.push({
           id: village.villageId,
           name: villageNames[2],

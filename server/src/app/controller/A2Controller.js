@@ -66,13 +66,16 @@ class A2Controller {
             username: district.districtId,
           },
         });
-        await Permission.sync();
-        const permission = await Permission.findOne({
-          attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
-          where: {
-            userId: user.userId,
-          },
-        });
+        var permission = null;
+        if (user) {
+          await Permission.sync();
+          permission = await Permission.findOne({
+            attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+            where: {
+              userId: user.userId,
+            },
+          });
+        }
         result.push({
           id: district.districtId,
           name: districtNames[2],
@@ -82,6 +85,7 @@ class A2Controller {
       }
       res.json({ status: 1, regions: result });
     } catch (e) {
+      console.log(e)
       res.json({ status: 0, error: "GET_REGIONS_ERROR!" });
     }
   }
