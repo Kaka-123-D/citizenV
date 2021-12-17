@@ -2,6 +2,7 @@ const District = require('../model/District');
 const Ward = require('../model/Ward');
 const User = require('../model/User');
 const Person = require('../model/Person');
+const Permission = require('../model/Permission')
 
 const siteController = require('./SiteController');
 
@@ -53,16 +54,29 @@ class A3Controller {
         },
         attributes: ["wardId", "wardName", "textDes"],
       });
-      const result = wards.map((ward) => {
+      const result = [];
+      for (const ward of wards) {
         const regex =
           /^(xã |phường |thị trấn )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
         const wardNames = regex.exec(ward.wardName);
-        return {
+        const user = await User.findOne({
+          where: {
+            username: ward.wardId,
+          },
+        });
+        const permission = await Permission.findOne({
+          attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+          where: {
+            userId: user.userId,
+          },
+        });
+        result.push({
           id: ward.wardId,
           name: wardNames[2],
           textDes: ward.textDes,
-        };
-      });
+          permission
+        });
+      }
       res.json({ status: 1, regions: result });
     } catch (e) {
       res.json({ status: 0, error: "GET_REGIONS_ERROR!" });

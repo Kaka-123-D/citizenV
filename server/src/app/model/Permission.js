@@ -8,28 +8,39 @@ class Permission extends Model {
   
 }
 
-Permission.init({
-  permissionId: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    allowNull: false,
-    autoIncrement: true
-  }, 
-  timeStart: {
-    type: DataTypes.DATE,
-    allowNull: true
+Permission.init(
+  {
+    permissionId: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      allowNull: false,
+      autoIncrement: true,
+    },
+    isFinish: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    isComplete: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+    timeStart: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    timeEnd: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   },
-  timeEnd: {
-    type: DataTypes.DATE,
-    allowNull: true
+  {
+    sequelize,
+    modelName: "Permission",
+    tableName: "permissions",
   }
-}, {
-  sequelize,
-  modelName: 'Permission',
-  tableName: 'permissions',
-});
+);
 
-User.hasOne(Permission, {
+User.hasMany(Permission, {
   foreignKey: "userId"
 });
 

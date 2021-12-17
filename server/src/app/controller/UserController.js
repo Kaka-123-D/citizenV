@@ -1,4 +1,5 @@
 const schedule = require("node-schedule");
+const _ = require("lodash");
 const { Op } = require("sequelize");
 
 const User = require("../model/User");
@@ -52,7 +53,7 @@ class UserController {
     const timeStartD = new Date(timeStart);
     const timeEndD = new Date(timeEnd);
     //
-    if (req.session.group == 'a1') {
+    if (req.session.group == "a1") {
       for (const id of ids) {
         if (!(await validationProvinceId(id, "grantDeclare"))) {
           return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
@@ -108,10 +109,12 @@ class UserController {
         const permission = await Permission.create({
           timeStart: timeStartD,
           timeEnd: timeEndD,
+          isFinish: false,
+          isComplete: false,
         });
-        await user.setPermission(permission);
+        await user.addPermission(permission);
         //
-        schedule.scheduleJob(timeStartD, async () => {
+        schedule.scheduleJob(`start_${id}`, timeStartD, async () => {
           console.log("GRANT_DECLARE_START!");
           await User.update(
             { role: "edit" },
@@ -122,7 +125,15 @@ class UserController {
             }
           );
         });
-        schedule.scheduleJob(timeEndD, async () => {
+        schedule.scheduleJob(`end_${id}`, timeEndD, async () => {
+          await Permission.update(
+            { isFinish: true },
+            {
+              where: {
+                permissionId: permission.permissionId,
+              },
+            }
+          );
           console.log("GRANT_DECLARE_END!");
           await UpdateRoleAll(id);
         });
@@ -134,19 +145,146 @@ class UserController {
     }
   }
 
+  //Hủy quyền khai báo
+  async cancelDeclare(req, res) {
+    const { ids } = req.body;
+
+    if (req.session.group == "a1") {
+      for (const id of ids) {
+        if (!(await validationProvinceId(id, "cancelDeclare"))) {
+          return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
+        }
+      }
+    }
+    if (req.session.group == "a2") {
+      for (const id of ids) {
+        if (
+          !(await validationDistrictId(
+            id,
+            "cancelDeclare",
+            req.session.username,
+            req.session.group
+          ))
+        ) {
+          return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
+        }
+      }
+    }
+    if (req.session.group == "a3") {
+      for (const id of ids) {
+        if (
+          !(await validationWardId(
+            id,
+            "cancelDeclare",
+            req.session.username,
+            req.session.group
+          ))
+        ) {
+          return res.json({ status: 0, error: "WARD_ID_ERROR!" });
+        }
+      }
+    }
+    if (req.session.group == "b1") {
+      for (const id of ids) {
+        if (
+          !(await validationVillageId(
+            id,
+            "cancelDeclare",
+            req.session.username,
+            req.session.group
+          ))
+        ) {
+          return res.json({ status: 0, error: "VILLAGE_ID_ERROR!" });
+        }
+      }
+    }
+    try {
+      for (const id of ids) {
+        const jobNames = _.keys(schedule.scheduledJobs);
+        const user = await User.findOne({
+          where: {
+            username: id,
+          },
+        });
+        for (const name of jobNames) {
+          if (name == `start_${id}`) {
+            schedule.cancelJob(name);
+          }
+          if (name == `end_${id}`) {
+            await Permission.update(
+              { isFinish: true },
+              {
+                where: {
+                  userId: user.userId,
+                  isFinish: false,
+                },
+              }
+            );
+            await UpdateRoleAll(id);
+          }
+        }
+      }
+      return res.json({ status: 1 });
+    } catch (e) {
+      return res.json({ status: 0, error: "CANCEL_DECLARE_ERROR!" });
+    }
+  }
+
+  //Xác nhận khai bao hoan thanh
+  async confirmDeclareComplete(req, res) {
+    try {
+      await Permission.update(
+        { isComplete: true },
+        {
+          where: {
+            isFinish: false,
+            userId: req.session.userId,
+          },
+        }
+      );
+      return res.json({ status: 1 });
+    } catch (e) {
+      return res.json({ status: 0, error: "CONFIRM_DECLARE_COMPLETE_ERROR!" });
+    }
+  }
+
+  //Huy khai bao hoan thanh
+  async cancelDeclareComplete(req, res) {
+    try {
+      await Permission.update(
+        { isComplete: false },
+        {
+          where: {
+            isFinish: false,
+            userId: req.session.userId,
+          },
+        }
+      );
+      return res.json({ status: 1 });
+    } catch (e) {
+      return res.json({ status: 0, error: "CANCEL_DECLARE_COMPLETE_ERROR!" });
+    }
+  }
 
 
   async getPersonByPersonId(req, res) {
     const { personId } = req.body;
-    if (!await validationPersonId(personId, "getPerson", req.session.username, req.session.group))
+    if (
+      !(await validationPersonId(
+        personId,
+        "getPerson",
+        req.session.username,
+        req.session.group
+      ))
+    )
       return res.json({ status: 0, error: "PERSON_ID_ERROR!" });
     try {
       const person = await Person.findOne({
         where: {
-          personId: personId
-        }
+          personId: personId,
+        },
       });
-      return res.json({ status: 1, person});
+      return res.json({ status: 1, person });
     } catch (e) {
       return res.json({ status: 0, error: "GET_PERSON_BY_PERSON_ID_ERROR!" });
     }
@@ -165,7 +303,7 @@ class UserController {
       educationLevel,
       job,
     } = req.body;
-    if (!await validationPersonId(personId, "add"))
+    if (!(await validationPersonId(personId, "add")))
       return res.json({ status: 0, error: "PERSON_ID_ERROR!" });
     if (!validationFullName(fullName))
       return res.json({ status: 0, error: "FULL_NAME_ERROR!" });

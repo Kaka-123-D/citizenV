@@ -1,5 +1,6 @@
 const Ward = require('../model/Ward');
 const User = require('../model/User');
+const Permission = require('../model/Permission');
 
 class WardValidation {
   async validationWardId(wardId, tag, username, group) {
@@ -30,10 +31,42 @@ class WardValidation {
         if (!ward) return false;
         if (user) return false;
       }
-      if (tag == "grantDeclare" || tag == "getPerson") {
+      if (tag == "grantDeclare") {
         if (!ward) return false;
         if (!user) return false;
       }
+      if (tag == "grantDeclare") {
+        if (!ward) return false;
+        if (!user) return false;
+        const permission = await Permission.findOne({
+          where: {
+            userId: user.userId,
+          },
+        });
+        if (!permission) return true;
+        if (permission.isFinish == false) {
+          return false;
+        } else {
+          await Permission.destroy({
+            where: {
+              userId: user.userId,
+            },
+          });
+        }
+      }
+
+      if (tag == "cancelDeclare") {
+        if (!ward) return false;
+        if (!user) return false;
+        const permission = await Permission.findOne({
+          where: {
+            userId: user.userId,
+          },
+        });
+        if (!permission) return false;
+        if (permission.isFinish == true) return false;
+      }
+
       return true;
     } catch (e) {
       return false;

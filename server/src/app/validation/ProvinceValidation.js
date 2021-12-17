@@ -1,4 +1,5 @@
 const Province = require("../model/Province");
+const Permission = require("../model/Permission"); 
 const User = require("../model/User");
 
 class ProvinceValidation {
@@ -27,10 +28,42 @@ class ProvinceValidation {
         if (!province) return false;
         if (user) return false;
       }
-      if (tag == "grantDeclare" || tag == "getPerson") {
+      if (tag == "getPerson") {
         if (!province) return false;
         if (!user) return false;
       }
+      if (tag == "grantDeclare") {
+        if (!province) return false;
+        if (!user) return false;
+        const permission = await Permission.findOne({
+          where: {
+            userId: user.userId
+          }
+        })
+        if (!permission) return true;
+        if (permission.isFinish == false) {
+          return false;
+        } else {
+          await Permission.destroy({
+            where: {
+              userId: user.userId,
+            },
+          });
+        }
+      }
+
+      if (tag == "cancelDeclare") {
+        if (!province) return false;
+        if (!user) return false;
+        const permission = await Permission.findOne({
+          where: {
+            userId: user.userId,
+          },
+        });
+        if (!permission) return false;
+        if (permission.isFinish == true) return false;
+      }
+
       return true;
     } catch (e) {
       return false;

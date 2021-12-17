@@ -4,6 +4,7 @@ const District = require('../model/District');
 const User = require('../model/User');
 const Province = require('../model/Province');
 const Person = require('../model/Person');
+const Permission = require('../model/Permission');
 
 const siteController = require("./SiteController");
 
@@ -55,16 +56,29 @@ class A2Controller {
         },
         attributes: ["districtId", "districtName", "textDes"],
       });
-      const result = districts.map((district) => {
+      const result = [];
+      for (const district of districts) {
         const regex =
           /^(quận |huyện |thành phố )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
         const districtNames = regex.exec(district.districtName);
-        return {
+        const user = await User.findOne({
+          where: {
+            username: district.districtId,
+          },
+        });
+        const permission = await Permission.findOne({
+          attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+          where: {
+            userId: user.userId,
+          },
+        });
+        result.push({
           id: district.districtId,
           name: districtNames[2],
           textDes: district.textDes,
-        };
-      });
+          permission
+        });
+      }
       res.json({ status: 1, regions: result });
     } catch (e) {
       res.json({ status: 0, error: "GET_REGIONS_ERROR!" });

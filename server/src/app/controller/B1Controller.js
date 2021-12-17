@@ -2,6 +2,7 @@ const Ward = require('../model/Ward');
 const Village = require('../model/Village');
 const User = require('../model/User');
 const Person = require('../model/Person');
+const Permission = require('../model/Permission');
 const siteController = require('./SiteController');
 
 const {
@@ -52,16 +53,29 @@ class B1Controller {
         },
         attributes: ["villageId", "villageName", "textDes"],
       });
-      const result = villages.map((village) => {
+      const result = [];
+      for (const village of villages) {
         const regex =
           /^(thôn |làng |tổ dân phố |bản )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
         const villageNames = regex.exec(village.villageName);
-        return {
+        const user = await User.findOne({
+          where: {
+            username: village.villageId,
+          },
+        });
+        const permission = await Permission.findOne({
+          attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+          where: {
+            userId: user.userId,
+          },
+        });
+        result.push({
           id: village.villageId,
           name: villageNames[2],
           textDes: village.textDes,
-        };
-      });
+          permission
+        });
+      }
       res.json({ status: 1, regions: result });
     } catch (e) {
       res.json({ status: 0, error: "GET_REGIONS_ERROR!" });

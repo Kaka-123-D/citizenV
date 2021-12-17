@@ -1,5 +1,6 @@
 const District = require("../model/District");
 const User = require("../model/User");
+const Permission = require("../model/Permission");
 
 class DistrictValidation {
   async validationDistrictId(districtId, tag, username, group) {
@@ -30,10 +31,42 @@ class DistrictValidation {
         if (!district) return false;
         if (user) return false;
       }
-      if (tag == "grantDeclare" || tag == "getPerson") {
+      if (tag == "getPerson") {
         if (!district) return false;
         if (!user) return false;
       }
+      if (tag == "grantDeclare") {
+        if (!district) return false;
+        if (!user) return false;
+        const permission = await Permission.findOne({
+          where: {
+            userId: user.userId
+          }
+        })
+        if (!permission) return true;
+        if (permission.isFinish == false) {
+          return false;
+        } else {
+          await Permission.destroy({
+            where: {
+              userId: user.userId,
+            },
+          });
+        }
+      }
+
+      if (tag == "cancelDeclare") {
+        if (!district) return false;
+        if (!user) return false;
+        const permission = await Permission.findOne({
+          where: {
+            userId: user.userId,
+          },
+        });
+        if (!permission) return false;
+        if (permission.isFinish == true) return false;
+      }
+
       return true;
     } catch (e) {
       return false;

@@ -7,14 +7,19 @@ const userMiddleware = require('../app/middleware/UserMiddleware');
 router.get('/', a2Controller.index);
 router.post("/register", a2Controller.register);
 router.post("/declare", a2Controller.declare);
+
 router.get("/regions", a2Controller.getRegions);
-router.post("/grantDeclare", userController.grantDeclare);
 router.get("/personAll", a2Controller.getPersonProvinceAll);
 router.get("/personByDistrict", userController.getPersonByDistrict);
 router.get("/personByWard", userController.getPersonByWard);
 router.get("/personByPersonId", userController.getPersonByPersonId);
+
 router.post("/person", userMiddleware.roleCUD, userController.addPerson);
 router.put("/person", userMiddleware.roleCUD, userController.updatePerson);
 router.delete("/person", userMiddleware.roleCUD, userController.deletePerson);
+router.post("/grantDeclare", userMiddleware.roleCUD, userController.grantDeclare);
+router.post("/cancelDeclare", userMiddleware.roleCUD, userController.cancelDeclare);
+router.put("/confirmDeclareComplete", userMiddleware.roleCUD, userController.confirmDeclareComplete);
+router.put("/cancelDeclareComplete", userMiddleware.roleCUD, userController.cancelDeclareComplete);
 
 module.exports = router;

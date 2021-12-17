@@ -2,8 +2,8 @@ const { Op } = require("sequelize");
 
 const Province = require("../model/Province");
 const Person = require("../model/Person");
-const District = require("../model/District");
-const Ward = require("../model/Ward")
+const Permission = require("../model/Permission");
+const User = require("../model/User");
 const siteController = require("./SiteController");
 
 const {
@@ -38,16 +38,29 @@ class A1Controller {
       const provinces = await Province.findAll({
         attributes: ["provinceId", "provinceName", "textDes"],
       });
-      const result = provinces.map((province) => {
+      const result = [];
+      for (const province of provinces) {
         const regex =
           /^(tỉnh |thành phố )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
         const provinceNames = regex.exec(province.provinceName);
-        return {
+        const user = await User.findOne({
+          where: {
+            username: province.provinceId,
+          },
+        });
+        const permission = await Permission.findOne({
+          attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+          where: {
+            userId: user.userId,
+          },
+        });
+        result.push({
           id: province.provinceId,
           name: provinceNames[2],
           textDes: province.textDes,
-        };
-      });
+          permission,
+        });
+      }
       res.json({ status: 1, regions: result });
     } catch (e) {
       console.log(e);

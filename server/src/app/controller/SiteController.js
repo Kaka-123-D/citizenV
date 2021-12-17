@@ -50,6 +50,7 @@ class SiteController {
       //Create session to user
       req.session.username = username;
       req.session.group = user.group;
+      req.session.userId = user.userId;
       //
       return res.json({ status: 1, group: user.group });
     } catch (e) {
