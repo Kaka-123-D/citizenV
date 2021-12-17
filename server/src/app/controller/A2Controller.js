@@ -66,6 +66,7 @@ class A2Controller {
             username: district.districtId,
           },
         });
+        await Permission.sync();
         const permission = await Permission.findOne({
           attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
           where: {

@@ -64,6 +64,7 @@ class A3Controller {
             username: ward.wardId,
           },
         });
+        await Permission.sync();
         const permission = await Permission.findOne({
           attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
           where: {
