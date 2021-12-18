@@ -8,6 +8,7 @@ const siteController = require('./SiteController');
 const {
   validationVillageId,
   validationVillageName,
+  validationVillageType
 } = require('../validation/VillageValidation');
 
 const {
@@ -20,11 +21,13 @@ class B1Controller {
   }
 
   async declare(req, res) {
-    const { id, name, textDes } = req.body;
+    const { id, name, type, textDes } = req.body;
     if (!(await validationVillageId(id, "declare", req.session.username)))
       return res.json({ status: 0, error: "VILLAGE_ID_ERROR!" });
     if (!(await validationVillageName(name)))
       return res.json({ status: 0, error: "VILLAGE_NAME_ERROR!" });
+    if (!validationVillageType(type))
+      return res.json({ status: 0, error: "VILLAGE_TYPE_ERROR!" });
     if (!validationTextDes(textDes))
       return res.json({ status: 0, error: "TEXT_DES_ERROR!" });
     try {
@@ -36,6 +39,7 @@ class B1Controller {
       const village = await Village.create({
         villageId: id,
         villageName: name,
+        villageType: type,
         textDes,
       });
       await ward.addVillage(village);
@@ -55,9 +59,6 @@ class B1Controller {
       });
       const result = [];
       for (const village of villages) {
-        const regex =
-          /^(thôn |làng |tổ dân phố |bản )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
-        const villageNames = regex.exec(village.villageName);
         const user = await User.findOne({
           where: {
             username: village.villageId,
@@ -74,7 +75,8 @@ class B1Controller {
         }
         result.push({
           id: village.villageId,
-          name: villageNames[2],
+          name: village.villageName,
+          type: village.villageType,
           textDes: village.textDes,
           permission
         });
@@ -86,24 +88,28 @@ class B1Controller {
   }
 
   async register(req, res) {
-    const { id } = req.body;
-    if (!(await validationVillageId(id, "register", req.session.username)))
-      return res.json({ status: 0, error: "USERNAME_ERROR!" });
-    const villageUser = await siteController.register({
-      username: id,
-      password: id,
-      role: "view",
-      group: "b2",
-    });
+    const { ids } = req.body;
+    for (const id of ids) {
+      if (!(await validationVillageId(id, "register", req.session.username)))
+        return res.json({ status: 0, error: "USERNAME_ERROR!" });
+    }
     try {
-      if (!villageUser)
-        return res.json({ status: 0, error: "REGISTER_ERROR!" });
       const user = await User.findOne({
         where: {
           username: req.session.username,
         },
       });
-      await user.addUser(villageUser);
+      for (const id of ids) {
+        const villageUser = await siteController.register({
+          username: id,
+          password: id,
+          role: "view",
+          group: "b2",
+        });
+        if (!villageUser)
+          return res.json({ status: 0, error: "REGISTER_ERROR!" });
+        await user.addUser(villageUser);
+      }
       return res.json({ status: 1 });
     } catch (e) {
       return res.json({ status: 0, error: "REGISTER_ERROR!" });

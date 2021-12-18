@@ -14,7 +14,7 @@ class Ward extends Model {
       }
     })
     const districtAddress = await district.getAddress();
-    return `${this.wardName}, ${districtAddress}`;
+    return `${this.wardType} ${this.wardName}, ${districtAddress}`;
   }
 }
 
@@ -24,6 +24,10 @@ Ward.init(
       type: DataTypes.STRING,
       primaryKey: true,
       allowNull: false,
+    },
+    wardType: {
+      type: DataTypes.STRING,
+      allowNull: false
     },
     wardName: {
       type: DataTypes.STRING,

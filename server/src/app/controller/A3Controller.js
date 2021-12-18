@@ -13,6 +13,7 @@ const {
 const {
   validationWardId,
   validationWardName,
+  validationWardType,
 } = require('../validation/WardValidation');
 
 class A3Controller {
@@ -21,11 +22,13 @@ class A3Controller {
   }
 
   async declare(req, res) {
-    const { id, name, textDes } = req.body;
+    const { id, name, type, textDes } = req.body;
     if (!(await validationWardId(id, "declare", req.session.username)))
       return res.json({ status: 0, error: "WARD_ID_ERROR!" });
     if (!(await validationWardName(name)))
       return res.json({ status: 0, error: "WARD_NAME_ERROR!" });
+    if (!validationWardType(type))
+      return res.json({ status: 0, error: "WARD_TYPE_ERROR!" });
     if (!validationTextDes(textDes))
       return res.json({ status: 0, error: "TEXT_DES_ERROR!" });
     try {
@@ -37,6 +40,7 @@ class A3Controller {
       const ward = await Ward.create({
         wardId: id,
         wardName: name,
+        wardType: type,
         textDes,
       });
       await district.addWard(ward);
@@ -56,9 +60,6 @@ class A3Controller {
       });
       const result = [];
       for (const ward of wards) {
-        const regex =
-          /^(xã |phường |thị trấn )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
-        const wardNames = regex.exec(ward.wardName);
         const user = await User.findOne({
           where: {
             username: ward.wardId,
@@ -75,7 +76,8 @@ class A3Controller {
         }
         result.push({
           id: ward.wardId,
-          name: wardNames[2],
+          name: ward.wardName,
+          type: ward.wardType,
           textDes: ward.textDes,
           permission
         });
@@ -87,23 +89,27 @@ class A3Controller {
   }
 
   async register(req, res) {
-    const { id } = req.body;
-    if (!(await validationWardId(id, "register", req.session.username)))
-      return res.json({ status: 0, error: "USERNAME_ERROR!" });
-    const wardUser = await siteController.register({
-      username: id,
-      password: id,
-      role: "view",
-      group: "b1",
-    });
+    const { ids } = req.body;
+    for (const id of ids) {
+      if (!(await validationWardId(id, "register", req.session.username)))
+        return res.json({ status: 0, error: "USERNAME_ERROR!" });
+    }
     try {
-      if (!wardUser) return res.json({ status: 0, error: "REGISTER_ERROR!" });
       const user = await User.findOne({
         where: {
           username: req.session.username,
         },
       });
-      await user.addUser(wardUser);
+      for (const id of ids) {
+        const wardUser = await siteController.register({
+          username: id,
+          password: id,
+          role: "view",
+          group: "b1",
+        });
+        if (!wardUser) return res.json({ status: 0, error: "REGISTER_ERROR!" });
+        await user.addUser(wardUser);
+      }
       return res.json({ status: 1 });
     } catch (e) {
       return res.json({ status: 0, error: "REGISTER_ERROR!" });

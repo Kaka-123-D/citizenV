@@ -318,7 +318,7 @@ class UserController {
     if (!validationJob(job))
       return res.json({ status: 0, error: "JOB_ERROR!" });
     try {
-      await Person.create({
+      const person = await Person.create({
         personId,
         fullName,
         birthday,
@@ -330,7 +330,7 @@ class UserController {
         educationLevel,
         job,
       });
-      return res.json({ status: 1 });
+      return res.json({ status: 1, stt: person.stt });
     } catch (e) {
       return res.json({ status: 0, error: "ADD_PERSON_ERROR!" });
     }

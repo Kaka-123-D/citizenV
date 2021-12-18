@@ -11,7 +11,7 @@ class District extends Model {
         provinceId: this.provinceId,
       },
     });
-    return `${this.districtName}, ${province.provinceName}`;
+    return `${this.districtType} ${this.districtName}, ${province.provinceType} ${province.provinceName}`;
   }
 }
 
@@ -20,6 +20,10 @@ District.init(
     districtId: {
       type: DataTypes.STRING,
       primaryKey: true,
+      allowNull: false,
+    },
+    districtType: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     districtName: {

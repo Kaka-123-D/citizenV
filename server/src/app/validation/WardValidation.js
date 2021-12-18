@@ -6,7 +6,7 @@ class WardValidation {
   async validationWardId(wardId, tag, username, group) {
     if (!wardId) return false;
     if (!wardId.match(/^[0-9]{6}$/g)) return false;
-    if (group != 'a1' || group != 'admin') {
+    if (group != "a1" || group != "admin") {
       if (!wardId.startsWith(username)) return false;
     }
     try {
@@ -73,7 +73,7 @@ class WardValidation {
     if (!wardName) return false;
     if (
       !wardName.match(
-        /^(xã|phường|thị trấn)[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
+        /^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
       )
     ) {
       return false;
@@ -89,6 +89,13 @@ class WardValidation {
     } catch (e) {
       return false;
     }
+  }
+
+  validationWardType(wardType) {
+    const wardTypes = ["xã", "phường", "thị trấn"];
+    if (!wardType) return false;
+    if (!wardTypes.includes(wardType)) return false;
+    return true;
   }
 }
 

@@ -2,6 +2,11 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 
+const Province = require('../model/Province');
+const District = require('../model/District')
+const Ward = require('../model/Ward');
+const Village = require('../model/Village');
+
 dotenv.config();
 const User = require("../model/User");
 
@@ -93,8 +98,11 @@ class SiteController {
   }
 
   async test(req, res) {
-    await UpdateRoleAll('03');
-    res.json({ status: 1 });
+    await Province.sync();
+    await District.sync();
+    await Ward.sync();
+    await Village.sync();
+    res.json({ status: 1});
   }
 }
 

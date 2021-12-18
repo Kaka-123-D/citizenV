@@ -14,7 +14,8 @@ const {
 
 const {
   validationDistrictId,
-  validationDistrictName
+  validationDistrictName,
+  validationDistrictType
 } = require("../validation/DistrictValidation");
 
 class A2Controller {
@@ -23,11 +24,13 @@ class A2Controller {
   }
 
   async declare(req, res) {
-    const { id, name, textDes } = req.body;
+    const { id, name, type, textDes } = req.body;
     if (!(await validationDistrictId(id, "declare", req.session.username)))
       return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
     if (!(await validationDistrictName(name)))
       return res.json({ status: 0, error: "DISTRICT_NAME_ERROR!" });
+    if (!validationDistrictType(type))
+      return res.json({ status: 0, error: "DISTRICT_TYPE_ERROR!" });
     if (!validationTextDes(textDes))
       return res.json({ status: 0, error: "TEXT_DES_ERROR!" });
     try {
@@ -39,6 +42,7 @@ class A2Controller {
       const district = await District.create({
         districtId: id,
         districtName: name,
+        districtType: type,
         textDes,
       });
       await province.addDistrict(district);
@@ -58,9 +62,6 @@ class A2Controller {
       });
       const result = [];
       for (const district of districts) {
-        const regex =
-          /^(quận |huyện |thành phố )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
-        const districtNames = regex.exec(district.districtName);
         const user = await User.findOne({
           where: {
             username: district.districtId,
@@ -77,7 +78,8 @@ class A2Controller {
         }
         result.push({
           id: district.districtId,
-          name: districtNames[2],
+          name: district.districtName,
+          type: district.districtType,
           textDes: district.textDes,
           permission
         });
@@ -89,24 +91,28 @@ class A2Controller {
   }
 
   async register(req, res) {
-    const { id } = req.body;
-    if (!(await validationDistrictId(id, "register", req.session.username)))
-      return res.json({ status: 0, error: "USERNAME_ERROR!" });
-    const districtUser = await siteController.register({
-      username: id,
-      password: id,
-      role: "view",
-      group: "a3",
-    });
+    const { ids } = req.body;
+    for (const id of ids) {
+      if (!(await validationDistrictId(id, "register", req.session.username)))
+        return res.json({ status: 0, error: "USERNAME_ERROR!" });
+    }
     try {
-      if (!districtUser)
-        return res.json({ status: 0, error: "REGISTER_ERROR!" });
       const user = await User.findOne({
         where: {
           username: req.session.username,
         },
       });
-      await user.addUser(districtUser);
+      for (const id of ids) {
+        const districtUser = await siteController.register({
+          username: id,
+          password: id,
+          role: "view",
+          group: "a3",
+        });
+        if (!districtUser)
+          return res.json({ status: 0, error: "REGISTER_ERROR!" });
+        await user.addUser(districtUser);
+      }
       return res.json({ status: 1 });
     } catch (e) {
       return res.json({ status: 0, error: "REGISTER_ERROR!" });

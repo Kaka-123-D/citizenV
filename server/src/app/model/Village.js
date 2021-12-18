@@ -12,7 +12,7 @@ class Village extends Model {
       }
     })
     const wardAddress = await ward.getAddress();
-    return `${this.villageName}, ${wardAddress}`;
+    return `${this.villageType} ${this.villageName}, ${wardAddress}`;
   }
 }
 
@@ -21,6 +21,10 @@ Village.init(
     villageId: {
       type: DataTypes.STRING,
       primaryKey: true,
+      allowNull: false,
+    },
+    villageType: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
     villageName: {

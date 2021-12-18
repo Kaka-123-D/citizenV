@@ -72,6 +72,7 @@ CREATE TABLE `persons` (
 CREATE TABLE `provinces` (
   `provinceId` varchar(255) NOT NULL,
   `provinceName` varchar(255) NOT NULL,
+  `provinceType` varchar(255) NOT NULL,
   `textDes` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
@@ -82,6 +83,7 @@ CREATE TABLE `provinces` (
 CREATE TABLE `districts` (
   `districtId` varchar(255) NOT NULL,
   `districtName` varchar(255) NOT NULL,
+  `districtType` varchar(255) NOT NULL,
   `textDes` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
@@ -95,6 +97,7 @@ CREATE TABLE `districts` (
 CREATE TABLE `wards` (
   `wardId` varchar(255) NOT NULL,
   `wardName` varchar(255) NOT NULL,
+  `wardType` varchar(255) NOT NULL,
   `textDes` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
@@ -108,6 +111,7 @@ CREATE TABLE `wards` (
 CREATE TABLE `villages` (
   `villageId` varchar(255) NOT NULL,
   `villageName` varchar(255) NOT NULL,
+  `villageType` varchar(255) NOT NULL,
   `textDes` varchar(255) DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,

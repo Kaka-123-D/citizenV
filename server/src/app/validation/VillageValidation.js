@@ -6,7 +6,7 @@ class VillageValidation {
   async validationVillageId(villageId, tag, username, group) {
     if (!villageId) return false;
     if (!villageId.match(/^[0-9]{8}$/g)) return false;
-    if (group != 'a1' || group != 'admin') {
+    if (group != "a1" || group != "admin") {
       if (!villageId.startsWith(username)) return false;
     }
     try {
@@ -73,7 +73,7 @@ class VillageValidation {
     if (!villageName) return false;
     if (
       !villageName.match(
-        /^(thôn|làng|tổ dân phố|bản)[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s0-9]{5,25}$/g
+        /^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s0-9]{5,25}$/g
       )
     ) {
       return false;
@@ -89,6 +89,13 @@ class VillageValidation {
     } catch (e) {
       return false;
     }
+  }
+
+  validationVillageType(villageType) {
+    const villageTypes = ["thôn", "bản", "tổ dân phố", "làng", "xóm"];
+    if (!villageType) return false;
+    if (!villageTypes.includes(villageType)) return false;
+    return true;
   }
 }
 

@@ -13,6 +13,10 @@ Province.init({
     primaryKey: true,
     allowNull: false,
   }, 
+  provinceType: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
   provinceName: {
     type: DataTypes.STRING,
     allowNull: false

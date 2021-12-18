@@ -6,7 +6,7 @@ class DistrictValidation {
   async validationDistrictId(districtId, tag, username, group) {
     if (!districtId) return false;
     if (!districtId.match(/^[0-9]{4}$/g)) return false;
-    if (group != 'a1' || group != 'admin') {
+    if (group != "a1" || group != "admin") {
       if (!districtId.startsWith(username)) return false;
     }
     try {
@@ -36,9 +36,9 @@ class DistrictValidation {
         if (!user) return false;
         const permission = await Permission.findOne({
           where: {
-            userId: user.userId
-          }
-        })
+            userId: user.userId,
+          },
+        });
         if (!permission) return true;
         if (permission.isFinish == false) {
           return false;
@@ -73,7 +73,7 @@ class DistrictValidation {
     if (!districtName) return false;
     if (
       !districtName.match(
-        /^(huyện|thành phố|quận)[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
+        /^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
       )
     ) {
       return false;
@@ -89,6 +89,13 @@ class DistrictValidation {
     } catch (e) {
       return false;
     }
+  }
+
+  validationDistrictType(districtType) {
+    const districtTypes = ["huyện", "quận", "thành phố"];
+    if (!districtType) return false;
+    if (!districtTypes.includes(districtType)) return false;
+    return true;
   }
 }
 

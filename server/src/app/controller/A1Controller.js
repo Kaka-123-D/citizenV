@@ -9,6 +9,7 @@ const siteController = require("./SiteController");
 const {
   validationProvinceId,
   validationProvinceName,
+  validationProvinceType,
   validationTextDes,
 } = require("../validation/ProvinceValidation");
 
@@ -18,15 +19,17 @@ class A1Controller {
   }
 
   async declare(req, res) {
-    const { id, name, textDes } = req.body;
+    const { id, name, type, textDes } = req.body;
     if (!(await validationProvinceId(id, "declare")))
       return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
     if (!(await validationProvinceName(name)))
       return res.json({ status: 0, error: "PROVINCE_NAME_ERROR!" });
+    if (!validationProvinceType(type))
+      return res.json({ status: 0, error: "PROVINCE_TYPE_ERROR!" });
     if (!validationTextDes(textDes))
       return res.json({ status: 0, error: "TEXT_DES_ERROR!" });
     try {
-      await Province.create({ provinceId: id, provinceName: name, textDes });
+      await Province.create({ provinceId: id, provinceName: name, provinceType: type, textDes });
       return res.json({ status: 1 });
     } catch {
       return res.json({ status: 0, error: "DECLARE_ERROR!" });
@@ -40,9 +43,6 @@ class A1Controller {
       });
       const result = [];
       for (const province of provinces) {
-        const regex =
-          /^(tỉnh |thành phố )([aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]+$)/g;
-        const provinceNames = regex.exec(province.provinceName);
         const user = await User.findOne({
           where: {
             username: province.provinceId,
@@ -59,7 +59,8 @@ class A1Controller {
         }
         result.push({
           id: province.provinceId,
-          name: provinceNames[2],
+          name: province.provinceName,
+          type: province.provinceType,
           textDes: province.textDes,
           permission,
         });
@@ -71,18 +72,22 @@ class A1Controller {
   }
 
   async register(req, res) {
-    const { id } = req.body;
-    if (!(await validationProvinceId(id, "register")))
-      return res.json({ status: 0, error: "USERNAME_ERROR!" });
-    if (
-      !(await siteController.register({
-        username: id,
-        password: id,
-        role: "view",
-        group: "a2",
-      }))
-    ) {
-      return res.json({ status: 0, error: "REGISTER_ERROR!" });
+    const { ids } = req.body;
+    for (const id of ids) {
+      if (!(await validationProvinceId(id, "register")))
+        return res.json({ status: 0, error: "USERNAME_ERROR!" });
+    }
+    for (const id of ids) {
+      if (
+        !(await siteController.register({
+          username: id,
+          password: id,
+          role: "view",
+          group: "a2",
+        }))
+      ) {
+        return res.json({ status: 0, error: "REGISTER_ERROR!" });
+      }
     }
     return res.json({ status: 1 });
   }

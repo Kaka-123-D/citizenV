@@ -33,9 +33,9 @@ class ProvinceValidation {
         if (!user) return false;
         const permission = await Permission.findOne({
           where: {
-            userId: user.userId
-          }
-        })
+            userId: user.userId,
+          },
+        });
         if (!permission) return true;
         if (permission.isFinish == false) {
           return false;
@@ -70,7 +70,7 @@ class ProvinceValidation {
     if (!provinceName) return false;
     if (
       !provinceName.match(
-        /^(tỉnh|thành phố)[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
+        /^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
       )
     ) {
       return false;
@@ -86,6 +86,13 @@ class ProvinceValidation {
     } catch (e) {
       return false;
     }
+  }
+
+  validationProvinceType(provinceType) {
+    const provinceTypes = ['tỉnh', 'thành phố'];
+    if (!provinceType) return false;
+    if (!provinceTypes.includes(provinceType)) return false;
+    return true;
   }
 
   validationTextDes(textDes) {
@@ -108,7 +115,11 @@ class ProvinceValidation {
     const timeEndD = new Date(timeEnd);
     const now = new Date();
     if (isNaN(timeStartD.getTime()) || isNaN(timeEndD.getTime())) return false;
-    if (timeStartD - now < 0 || timeEndD - now <= 0 || timeEndD - timeStartD <= 0)
+    if (
+      timeStartD - now < 0 ||
+      timeEndD - now <= 0 ||
+      timeEndD - timeStartD <= 0
+    )
       return false;
     return true;
   }
