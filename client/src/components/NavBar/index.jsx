@@ -6,14 +6,21 @@ import NavDropdown from "react-bootstrap/NavDropdown";
 import Form from "react-bootstrap/Form";
 import FormControl from "react-bootstrap/FormControl";
 import Button from "react-bootstrap/Button";
-import LogoutBtn from "../../containers/Logout"
+import LogoutBtn from "../../containers/Logout";
+
+import { Link } from "react-router-dom";
+
+import "./navbar.scss"
 
 export default function NavBar() {
   return (
     <div className="nav-bar-wrap">
-      <Navbar bg="light" expand="lg">
+      <Navbar bg="light" expand="lg" fixed="top">
         <Container fluid>
-          <Navbar.Brand href="#">CitizenV</Navbar.Brand>
+          <Navbar.Brand as={Link} to="/">
+            {" "}
+            CitizenV{" "}
+          </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
             <Nav
@@ -21,19 +28,26 @@ export default function NavBar() {
               style={{ maxHeight: "100px" }}
               navbarScroll
             >
-              <Nav.Link href="#action1">Home</Nav.Link>
-              <Nav.Link href="#action2">Cấp tài khoản</Nav.Link>
-              <NavDropdown title="Declare" id="navbarScrollingDropdown">
-                <NavDropdown.Item href="#action3">Khai báo A</NavDropdown.Item>
-                <NavDropdown.Item href="#action4">Khai báo B</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item href="#action5">
-                  Mở thời gian khai báo{" "}
-                </NavDropdown.Item>
-              </NavDropdown>
-              <Nav.Link href="#" disabled>
-                Something
+              <Nav.Link as={Link} to="/declare">
+                Khai báo mã khu vực
               </Nav.Link>
+
+              <Nav.Link as={Link} to="/setTimeDeclare">
+                Mở quyền khai báo
+              </Nav.Link>
+              <NavDropdown title="Kiểm tra" id="navbarScrollingDropdown">
+                <NavDropdown.Item as={Link} to="/chart">
+                  Phân tích số liệu dân số
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item as={Link} to="/person">
+                  Danh sách dân số
+                </NavDropdown.Item>
+
+                {/* <NavDropdown.Item as={Link} to="/action5">
+                  Mở thời gian khai báo{" "}
+                </NavDropdown.Item> */}
+              </NavDropdown>
             </Nav>
             {/* <Form className="d-flex">
               <FormControl

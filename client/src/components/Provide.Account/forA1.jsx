@@ -16,7 +16,7 @@ const strongPassword = (value) => {
   }
 };
 
-export default function forA1({ createAccount, executor}) {
+export default function forA1({ createAccount}) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [fullName, setFullName] = useState("");
@@ -26,7 +26,7 @@ export default function forA1({ createAccount, executor}) {
 
     function handleSubmit(event) {
       event.preventDefault();
-      createAccount(executor, username, password, fullName, phone, role, group);
+      createAccount(username, password, fullName, phone, role, group);
     }
 
     return (

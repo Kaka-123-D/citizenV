@@ -35,12 +35,13 @@ const { declareSuccess, declareError, setRegionList } = region.actions;
 // gửi username với password lên server để xác thực
 // nếu status của res trả về là 1 thì gọi hàm loginSuccess.
 // ngược lại gọi hàm loginFailure
-export const declareRegion = (executor, id, name, textDes) => async (dispatch) => {
+export const declareRegion = (executor, id, type, name, textDes) => async (dispatch) => {
   const URL = "http://localhost:8080/" + executor + "/declare";
   const res = await axios.post(
     URL,
     {
       id,
+      type,
       name,
       textDes,
     },

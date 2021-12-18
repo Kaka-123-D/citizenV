@@ -90,6 +90,7 @@ class A3Controller {
 
   async register(req, res) {
     const { ids } = req.body;
+    if (!ids) return res.json({ status: 0, error: "USERNAME_ERROR!" });
     for (const id of ids) {
       if (!(await validationWardId(id, "register", req.session.username)))
         return res.json({ status: 0, error: "USERNAME_ERROR!" });

@@ -73,6 +73,7 @@ class A1Controller {
 
   async register(req, res) {
     const { ids } = req.body;
+    if (!ids) return res.json({ status: 0, error: "USERNAME_ERROR!" });
     for (const id of ids) {
       if (!(await validationProvinceId(id, "register")))
         return res.json({ status: 0, error: "USERNAME_ERROR!" });

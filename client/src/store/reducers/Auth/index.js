@@ -77,6 +77,22 @@ export const logout = (navigate) => async (dispatch) => {
   }
 };
 
+export const changePassword = (curPassword, newPassword, navigate) => async (dispatch) => {
+  const res = await axios.put(
+    "http://localhost:8080/changePassword",
+    {curPassword, newPassword},
+    {
+      withCredentials: true,
+    }
+  );
+  if (res.data.status === 1) {
+    console.log("change password success");
+    navigate("/");
+  } else {
+    console.log("change password error");
+  }
+}
+
 export const resetAuthState = () => (dispatch) => {
   dispatch(logoutSuccess());
 };

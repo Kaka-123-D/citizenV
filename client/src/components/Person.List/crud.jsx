@@ -98,8 +98,6 @@ export default function crud({addPerson, updatePerson, deletePerson, executor}) 
         >
           Add
         </button>
-        <button onClick={() => alert("Chưa làm")}>Edit</button>
-        <button onClick={() => alert("Chưa làm")}>Delete</button>
       </div>
     );
 }
