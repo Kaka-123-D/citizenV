@@ -50,7 +50,6 @@ class A1Controller {
         });
         var permission = null;
         if (user) {
-          await Permission.sync();
           permission = await Permission.findOne({
             attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
             where: {
@@ -67,7 +66,6 @@ class A1Controller {
       }
       res.json({ status: 1, regions: result });
     } catch (e) {
-      console.log(e);
       res.json({ status: 0, error: "GET_REGIONS_ERROR!" });
     }
   }

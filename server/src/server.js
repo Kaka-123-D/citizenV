@@ -32,7 +32,6 @@ db.testConnect()
       tableName: "sessions",
       checkExpirationInterval: parseInt(SESS_REMOVE_DB_TIME) * 60 * 60 * 1000,
     });
-    myStore.sync();
 
     const app = express();
 

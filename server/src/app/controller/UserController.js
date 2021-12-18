@@ -12,11 +12,9 @@ const {
   validationProvinceId,
   validationTime,
 } = require("../validation/ProvinceValidation");
-
 const {
   validationFullName
 } = require("../validation/UserValidation");
-
 const {
   validationStt,
   validationPersonId,
@@ -27,19 +25,15 @@ const {
   validationEducationLevel,
   validationJob
 } = require("../validation/PersonValidation");
-
 const {
   validationDistrictId,
 } = require("../validation/DistrictValidation");
-
 const { 
   validationWardId,
 } = require("../validation/WardValidation");
-
 const {
   validationVillageId,
 } = require("../validation/VillageValidation");
-
 const { UpdateRoleAll } = require("../logic/UpdateRoleAll");
 
 class UserController {
@@ -324,7 +318,6 @@ class UserController {
     if (!validationJob(job))
       return res.json({ status: 0, error: "JOB_ERROR!" });
     try {
-      await Person.sync();
       await Person.create({
         personId,
         fullName,
@@ -455,7 +448,6 @@ class UserController {
       }
       return res.json({ status: 1, persons: personsResult });
     } catch (e) {
-      console.log(e);
       return res.json({ status: 0, error: "GET_PERSON_BY_DISTRICT_ERROR!" });
     }
   }
@@ -494,7 +486,6 @@ class UserController {
       }
       return res.json({ status: 1, persons: personsResult });
     } catch (e) {
-      console.log(e);
       return res.json({ status: 0, error: "GET_PERSON_BY_WARD_ERROR!" });
     }
   }

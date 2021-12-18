@@ -7,15 +7,11 @@ class ProvinceValidation {
     if (!provinceId) return false;
     if (!provinceId.match(/^[0-9]{2}$/g)) return false;
     try {
-      //Delete in product
-      await Province.sync();
       const province = await Province.findOne({
         where: {
           provinceId: provinceId,
         },
       });
-      //Delete in product
-      await User.sync();
       const user = await User.findOne({
         where: {
           username: provinceId,
@@ -80,8 +76,6 @@ class ProvinceValidation {
       return false;
     }
     try {
-      //Delete in product
-      await Province.sync();
       const province = await Province.findOne({
         where: {
           provinceName: provinceName,

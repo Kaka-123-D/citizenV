@@ -4,7 +4,8 @@ class SequelizeConnect {
   constructor(databaseName, username, password) {
     this.sequelize = new Sequelize(databaseName, username, password, {
       host: 'localhost',
-      dialect: 'mysql'
+      dialect: 'mysql',
+      logging: false,
     });
   }
 

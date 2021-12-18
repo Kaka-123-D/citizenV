@@ -65,7 +65,6 @@ class B1Controller {
         });
         var permission = null;
         if (user) {
-          await Permission.sync();
           permission = await Permission.findOne({
             attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
             where: {
@@ -166,7 +165,6 @@ class B1Controller {
       }
       return res.json({ status: 1, persons: personsResult });
     } catch (e) {
-      console.log(e);
       return res.json({ status: 0, error: "GET_PERSON_BY_VILLAGE_ERROR!" });
     }
   }

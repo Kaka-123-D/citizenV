@@ -1,6 +1,6 @@
-const User = require('../model/User');
 
 class A2Middleware {
+  
   async index(req, res, next) {
     try {
       if (req.session.group != "a2")
@@ -9,12 +9,6 @@ class A2Middleware {
     } catch (e) {
       return res.json({ status: 0, error: "ACCESS_DENIED" });
     }
-  }
-
-  async roleCUD(req, res, next) {
-    if (req.session.role != 'edit') 
-      return res.json({ status: 0, error: "ACCESS_DENIED" });
-    next();
   }
 }
 

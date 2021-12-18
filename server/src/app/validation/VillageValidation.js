@@ -10,15 +10,11 @@ class VillageValidation {
       if (!villageId.startsWith(username)) return false;
     }
     try {
-      //Delete in product
-      await Village.sync();
       const village = await Village.findOne({
         where: {
           villageId: villageId,
         },
       });
-      //Delete in product
-      await User.sync();
       const user = await User.findOne({
         where: {
           username: villageId,
@@ -83,8 +79,6 @@ class VillageValidation {
       return false;
     }
     try {
-      //Delete in product
-      await Village.sync();
       const village = await Village.findOne({
         where: {
           villageName: villageName,

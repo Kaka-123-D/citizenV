@@ -1,6 +1,7 @@
 const User = require('../model/User');
 
 class UserMiddleware {
+  
   async roleCUD(req, res, next) {
     const user = await User.findOne({
       where: {

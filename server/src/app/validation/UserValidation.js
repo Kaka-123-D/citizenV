@@ -5,8 +5,6 @@ class UserValidation {
     if (!username) return false;
     if (!username.match(/^[a-zA-Z0-9]{2,20}$/g)) return false;
     try {
-      //
-      await User.sync();
       const user = await User.findOne({
         where: {
           username: username,

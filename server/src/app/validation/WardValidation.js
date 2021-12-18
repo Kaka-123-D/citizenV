@@ -10,15 +10,11 @@ class WardValidation {
       if (!wardId.startsWith(username)) return false;
     }
     try {
-      //Delete in product
-      await Ward.sync();
       const ward = await Ward.findOne({
         where: {
           wardId: wardId,
         },
       });
-      //Delete in product
-      await User.sync();
       const user = await User.findOne({
         where: {
           username: wardId,
@@ -83,8 +79,6 @@ class WardValidation {
       return false;
     }
     try {
-      //Delete in product
-      await Ward.sync();
       const ward = await Ward.findOne({
         where: {
           wardName: wardName,

@@ -19,7 +19,6 @@ class SiteController {
   async register(data) {
     try {
       const hash = bcrypt.hashSync(data.password, parseInt(SALT_ROUND));
-      await User.sync();
       return await User.create({
         username: data.username,
         password: hash,

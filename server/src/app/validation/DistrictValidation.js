@@ -10,15 +10,11 @@ class DistrictValidation {
       if (!districtId.startsWith(username)) return false;
     }
     try {
-      //Delete in product
-      await District.sync();
       const district = await District.findOne({
         where: {
           districtId: districtId,
         },
       });
-      //Delete in product
-      await User.sync();
       const user = await User.findOne({
         where: {
           username: districtId,
@@ -83,8 +79,6 @@ class DistrictValidation {
       return false;
     }
     try {
-      //Delete in product
-      await District.sync();
       const district = await District.findOne({
         where: {
           districtName: districtName,

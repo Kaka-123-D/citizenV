@@ -1,4 +1,3 @@
-const User = require('../model/User');
 
 class B1Middleware {
 

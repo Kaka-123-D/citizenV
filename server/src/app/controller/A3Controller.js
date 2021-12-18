@@ -66,7 +66,6 @@ class A3Controller {
         });
         var permission = null;
         if (user) {
-          await Permission.sync();
           permission = await Permission.findOne({
             attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
             where: {
