@@ -1,11 +1,17 @@
 .form-group {
   width: 400px;
-  margin: 30vh auto;
-
-  // background-color: #222222;
-
+  margin: 20vh auto;
+    h1 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
   .alert {
     color: red;
+    display: block;
+    margin-left: 30px;
+    padding: 0;
+    margin-bottom: 0;
+    font-weight: bold;
   }
 
   .input-field {
@@ -13,11 +19,11 @@
     min-width: 200px;
     max-width: 400px;
     min-height: 50px;
-    margin-bottom: 10px;
+    margin-top: 10px;
     border: 2px solid #00ff4c71;
     border-radius: 25px;
 
-    &:active {
+    &:focus-within {
       border: 3px solid #0c6928bd;
     }
 
@@ -32,23 +38,53 @@
         line-height: 49px;
       }
     }
-    .input {
+    input {
       width: 300px;
       height: 40px;
-      display: inline-block;
-      input {
-        background-color: rgb(200, 200, 200);
-        padding-top: 10px;
-        padding-bottom: 10px;
-        border: none;
-        width: 300px;
-        font-size: 16px;
-        &:focus {
-          outline: none;
-        }
+      background-color: rgb(200, 200, 200);
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border: none;
+      width: 300px;
+      font-size: 16px;
+      &:focus {
+        outline: none;
       }
     }
   }
+  .service-auth {
+    display: flex;
+
+    .remember-me {
+      flex: 2;
+      margin-top: 10px;
+      margin-left: 10px;
+
+      input {
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+      }
+
+      span.text {
+        font-size: 16px;
+        margin-left: 5px;
+      }
+    }
+
+    .forget-pass {
+      flex: 1;
+      font-size: 16px;
+      margin-top: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      color: #8490fc;
+      &:hover {
+        color: #0d00ff;
+      }
+    }
+  }
+
   .submitBtn {
     margin-top: 10px;
     align-items: center;

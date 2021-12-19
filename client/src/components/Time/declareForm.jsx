@@ -85,9 +85,9 @@ export default function Declare({
         <table className="table-regions">
           <thead>
             <tr>
-              <th>Mã</th>
-              <th>Tên</th>
-              <th>Mô tả</th>
+              <th className="field">Mã</th>
+              <th className="field">Tên</th>
+              <th className="field">Mô tả</th>
               <th>
                 <input
                   type="checkbox"
@@ -110,14 +110,13 @@ export default function Declare({
                   ) {
                     return (
                       <tr key={region.id}>
-                        <td>{region.id}</td>
-                        <td>{region.name}</td>
-                        <td>{region.textDes}</td>
+                        <td className="id-column">{region.id}</td>
+                        <td className="name-column">{region.name}</td>
+                        <td className="des-column">{region.textDes}</td>
                         <td>
                           <input
                             type="checkbox"
                             className="tickBox"
-                            // checked={check ? check : null}
                             onChange={() => handleAddArrayId(region.id)}
                           />
                         </td>

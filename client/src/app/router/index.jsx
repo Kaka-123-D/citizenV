@@ -12,15 +12,17 @@ import SetTimeDeclare from "../features/SetTimeDeclare";
 import Person from "../features/Person"
 import Chart from "../features/Chart"
 
-export default function routes({ status, executor, resetAuthState }) {
+export default function routes({ status, executor, resetAuthState, setMessageError}) {
   console.log("status: ", status);
   console.log("group: ", executor);
   if (!document.cookie.includes("sid")) {
     resetAuthState();
   }
+  setMessageError(null);
   return (
     <Router>
       <Routes>
+        
         <Route
           path="/"
           element={

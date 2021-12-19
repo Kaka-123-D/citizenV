@@ -16,3 +16,8 @@ export const xoa_dau = (str) => {
       return str;
 }
 
+export const isEmpty = (str) => {
+      if (!str) return false;
+      return true;
+}
+

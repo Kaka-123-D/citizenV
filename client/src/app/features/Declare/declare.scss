@@ -1,0 +1,21 @@
+.dashboard {
+  display: flex;
+  .declare-form {
+    flex: 4;
+    margin: 14vh 30px;
+  }
+  .provide-account {
+    flex: 6;
+    margin: 5vh 30px;
+    .alert {
+      color: red;
+      display: block;
+      padding: 0;
+      margin-bottom: 0;
+      font-weight: bold;
+    }
+  }
+  @media (max-width: 800px) {
+    display: block;
+  }
+}

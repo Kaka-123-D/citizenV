@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import {setMessageError} from "../Message"
 
 // khởi tạo state gồm 2 token
 // accessToken dùng để duy trì đăng nhập
@@ -52,7 +53,10 @@ export const declareRegion = (executor, id, type, name, textDes) => async (dispa
     const newRegion = { id: id, name: name, textDes: textDes };
     dispatch(declareSuccess(newRegion));
   } else {
-    dispatch(declareError(res.data));
+    if (res.data.error.includes("ID")) 
+      dispatch(setMessageError("Lỗi mã khu vực. Hãy nhập lại"));
+    else if (res.data.error.includes("NAME")) 
+      dispatch(setMessageError("Lỗi tên khu vực. Hãy nhập lại"));
   }
 };
 

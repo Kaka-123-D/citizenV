@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import {setMessageError} from '../Message'
+import { setMessageError } from "../Message";
+import storage from "redux-persist/lib/storage";
 
 // khởi tạo state gồm 2 token
 // accessToken dùng để duy trì đăng nhập
@@ -23,9 +24,10 @@ const auth = createSlice({
       console.log("Login success with ", state.group);
     },
     logoutSuccess(state, action) {
-      (state.group = null),
-        (state.status = 0),
-        console.log("Logout Success ..");
+      storage.removeItem("persist:root");
+      state.status = 0,
+      state.group = null,
+      console.log("Logout Success ..");
     },
     logoutFailure(state, action) {
       alert("Logout failed");
@@ -34,8 +36,7 @@ const auth = createSlice({
 });
 
 // lấy hàm loginSuccess và loginFailure trong slice để sau khi fetch data thì sử dụng
-const { loginSuccess, logoutSuccess, logoutFailure } =
-  auth.actions;
+const { loginSuccess, logoutSuccess, logoutFailure } = auth.actions;
 
 // gửi username với password lên server để xác thực
 // nếu status của res trả về là 1 thì gọi hàm loginSuccess.
@@ -77,21 +78,22 @@ export const logout = (navigate) => async (dispatch) => {
   }
 };
 
-export const changePassword = (curPassword, newPassword, navigate) => async (dispatch) => {
-  const res = await axios.put(
-    "http://localhost:8080/changePassword",
-    {curPassword, newPassword},
-    {
-      withCredentials: true,
+export const changePassword =
+  (curPassword, newPassword, navigate) => async (dispatch) => {
+    const res = await axios.put(
+      "http://localhost:8080/changePassword",
+      { curPassword, newPassword },
+      {
+        withCredentials: true,
+      }
+    );
+    if (res.data.status === 1) {
+      console.log("change password success");
+      navigate("/");
+    } else {
+      console.log("change password error");
     }
-  );
-  if (res.data.status === 1) {
-    console.log("change password success");
-    navigate("/");
-  } else {
-    console.log("change password error");
-  }
-}
+  };
 
 export const resetAuthState = () => (dispatch) => {
   dispatch(logoutSuccess());

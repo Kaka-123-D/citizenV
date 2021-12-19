@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import "./forA1.scss";
 
 const strongPassword = (value) => {
   if (

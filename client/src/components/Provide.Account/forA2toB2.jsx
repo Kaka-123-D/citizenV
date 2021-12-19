@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import SearchBar from "../../containers/SearchBar";
 import { xoa_dau } from "../../validation";
+import "./forA2toB2.scss";
 
 export default function forA2toB2({
   createAccount,
@@ -56,18 +57,23 @@ export default function forA2toB2({
     <div>
       <h2>Cấp tài khoản: </h2>
       <input
+        className="search-region"
         type="text"
         placeholder="Search.."
         onChange={(e) => setTextSearch(e.target.value)}
       />
 
-      <button onClick={(e) => handleSubmit(e)}>Cấp tài khoản</button>
+      <button className="create-btn" onClick={(e) => handleSubmit(e)}>
+        Cấp tài khoản
+      </button>
+      {Array.isArray(regions) && regions.length == 0 ? 
+      <span className="alert">Chưa có khu vực nào được khai báo</span> : 
       <table className="table-regions">
         <thead>
           <tr>
-            <th>Mã</th>
-            <th>Tên</th>
-            <th>Mô tả</th>
+            <th className="field">Mã</th>
+            <th className="field">Tên</th>
+            <th className="field">Mô tả</th>
             <th>
               <input
                 type="checkbox"
@@ -78,9 +84,7 @@ export default function forA2toB2({
           </tr>
         </thead>
         <tbody>
-          {Array.isArray(regions) && regions.length == 0
-            ? null
-            : regions.map((region) => {
+          {regions.map((region) => {
                 let textTemp = region.name;
                 if (
                   xoa_dau(textTemp)
@@ -90,9 +94,9 @@ export default function forA2toB2({
                 ) {
                   return (
                     <tr key={region.id}>
-                      <td>{region.id}</td>
-                      <td>{region.name}</td>
-                      <td>{region.textDes}</td>
+                      <td className="id-column">{region.id}</td>
+                      <td className="name-column">{region.name}</td>
+                      <td className="des-column">{region.textDes}</td>
                       <td>
                         <input
                           type="checkbox"
@@ -105,7 +109,7 @@ export default function forA2toB2({
                 }
               })}
         </tbody>
-      </table>
+      </table>}
     </div>
   );
 }

@@ -1,67 +1,68 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import {Link } from "react-router-dom"
 import "./login.scss";
-import Form from "react-validation/build/form";
-import Input from "react-validation/build/input";
-import CheckButton from "react-validation/build/button";
-import { isEmpty } from "validator";
-
-const required = (value) => {
-  if (isEmpty(value)) {
-    return (
-      <div className="alert" role="alert">
-        This field is required!
-      </div>
-    );
-  }
-};
+// import { isEmpty } from "validator";
 
 export default function Login({ login, message }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const form = useRef();
-  const checkBtn = useRef();
+  const [filledUsername, setFilledUsername] = useState(true);
+  const [filledPassword, setFilledPassword] = useState(true);
+  const [remember, setRemember] = useState(false);
   const navigate = useNavigate();
 
   function handleSubmit(event) {
     event.preventDefault();
-    form.current.validateAll();
-    if (checkBtn.current.context._errors.length === 0) {
+    if (!username) setFilledUsername(false); 
+    if (!password) setFilledPassword(false);
+    if (username && password) {
       login({ username, password }, navigate);
-    }
+    } 
+  }
+
+  function handleChangeUsername(value) {
+    setUsername(value);
+    if (value) setFilledUsername(true);
+    else setFilledUsername(false);
+  }
+  function handleChangePassword(value) {
+    setPassword(value);
+    if (value) setFilledPassword(true);
+    else setFilledPassword(false);
   }
 
   return (
-    <Form onSubmit={handleSubmit} ref={form} className="form-group">
-      <h1>Sign in</h1>
+    <form onSubmit={handleSubmit} className="form-group">
+      <h1>Đăng nhập</h1>
       <div className="input-field">
         <div className="icon">
           <i className="fa fa-user" aria-hidden="true"></i>
         </div>
-        <div className="input">
-          <Input
-            type="text"
-            value={username}
-            onChange={(event) => setUsername(event.target.value)}
-            placeholder="Enter your username"
-            validations={[required]}
-          />
-        </div>
+        <input
+          type="text"
+          value={username}
+          onChange={(event) => handleChangeUsername(event.target.value)}
+          placeholder="Nhập tài khoản .. "
+        />
       </div>
+      {filledUsername === true ? null : (
+        <span className="alert">Không được bỏ trống!</span>
+      )}
       <div className="input-field">
         <div className="icon">
           <i className="fa fa-unlock-alt" aria-hidden="true"></i>
         </div>
-        <div className="input">
-          <Input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            placeholder="Enter your password"
-            validations={[required]}
-          />
-        </div>
+        <input
+          type="password"
+          value={password}
+          onChange={(event) => handleChangePassword(event.target.value)}
+          placeholder="Nhập mật khẩu .."
+        />
       </div>
+      {filledPassword === true ? null : (
+        <span className="alert">Không được bỏ trống!</span>
+      )}
       {message && (
         <div>
           <div className="alert" role="alert">
@@ -69,8 +70,15 @@ export default function Login({ login, message }) {
           </div>
         </div>
       )}
-      <button className="submitBtn">Login</button>
-      <CheckButton style={{ display: "none" }} ref={checkBtn} />
-    </Form>
+      <div className="service-auth">
+        <div className="remember-me">
+          <input type="checkbox" onChange={() => setRemember(!remember)} />
+          <span className="text">Duy trì đăng nhập </span>
+        </div>
+
+        <Link to="/resetPassword" className="forget-pass">Quên mật khẩu?</Link>
+      </div>
+      <button className="submitBtn">Đăng nhập</button>
+    </form>
   );
 }
