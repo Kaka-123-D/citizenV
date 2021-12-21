@@ -7,6 +7,7 @@ import "./login.scss";
 export default function Login({ login, message }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  // const [keepLogin, setKeepLogin] = useState(false);
   const [filledUsername, setFilledUsername] = useState(true);
   const [filledPassword, setFilledPassword] = useState(true);
   const [remember, setRemember] = useState(false);
@@ -17,7 +18,7 @@ export default function Login({ login, message }) {
     if (!username) setFilledUsername(false); 
     if (!password) setFilledPassword(false);
     if (username && password) {
-      login({ username, password }, navigate);
+      login(username, password, remember, navigate);
     } 
   }
 
@@ -33,13 +34,14 @@ export default function Login({ login, message }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="form-group">
+    <form onSubmit={handleSubmit} className="form-group" autoComplete="on">
       <h1>Đăng nhập</h1>
       <div className="input-field">
         <div className="icon">
           <i className="fa fa-user" aria-hidden="true"></i>
         </div>
         <input
+          autoComplete="on"
           type="text"
           value={username}
           onChange={(event) => handleChangeUsername(event.target.value)}
@@ -54,6 +56,7 @@ export default function Login({ login, message }) {
           <i className="fa fa-unlock-alt" aria-hidden="true"></i>
         </div>
         <input
+          autoComplete="on"
           type="password"
           value={password}
           onChange={(event) => handleChangePassword(event.target.value)}
@@ -76,9 +79,11 @@ export default function Login({ login, message }) {
           <span className="text">Duy trì đăng nhập </span>
         </div>
 
-        <Link to="/resetPassword" className="forget-pass">Quên mật khẩu?</Link>
+        <Link to="/resetPassword" className="forget-pass">
+          Quên mật khẩu?
+        </Link>
       </div>
-      <button className="submitBtn">Đăng nhập</button>
+      <input type="submit" className="submitBtn" value="Đăng nhập"/>
     </form>
   );
 }

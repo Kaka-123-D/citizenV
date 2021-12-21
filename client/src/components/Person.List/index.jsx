@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Crud from "./crud";
 import "./style.scss";
 
 export default function PersonList({
@@ -25,11 +24,6 @@ export default function PersonList({
 
   return (
     <div>
-      {console.log("personList:", personList)}
-      <Crud
-        addPerson={addPerson}
-        executor={executor}
-      />
       <br />
       <br />
       <h2>Danh sách dân số: </h2>

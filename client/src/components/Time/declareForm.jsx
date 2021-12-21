@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./declareForm.scss"
-import {xoa_dau} from "../../validation";
-
+import RegionsTable from "../Regions.Table"
 export default function Declare({
   executor,
   declareTimeStart,
@@ -78,54 +77,18 @@ export default function Declare({
         <br />
         <br />
         <input
+          value={textSearch}
           type="text"
           placeholder="Search.."
           onChange={(e) => setTextSearch(e.target.value)}
         />
-        <table className="table-regions">
-          <thead>
-            <tr>
-              <th className="field">Mã</th>
-              <th className="field">Tên</th>
-              <th className="field">Mô tả</th>
-              <th>
-                <input
-                  type="checkbox"
-                  onChange={() => handleTickAll()}
-                  checked={tickAll}
-                />
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {Array.isArray(regions) && regions.length == 0
-              ? null
-              : regions.map((region) => {
-                  let textTemp = region.name;
-                  if (
-                    xoa_dau(textTemp)
-                      .toLocaleLowerCase()
-                      .startsWith(xoa_dau(textSearch).toLocaleLowerCase()) ===
-                    true
-                  ) {
-                    return (
-                      <tr key={region.id}>
-                        <td className="id-column">{region.id}</td>
-                        <td className="name-column">{region.name}</td>
-                        <td className="des-column">{region.textDes}</td>
-                        <td>
-                          <input
-                            type="checkbox"
-                            className="tickBox"
-                            onChange={() => handleAddArrayId(region.id)}
-                          />
-                        </td>
-                      </tr>
-                    );
-                  }
-                })}
-          </tbody>
-        </table>
+        <RegionsTable
+          regions={regions}
+          handleTickAll={handleTickAll}
+          tickAll={tickAll}
+          handleAddArrayId={handleAddArrayId}
+          textSearch={textSearch}
+        />{" "}
       </form>
     </>
   );

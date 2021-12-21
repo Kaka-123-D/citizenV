@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import SearchBar from "../../containers/SearchBar";
-import { xoa_dau } from "../../validation";
 import "./forA2toB2.scss";
+import RegionsTable from "../Regions.Table";
 
 export default function forA2toB2({
   createAccount,
@@ -57,6 +56,7 @@ export default function forA2toB2({
     <div>
       <h2>Cấp tài khoản: </h2>
       <input
+        value={textSearch}
         className="search-region"
         type="text"
         placeholder="Search.."
@@ -66,50 +66,13 @@ export default function forA2toB2({
       <button className="create-btn" onClick={(e) => handleSubmit(e)}>
         Cấp tài khoản
       </button>
-      {Array.isArray(regions) && regions.length == 0 ? 
-      <span className="alert">Chưa có khu vực nào được khai báo</span> : 
-      <table className="table-regions">
-        <thead>
-          <tr>
-            <th className="field">Mã</th>
-            <th className="field">Tên</th>
-            <th className="field">Mô tả</th>
-            <th>
-              <input
-                type="checkbox"
-                onChange={() => handleTickAll()}
-                checked={tickAll}
-              />
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {regions.map((region) => {
-                let textTemp = region.name;
-                if (
-                  xoa_dau(textTemp)
-                    .toLocaleLowerCase()
-                    .startsWith(xoa_dau(textSearch).toLocaleLowerCase()) ===
-                  true
-                ) {
-                  return (
-                    <tr key={region.id}>
-                      <td className="id-column">{region.id}</td>
-                      <td className="name-column">{region.name}</td>
-                      <td className="des-column">{region.textDes}</td>
-                      <td>
-                        <input
-                          type="checkbox"
-                          className="tickBox"
-                          onChange={() => handleAddArrayId(region.id)}
-                        />
-                      </td>
-                    </tr>
-                  );
-                }
-              })}
-        </tbody>
-      </table>}
+      <RegionsTable
+        regions={regions}
+        handleTickAll={handleTickAll}
+        tickAll={tickAll}
+        handleAddArrayId={handleAddArrayId}
+        textSearch={textSearch}
+      />
     </div>
   );
 }

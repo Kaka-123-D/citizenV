@@ -1,4 +1,32 @@
 .nav-bar-wrap {
-    margin-bottom: 70px;
-    font-size: 18px;
+  margin-bottom: 70px;
+  font-size: 18px;
+  font-weight: bold;
+
+  .nav-bar {
+    background-color: #95d0f7;
+    padding: 0;
+
+    box-shadow: -1px 2px 37px 8px rgba(0, 0, 0, 0.29);
+    -webkit-box-shadow: -1px 2px 37px 8px rgba(0, 0, 0, 0.29);
+    -moz-box-shadow: -1px 2px 37px 8px rgba(0, 0, 0, 0.29);
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      padding-right: 15px;
+      border-right: 3px solid #1d2201;
+    }
+
+    .nav-item {
+        margin-top: 10px;
+        padding: 10px;
+      &:hover {
+        border-bottom: 2px solid #181d18;
+      }
+    }
+
+    .nav-item.dropdown {
+        margin-top: 0;
+    }
+  }
 }

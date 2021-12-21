@@ -20,7 +20,6 @@ const auth = createSlice({
     loginSuccess(state, action) {
       state.status = 1;
       state.group = action.payload.group;
-      // state.timeSetCookie = Date.now()
       console.log("Login success with ", state.group);
     },
     logoutSuccess(state, action) {
@@ -42,7 +41,7 @@ const { loginSuccess, logoutSuccess, logoutFailure } = auth.actions;
 // nếu status của res trả về là 1 thì gọi hàm loginSuccess.
 // ngược lại gọi hàm loginFailure
 export const login =
-  ({ username, password }, navigate) =>
+  (username, password, keepLogin, navigate) =>
   async (dispatch) => {
     const res = await axios.post(
       "http://localhost:8080/login",
@@ -54,7 +53,7 @@ export const login =
     );
 
     if (res.data.status === 1) {
-      dispatch(loginSuccess(res.data));
+      dispatch(loginSuccess({ group: res.data.group }));
       dispatch(setMessageError(null));
       navigate("/" + res.data.group);
     } else {

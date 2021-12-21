@@ -15,11 +15,10 @@ import "./navbar.scss"
 export default function NavBar() {
   return (
     <div className="nav-bar-wrap">
-      <Navbar bg="light" expand="lg" fixed="top">
+      <Navbar expand="lg" fixed="top" className="nav-bar">
         <Container fluid>
-          <Navbar.Brand as={Link} to="/">
-            {" "}
-            CitizenV{" "}
+          <Navbar.Brand as={Link} to="/" className="logo">
+            CitizenV
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="navbarScroll" />
           <Navbar.Collapse id="navbarScroll">
@@ -28,19 +27,34 @@ export default function NavBar() {
               style={{ maxHeight: "100px" }}
               navbarScroll
             >
-              <Nav.Link as={Link} to="/declare">
+              <Nav.Link as={Link} to="/declare" className="nav-item">
                 Khai báo mã khu vực
               </Nav.Link>
 
-              <Nav.Link as={Link} to="/setTimeDeclare">
+              <Nav.Link as={Link} to="/setTimeDeclare" className="nav-item">
                 Mở quyền khai báo
               </Nav.Link>
-              <NavDropdown title="Kiểm tra" id="navbarScrollingDropdown">
-                <NavDropdown.Item as={Link} to="/chart">
+              <Nav.Link as={Link} to="/input" className="nav-item">
+                Nhập liệu
+              </Nav.Link>
+              <NavDropdown
+                title="Quản lý"
+                id="navbarScrollingDropdown"
+                className="nav-item"
+              >
+                <NavDropdown.Item
+                  as={Link}
+                  to="/chart"
+                  className="nav-item-drop"
+                >
                   Phân tích số liệu dân số
                 </NavDropdown.Item>
                 <NavDropdown.Divider />
-                <NavDropdown.Item as={Link} to="/person">
+                <NavDropdown.Item
+                  as={Link}
+                  to="/person"
+                  className="nav-item-drop"
+                >
                   Danh sách dân số
                 </NavDropdown.Item>
 

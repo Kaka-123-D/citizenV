@@ -1,13 +1,29 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
+import {setMessageError} from "../../store/reducers/Message"
 
 export default function DeclareForm({ declareRegion, executor, message }) {
   const [id, setId] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-  const [type, setType] = useState("tỉnh");
+  const [type, setType] = useState(setTypeDefault);
   const [filledId, setFilledId] = useState(true);
   const [filledName, setFilledName] = useState(true);
+
+  function setTypeDefault() {
+    switch (executor) {
+      case "a1":
+        return "tỉnh"
+      case "a2":
+        return "huyện"
+      case "a3":
+        return "xã"
+      case "b1":
+        return "thôn"
+      default:
+        return "--"
+    }
+  }
 
   function handleSubmit(event) {
     event.preventDefault();
@@ -15,9 +31,10 @@ export default function DeclareForm({ declareRegion, executor, message }) {
     if (!name) setFilledName(false);
     if (id && name) {
       declareRegion(executor, id, type, name, description);
+      setMessageError(null);
       setId("");
       setName("");
-      setDescription("");
+      setDescription(""); 
     }
   }
 
@@ -33,7 +50,7 @@ export default function DeclareForm({ declareRegion, executor, message }) {
     else setFilledName(false);
   }
 
-  function renderSwitch(executor) {
+  function renderSwitch() {
     switch (executor) {
       case "a1":
         return ["Tỉnh", "Thành phố"];
@@ -73,7 +90,7 @@ export default function DeclareForm({ declareRegion, executor, message }) {
           </label>
           <div className="name-region-group">
             <select id="type-region">
-              {renderSwitch(executor).map((item) => {
+              {renderSwitch().map((item) => {
                 return (
                   <option
                     key={item}

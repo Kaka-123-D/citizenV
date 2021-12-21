@@ -10,7 +10,7 @@ import HomeUser from "../features/Home";
 import Declare from "../features/Declare"
 import SetTimeDeclare from "../features/SetTimeDeclare";
 import Person from "../features/Person"
-import Chart from "../features/Chart"
+import InputPerson from "../features/InputPerson";
 
 export default function routes({ status, executor, resetAuthState, setMessageError}) {
   console.log("status: ", status);
@@ -44,7 +44,7 @@ export default function routes({ status, executor, resetAuthState, setMessageErr
         <Route path="/declare" element={<Declare />} />
         <Route path="/setTimeDeclare" element={<SetTimeDeclare />} />
         <Route path="/person" element={<Person />} />
-        <Route path="/chart" element={<Chart />} />
+        <Route path="/input" element={<InputPerson />} />
 
         <Route path="*" element={<Navigate replace to="/" />} />
       </Routes>
