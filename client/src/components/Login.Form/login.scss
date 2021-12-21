@@ -1,10 +1,10 @@
 .form-group {
   width: 400px;
   margin: 20vh auto;
-    h1 {
-      margin-bottom: 20px;
-      text-align: center;
-    }
+  h1 {
+    margin-bottom: 20px;
+    text-align: center;
+  }
   .alert {
     color: red;
     display: block;
@@ -20,11 +20,11 @@
     max-width: 400px;
     min-height: 50px;
     margin-top: 10px;
-    border: 2px solid #00ff4c71;
+    border: 2px solid #0c6928bd;
     border-radius: 25px;
 
     &:focus-within {
-      border: 3px solid #0c6928bd;
+      border: 3px solid #5a80e971;
     }
 
     .icon {
@@ -109,12 +109,12 @@
     touch-action: manipulation;
 
     &:after {
-      background-color: #111;
+      background-color: rgb(85, 83, 83);
       border-radius: 8px;
       content: "";
       display: block;
       height: 48px;
-      left: 0;
+      left: 0px;
       width: 100%;
       position: absolute;
       top: -2px;
@@ -123,14 +123,22 @@
       z-index: -1;
     }
     &:hover:after {
-      transform: translate(0, 0);
+      // transform: translate(0, 0);
+      background-color: #111;
     }
     &:active {
-      background-color: #ffdeda;
       outline: 0;
+    }
+    &:active::after {
+      transform: translate(0, 0);
     }
     &:hover {
       outline: 0;
+    }
+    input {
+      outline: none;
+      border: none;
+      background-color: #fac7c0;
     }
   }
 }
