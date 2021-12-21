@@ -83,7 +83,9 @@ export default function Login({ login, message }) {
           Quên mật khẩu?
         </Link>
       </div>
-      <input type="submit" className="submitBtn" value="Đăng nhập"/>
+      <button className="submitBtn">
+        <input type="submit" value="Đăng nhập" />
+      </button>
     </form>
   );
 }

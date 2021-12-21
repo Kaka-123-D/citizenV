@@ -18,15 +18,16 @@
     }
 
     .nav-item {
-        margin-top: 10px;
-        padding: 10px;
+      margin-top: 10px;
+      padding: 10px;
+
       &:hover {
         border-bottom: 2px solid #181d18;
       }
     }
 
     .nav-item.dropdown {
-        margin-top: 0;
+      margin-top: 0;
     }
   }
 }
