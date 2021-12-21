@@ -1,6 +1,10 @@
 const schedule = require("node-schedule");
 const _ = require("lodash");
+const bcrypt = require("bcrypt");
+const dotenv = require("dotenv");
 const { Op } = require("sequelize");
+
+dotenv.config();
 
 const User = require("../model/User");
 const Permission = require("../model/Permission");
@@ -8,13 +12,18 @@ const Person = require("../model/Person");
 const District = require("../model/District");
 const Ward = require("../model/Ward");
 
+
+const { SALT_ROUND } = process.env;
+
+const { validationDistrictId } = require("../validation/DistrictValidation");
+const { validationWardId } = require("../validation/WardValidation");
+const { validationVillageId } = require("../validation/VillageValidation");
+const { UpdateRoleAll } = require("../logic/UpdateRoleAll");
+const { validationFullName } = require("../validation/UserValidation");
 const {
   validationProvinceId,
   validationTime,
 } = require("../validation/ProvinceValidation");
-const {
-  validationFullName
-} = require("../validation/UserValidation");
 const {
   validationStt,
   validationPersonId,
@@ -23,20 +32,11 @@ const {
   validationAddress,
   validationReligion,
   validationEducationLevel,
-  validationJob
+  validationJob,
 } = require("../validation/PersonValidation");
-const {
-  validationDistrictId,
-} = require("../validation/DistrictValidation");
-const { 
-  validationWardId,
-} = require("../validation/WardValidation");
-const {
-  validationVillageId,
-} = require("../validation/VillageValidation");
-const { UpdateRoleAll } = require("../logic/UpdateRoleAll");
 
 class UserController {
+  
   //Cấp quyền khai báo
   async grantDeclare(req, res) {
     const { ids = [], timeStart, timeEnd } = req.body;
@@ -259,7 +259,6 @@ class UserController {
       return res.json({ status: 0, error: "CANCEL_DECLARE_COMPLETE_ERROR!" });
     }
   }
-
 
   async getPersonByPersonId(req, res) {
     const { personId } = req.body;
@@ -487,6 +486,65 @@ class UserController {
       return res.json({ status: 1, persons: personsResult });
     } catch (e) {
       return res.json({ status: 0, error: "GET_PERSON_BY_WARD_ERROR!" });
+    }
+  }
+
+  //Lấy lại mk cho cấp dưới
+  async getNewPassword(req, res) {
+    const { id } = req.body;
+    if (req.session.group == "a1") {
+      if (!(await validationProvinceId(id, "getNewPassword"))) {
+        return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
+      }
+    }
+    if (req.session.group == "a2") {
+      if (
+        !(await validationDistrictId(
+          id,
+          "getNewPassword",
+          req.session.username,
+          req.session.group
+        ))
+      ) {
+        return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
+      }
+    }
+    if (req.session.group == "a3") {
+      if (
+        !(await validationWardId(
+          id,
+          "getNewPassword",
+          req.session.username,
+          req.session.group
+        ))
+      ) {
+        return res.json({ status: 0, error: "WARD_ID_ERROR!" });
+      }
+    }
+    if (req.session.group == "b1") {
+      if (
+        !(await validationVillageId(
+          id,
+          "getNewPassword",
+          req.session.username,
+          req.session.group
+        ))
+      ) {
+        return res.json({ status: 0, error: "VILLAGE_ID_ERROR!" });
+      }
+    }
+    try {
+      const hash = bcrypt.hashSync(id, parseInt(SALT_ROUND));
+      await User.update(
+        { password: hash },
+        {
+          where: { username: id },
+        }
+      );
+      return res.json({ status: 1 });
+    } catch (e) {
+      console.log(e);
+      return res.json({ status: 0, error: "GET_NEW_PASSWORD_ERROR!" });
     }
   }
 }

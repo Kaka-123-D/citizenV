@@ -1,6 +1,6 @@
 const { Sequelize } = require('sequelize');
 
-class SequelizeConnect {
+class SequelizeDB {
   constructor(databaseName, username, password) {
     this.sequelize = new Sequelize(databaseName, username, password, {
       host: 'localhost',
@@ -9,7 +9,7 @@ class SequelizeConnect {
     });
   }
 
-  async testConnect() {
+  async connect() {
     try {
       await this.sequelize.authenticate();
       console.log('--------->Test connect to citizens success!');
@@ -20,9 +20,9 @@ class SequelizeConnect {
     }
   }
 
-  async disConnectDb() {
+  async disconnect() {
     await this.sequelize.close();
   }
 }
 
-module.exports = new SequelizeConnect('citizens', 'root', null);
+module.exports = new SequelizeDB("citizens", "root", null);

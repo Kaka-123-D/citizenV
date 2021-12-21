@@ -31,6 +31,10 @@ class VillageValidation {
         if (!village) return false;
         if (!user) return false;
       }
+      if (tag == "getNewPassword") {
+        if (!village) return false;
+        if (!user) return false;
+      }
       if (tag == "grantDeclare") {
         if (!village) return false;
         if (!user) return false;

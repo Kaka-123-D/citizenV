@@ -27,7 +27,11 @@ class WardValidation {
         if (!ward) return false;
         if (user) return false;
       }
-      if (tag == "grantDeclare") {
+      if (tag == "getPerson") {
+        if (!ward) return false;
+        if (!user) return false;
+      }
+      if (tag == "getNewPassword") {
         if (!ward) return false;
         if (!user) return false;
       }

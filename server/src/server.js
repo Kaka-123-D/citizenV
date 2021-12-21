@@ -4,7 +4,7 @@ const session = require("express-session");
 const SequelizeStore = require("connect-session-sequelize")(session.Store);
 const cors = require("cors");
 
-const db = require("./config/sequelizeConfig");
+const db = require("./config/db");
 const route = require("./route/route");
 dotenv.config();
 
@@ -23,7 +23,7 @@ const corsOptions = {
   exposedHeaders: ["set-cookie"],
 };
 
-db.testConnect()
+db.connect()
   .then(() => {
     //Session store
     const sequelize = db.sequelize;

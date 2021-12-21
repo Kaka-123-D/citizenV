@@ -31,6 +31,10 @@ class DistrictValidation {
         if (!district) return false;
         if (!user) return false;
       }
+      if (tag == "getNewPassword") {
+        if (!district) return false;
+        if (!user) return false;
+      }
       if (tag == "grantDeclare") {
         if (!district) return false;
         if (!user) return false;

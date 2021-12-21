@@ -6,6 +6,7 @@ const userController = require('../app/controller/UserController');
 
 router.get("/", b1Controller.index);
 router.post("/register", b1Controller.register);
+router.post("/getNewPassword", userController.getNewPassword);
 router.post("/declare", b1Controller.declare);
 
 router.get("/regions", b1Controller.getRegions);

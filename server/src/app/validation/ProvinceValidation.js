@@ -28,6 +28,10 @@ class ProvinceValidation {
         if (!province) return false;
         if (!user) return false;
       }
+      if (tag == "getNewPassword") {
+        if (!province) return false;
+        if (!user) return false;
+      }
       if (tag == "grantDeclare") {
         if (!province) return false;
         if (!user) return false;

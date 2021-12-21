@@ -6,6 +6,7 @@ const userMiddleware = require('../app/middleware/UserMiddleware');
 
 router.get('/', a2Controller.index);
 router.post("/register", a2Controller.register);
+router.post("/getNewPassword", userController.getNewPassword);
 router.post("/declare", a2Controller.declare);
 
 router.get("/regions", a2Controller.getRegions);

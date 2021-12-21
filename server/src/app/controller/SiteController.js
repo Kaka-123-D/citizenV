@@ -2,21 +2,23 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 
+dotenv.config();
+
+const User = require("../model/User");
 const Province = require('../model/Province');
 const District = require('../model/District')
 const Ward = require('../model/Ward');
 const Village = require('../model/Village');
 
-dotenv.config();
-const User = require("../model/User");
-
 const { SESS_NAME, SALT_ROUND } = process.env;
+
 const {
   validationUsername,
   validationPassword,
 } = require("../validation/UserValidation");
 
 class SiteController {
+  
   home(req, res) {
     res.sendFile(path.join(process.cwd(), "src/dist", "index.html"));
   }
@@ -63,7 +65,7 @@ class SiteController {
   }
 
   async changePassword(req, res) {
-    const {curPassword, newPassword} = req.body;
+    const { curPassword, newPassword } = req.body;
     try {
       const user = await User.findOne({
         where: { username: req.session.username },
@@ -75,9 +77,12 @@ class SiteController {
         return res.json({ status: 0, error: "NEW_PASSWORD_ERROR!" });
       }
       const hash = bcrypt.hashSync(newPassword, parseInt(SALT_ROUND));
-      await User.update({password: hash}, {
-        where: { username: req.session.username}
-      });
+      await User.update(
+        { password: hash },
+        {
+          where: { username: req.session.username },
+        }
+      );
       return res.json({ status: 1 });
     } catch (e) {
       return res.json({ status: 0, error: "CHANGE_PASSWORD_ERROR!" });
@@ -102,7 +107,7 @@ class SiteController {
     await District.sync();
     await Ward.sync();
     await Village.sync();
-    res.json({ status: 1});
+    res.json({ status: 1 });
   }
 }
 
