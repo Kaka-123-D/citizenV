@@ -22,9 +22,10 @@ export default function Login({ login, message }) {
   }
 
   function handleChangeUsername(value) {
+    console.log("change username", value);
     if (value && value !== " ") {
       setFilledUsername(true);
-      if (username.length <= 2) setUsername(" " + value.trim());
+      if (username.length <= 2 && username !== "") setUsername(" " + value.trim());
       else setUsername(value.trim());
     } else {
       setFilledUsername(false);
