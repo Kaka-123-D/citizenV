@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
-import {setMessageError} from "../../store/reducers/Message"
+import { setMessageError } from "../../store/reducers/Message";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function DeclareForm({ declareRegion, executor, message }) {
   const [id, setId] = useState("");
@@ -13,20 +15,26 @@ export default function DeclareForm({ declareRegion, executor, message }) {
   function setTypeDefault() {
     switch (executor) {
       case "a1":
-        return "tỉnh"
+        return "tỉnh";
       case "a2":
-        return "huyện"
+        return "huyện";
       case "a3":
-        return "xã"
+        return "xã";
       case "b1":
-        return "thôn"
+        return "thôn";
       default:
-        return "--"
+        return "--";
     }
   }
 
   function handleSubmit(event) {
     event.preventDefault();
+    if (!id.match(/^[0-9]+$/g)) {
+       toast.error("Mã khu vực chỉ gồm chữ số!", {
+         position: toast.POSITION.TOP_LEFT,
+       });
+      return;
+    }
     if (!id) setFilledId(false);
     if (!name) setFilledName(false);
     if (id && name) {
@@ -34,7 +42,7 @@ export default function DeclareForm({ declareRegion, executor, message }) {
       setMessageError(null);
       setId("");
       setName("");
-      setDescription(""); 
+      setDescription("");
     }
   }
 

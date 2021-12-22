@@ -1,12 +1,11 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import "react-toastify/dist/ReactToastify.css";
 import "./style.scss";
 
-export default function Login({ login, message }) {
+export default function Login({ login, message, listLogged, setAlertError }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  // const [keepLogin, setKeepLogin] = useState(false);
   const [filledUsername, setFilledUsername] = useState(true);
   const [filledPassword, setFilledPassword] = useState(true);
   const [remember, setRemember] = useState(true);
@@ -22,10 +21,14 @@ export default function Login({ login, message }) {
   }
 
   function handleChangeUsername(value) {
-    console.log("change username", value);
+    if (message) setAlertError(null);
     if (value && value !== " ") {
       setFilledUsername(true);
-      if (username.length <= 2 && username !== "") setUsername(" " + value.trim());
+      if (
+        value.trim().length <= 2 &&
+        (!listLogged || !listLogged.includes(value.trim()))
+      )
+        setUsername(" " + value.trim());
       else setUsername(value.trim());
     } else {
       setFilledUsername(false);
@@ -33,6 +36,7 @@ export default function Login({ login, message }) {
     }
   }
   function handleChangePassword(value) {
+    if (message) setAlertError(null);
     setPassword(value);
     if (value) setFilledPassword(true);
     else setFilledPassword(false);

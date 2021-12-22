@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const initialState = {};
 
@@ -28,20 +30,28 @@ export const createAccountForA1 =
     });
     if (res.data.status === 1) {
       dispatch(createAccountSuccess());
+      toast.success("Cấp tài khoản thành công");
     } else {
       dispatch(createAccountError());
+      toast.error("Lỗi gì đó rồi");
     }
   };
 
 export const createAccountForA2toB2 = (executor, ids) => async (dispatch) => {
   const URL = "http://localhost:8080/" + executor + "/register";
-  const res = await axios.post(URL, {ids}, {
-    withCredentials: true,
-  });
+  const res = await axios.post(
+    URL,
+    { ids },
+    {
+      withCredentials: true,
+    }
+  );
   if (res.data.status === 1) {
     dispatch(createAccountSuccess());
+    toast.success("Cấp tài khoản thành công");
   } else {
     dispatch(createAccountError());
+    toast.error("Lỗi gì đó rồi");
   }
 };
 

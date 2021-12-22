@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const initialState = {
   status: 0,
@@ -44,8 +46,10 @@ export const declareTimeStart =
     );
 
     if (res.data.status === 1) {
+      toast.success("Mở thời gian khai báo thành công");
       dispatch(declareSuccess());
     } else {
+      toast.error("Lỗi gì đó rồi");
       dispatch(declareError(res.data));
     }
   };
@@ -61,8 +65,12 @@ export const cancelDeclareTime = (executor, ids) => async (dispatch) => {
   );
 
   if (res.data.status === 1) {
+      toast.success("Hủy cuộc điều tra thành công");
+
     dispatch(cancelSuccess());
   } else {
+          toast.error("Lỗi gì đó rồi");
+
     dispatch(cancelError(res.data));
   }
 };
@@ -72,9 +80,9 @@ export const confirmDeclareComplete = (executor) => async (dispatch) => {
   const res = await axios.put(URL, {}, { withCredentials: true });
 
   if (res.data.status === 1) {
-    console.log("confirm success");
+      toast.success("Đã hoàn thành khai báo");
   } else {
-    console.log("confirm error");
+      toast.error("Lỗi gì đó rồi");
   }
 };
 
@@ -89,9 +97,9 @@ export const cancelDeclareComplete = (executor) => async (dispatch) => {
   );
 
   if (res.data.status === 1) {
-    console.log("cancel success");
+      toast.success("Hủy thành công");
   } else {
-    console.log("cancel error");
+      toast.error("Lỗi gì đó rồi");
   }
 };
 

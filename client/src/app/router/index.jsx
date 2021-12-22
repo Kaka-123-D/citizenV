@@ -11,43 +11,44 @@ import Declare from "../features/Declare"
 import SetTimeDeclare from "../features/SetTimeDeclare";
 import Person from "../features/Person"
 import InputPerson from "../features/InputPerson";
+import { ToastContainer} from "react-toastify";
 
 export default function routes({ status, executor, resetAuthState, setMessageError, isFirstLogin}) {
-  console.log("status: ", status);
-  console.log("group: ", executor);
   if (!document.cookie.includes("sid")) {
     resetAuthState();
   }
   setMessageError(null);
   return (
-    <Router>
-      <Routes>
-        
-        <Route
-          path="/"
-          element={
-            status === 1 ? (
-              executor === "admin" ? (
-                <Admin />
+    <>
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              status === 1 ? (
+                executor === "admin" ? (
+                  <Admin />
+                ) : (
+                  <HomeUser executor={executor} isFirstLogin={isFirstLogin} />
+                )
               ) : (
-                <HomeUser executor={executor} isFirstLogin={isFirstLogin}/>
+                <Navigate replace to="/login" />
               )
-            ) : (
-              <Navigate replace to="/login" />
-            )
-          }
-        />
-        <Route
-          path="/login"
-          element={status === 1 ? <Navigate replace to="/" /> : <Login />}
-        />
-        <Route path="/declare" element={<Declare />} />
-        <Route path="/setTimeDeclare" element={<SetTimeDeclare />} />
-        <Route path="/person" element={<Person />} />
-        <Route path="/input" element={<InputPerson />} />
+            }
+          />
+          <Route
+            path="/login"
+            element={status === 1 ? <Navigate replace to="/" /> : <Login />}
+          />
+          <Route path="/declare" element={<Declare />} />
+          <Route path="/setTimeDeclare" element={<SetTimeDeclare />} />
+          <Route path="/person" element={<Person />} />
+          <Route path="/input" element={<InputPerson />} />
 
-        <Route path="*" element={<Navigate replace to="/" />} />
-      </Routes>
-    </Router>
+          <Route path="*" element={<Navigate replace to="/" />} />
+        </Routes>
+      </Router>
+      <ToastContainer autoClose={3000} pauseOnFocusLoss={false} limit={3} />
+    </>
   );
 }

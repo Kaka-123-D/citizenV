@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const initialState = {
   personList: [],
@@ -36,8 +38,10 @@ const person = createSlice({
       console.log("update person error");
     },
     deletePersonInState(state, action) {
-      state.personList = state.personList.filter((person) => person.stt !== action.payload);
-    }
+      state.personList = state.personList.filter(
+        (person) => person.stt !== action.payload
+      );
+    },
   },
 });
 
@@ -142,11 +146,11 @@ export const addPerson =
         educationLevel,
         job,
       };
-      console.log("temp:", temp);
-      console.log("list:", initialState.personList);
       dispatch(addSuccess(temp));
+      toast.success("Thêm thành công");
     } else {
       dispatch(addError());
+      toast.error("Lỗi gì đó rồi");
     }
   };
 
@@ -187,44 +191,33 @@ export const updatePerson =
 
     if (res.data.status === 1) {
       dispatch(updateSuccess(res.data));
+      toast.success("Cập nhật thành công");
     } else {
       dispatch(updateError(res.data));
+      toast.error("Lỗi gì đó rồi");
     }
   };
 
 export const deletePerson = (executor, stt) => async (dispatch) => {
   console.log("helo");
   const URL = "http://localhost:8080/" + executor + "/person";
-  fetch(
-    URL,
-    {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ stt }),
-      credentials: "include",
-    }
-  )
+  fetch(URL, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ stt }),
+    credentials: "include",
+  })
     .then((res) => res.json())
     .then((data) => {
       if (data.status === 1) {
         dispatch(deletePersonInState(stt));
+        toast.success("Xóa thành công");
+      } else {
+        toast.error("Lỗi gì đó rồi");
       }
     });
-  // const res = await axios.delete(
-  //   URL,
-  //   {
-      
-  //   },
-  //   { withCredentials: true }
-  // );
-
-  // if (res.data.status === 1) {
-  //   dispatch(deleteSuccess(res.data));
-  // } else {
-  //   dispatch(deleteError(res.data));
-  // }
 };
 
 export default person.reducer;

@@ -1,18 +1,18 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { setMessageError } from "../Message";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import storage from "redux-persist/lib/storage";
 
-// khởi tạo state gồm 2 token
-// accessToken dùng để duy trì đăng nhập
-// refreshToken dùng để
 const initialState = {
   group: null,
   status: 0,
   isFirstLogin: null,
+  listLogged: [],
 };
 
-// tạo slice auth chứa actions và reducer cho admin
+// tạo slice auth chứa actions và reducer
 const auth = createSlice({
   name: "auth",
   initialState,
@@ -22,20 +22,19 @@ const auth = createSlice({
       state.status = 1;
       state.group = action.payload.group;
       state.isFirstLogin = action.payload.isFirstLogin;
-      console.log("Login success with ", state.group);
+      if (!state.listLogged.includes(action.payload.username))
+        state.listLogged.push(action.payload.username);
     },
     logoutSuccess(state, action) {
-      storage.removeItem("persist:root");
-      (state.status = 0),
-        (state.group = null),
-        console.log("Logout Success ..");
+      state.status = 0;
+      state.group = null;
     },
     logoutFailure(state, action) {
       alert("Logout failed");
     },
     changePasswordSuccess(state, action) {
       state.isFirstLogin = false;
-    }
+    },
   },
 });
 
@@ -47,8 +46,7 @@ const { loginSuccess, logoutSuccess, logoutFailure, changePasswordSuccess } =
 // nếu status của res trả về là 1 thì gọi hàm loginSuccess.
 // ngược lại gọi hàm loginFailure
 export const login =
-  (username, password, keepLogin, navigate) =>
-  async (dispatch) => {
+  (username, password, keepLogin, navigate) => async (dispatch) => {
     const res = await axios.post(
       "http://localhost:8080/login",
       {
@@ -59,12 +57,19 @@ export const login =
     );
 
     if (res.data.status === 1) {
-      console.log("res data: ", res.data);
-      dispatch(loginSuccess(res.data));
-      dispatch(setMessageError(null));
+      dispatch(
+        loginSuccess({
+          group: res.data.group,
+          isFirstLogin: res.data.isFirstLogin,
+          username,
+        })
+      );
       navigate("/" + res.data.group);
+      toast.success("Hello " + res.data.group + ". Chúc 1 ngày vui vẻ");
     } else {
-      dispatch(setMessageError("Username or password is incorrect"));
+      if (res.data.error.includes("PASSWORD"))
+        dispatch(setMessageError("Username or password is incorrect"));
+      else toast.error("Lỗi gì đó rồi");
     }
   };
 
@@ -79,8 +84,10 @@ export const logout = (navigate) => async (dispatch) => {
   if (res.data.status === 1) {
     dispatch(logoutSuccess(res.data));
     navigate("/login");
+    toast.success("Đăng xuất thành công");
   } else {
     dispatch(logoutFailure(res.data));
+    toast.error("Lỗi gì đó rồi");
   }
 };
 
@@ -94,19 +101,18 @@ export const changePassword =
       }
     );
     if (res.data.status === 1) {
-      console.log("change password success");
-      dispatch(setMessageError("Đổi mật khẩu thành công"));
+      toast.success("Đổi mật khẩu thành công");
       dispatch(changePasswordSuccess());
       navigate("/");
     } else {
-      if (res.data.error.includes("CURRENT")) 
+      if (res.data.error.includes("CURRENT"))
         dispatch(setMessageError("Sai mật khẩu hiện tại!"));
-      else  dispatch(
-        setMessageError(
-          "Mật khẩu phải gồm ít nhất 1 ký tự đặc biệt, 1 ký tự in hoa, 1 ký tự in thường và 1 ký tự số "
-        )
-      );
-      
+      else
+        dispatch(
+          setMessageError(
+            "Mật khẩu phải gồm ít nhất 1 ký tự đặc biệt, 1 ký tự in hoa, 1 ký tự in thường và 1 ký tự số "
+          )
+        );
     }
   };
 

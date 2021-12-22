@@ -1,6 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import {setMessageError} from "../Message";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // khởi tạo state gồm 2 token
 // accessToken dùng để duy trì đăng nhập
@@ -52,11 +54,16 @@ export const declareRegion = (executor, id, type, name, textDes) => async (dispa
   if (res.data.status === 1) {
     const newRegion = { id: id, name: name, textDes: textDes };
     dispatch(declareSuccess(newRegion));
+    toast.success("Khai báo thành công");
   } else {
     if (res.data.error.includes("ID")) 
-      dispatch(setMessageError("Lỗi mã khu vực. Hãy nhập lại"));
+       toast.error("Mã khu vực đã tồn tại !", {
+         position: toast.POSITION.TOP_LEFT,
+       });
     else if (res.data.error.includes("NAME")) 
-      dispatch(setMessageError("Lỗi tên khu vực. Hãy nhập lại"));
+       toast.error("Lỗi tên khu vực, mời nhập lại!", {
+         position: toast.POSITION.TOP_LEFT,
+       });
   }
 };
 
