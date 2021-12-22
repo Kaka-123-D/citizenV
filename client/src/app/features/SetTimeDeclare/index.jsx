@@ -1,6 +1,6 @@
 import React from "react";
-import Navbar from "../../../containers/Navbar";
-import SetTimeDeclare from "../../../containers/Time";
+import Navbar from "../../../components/NavBar/connectStore"; 
+import SetTimeDeclare from "../../../components/Time/connectStore";
 
 export default function Provide() {
   return (

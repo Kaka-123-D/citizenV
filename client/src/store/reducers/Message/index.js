@@ -16,4 +16,8 @@ const message = createSlice({
 
 export const {setMessageError} = message.actions;
 
+export const setAlertError = (text) => (dispatch) => {
+  dispatch(setMessageError(text));
+}
+
 export default message.reducer;

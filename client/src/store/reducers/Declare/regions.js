@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import {setMessageError} from "../Message"
+import {setMessageError} from "../Message";
 
 // khởi tạo state gồm 2 token
 // accessToken dùng để duy trì đăng nhập

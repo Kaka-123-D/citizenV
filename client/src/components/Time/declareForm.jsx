@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./declareForm.scss"
+import "./style.scss"
 import RegionsTable from "../Regions.Table"
 export default function Declare({
   executor,

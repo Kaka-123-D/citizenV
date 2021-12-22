@@ -21,3 +21,7 @@ export const isEmpty = (str) => {
       return true;
 }
 
+export const deleteSpaceFirst = (str) => {
+      return str.trim();
+}
+

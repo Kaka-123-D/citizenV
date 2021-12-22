@@ -1,6 +1,6 @@
 import React from 'react'
-import LogoutButton from "../../../containers/Logout";
-import ProvideAcc from "../../../containers/ProvideAcc"
+import LogoutButton from "../../../components/Logout.Button/connectStore";
+import ProvideAcc from "../../../components/Provide.Account/connectStore"
 
 export default function home() {
     return (

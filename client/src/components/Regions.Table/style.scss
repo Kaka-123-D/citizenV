@@ -2,12 +2,16 @@
   border: 1px solid black;
   border-collapse: collapse;
   font-size: 16px;
+  background-color: #893745;
+  border-radius: 15px;
 
   .field {
     text-align: center;
   }
 
   td, th {
+      background-color: #d69da7;
+    
     border: 1px solid black;
     padding: 10px;
   }

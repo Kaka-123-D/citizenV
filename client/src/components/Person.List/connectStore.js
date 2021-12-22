@@ -1,12 +1,12 @@
 import { connect } from "react-redux";
-import PersonList from "../components/Person.List/";
+import List from ".";
 import {
   addPerson,
   updatePerson,
   deletePerson,
   getPersonList,
   getListAllPersonInRegion,
-} from "../store/reducers/Person/";
+} from "../../store/reducers/Person";
 
 const mapStateToProps = (state) => ({
   executor: state.auth.group,
@@ -21,4 +21,4 @@ const mapActionToProps = {
   getListAllPersonInRegion,
 };
 
-export default connect(mapStateToProps, mapActionToProps)(PersonList);
+export default connect(mapStateToProps, mapActionToProps)(List);

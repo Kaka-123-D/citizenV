@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import Navbar from "../../../containers/Navbar"; 
+import Navbar from "../../../components/NavBar/connectStore"; 
 
 export default function InputPerson({ addPerson, executor }) {
   const [id, setId] = useState("");

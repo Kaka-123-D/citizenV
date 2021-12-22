@@ -1,10 +1,11 @@
 import { connect } from "react-redux";
-import Router from "../app/router"
-import { resetAuthState } from "../store/reducers/Auth";
-import {setMessageError} from "../store/reducers/Message"
+import Router from "."
+import { resetAuthState } from "../../store/reducers/Auth";
+import {setMessageError} from "../../store/reducers/Message"
 
 const mapStateToProps = (state) => ({
   status: state.auth.status,
+  isFirstLogin: state.auth.isFirstLogin,
   executor: state.auth.group,
 });
 

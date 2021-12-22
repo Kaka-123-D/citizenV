@@ -1,10 +1,10 @@
 import { connect } from "react-redux";
-import ProvideAcc from "../components/Provide.Account";
+import Form from ".";
 import {
   createAccountForA1,
   createAccountForA2toB2,
-} from "../store/reducers/Provide/newAccount";
-import { setRegionListToState } from "../store/reducers/Declare/regions";
+} from "../../store/reducers/Provide/newAccount";
+import { setRegionListToState } from "../../store/reducers/Declare/regions";
 
 const mapStateToProps = (state) => ({
   executor: state.auth.group,
@@ -17,4 +17,4 @@ const mapActionToProps = {
   setRegionListToState,
 };
 
-export default connect(mapStateToProps, mapActionToProps)(ProvideAcc);
+export default connect(mapStateToProps, mapActionToProps)(Form);

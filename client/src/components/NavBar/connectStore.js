@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import Navbar from "../components/NavBar/";
+import Navbar from ".";
 // import { } from "../store/reducers/";
 const mapStateToProps = (state) => ({
   executor: state.auth.group,

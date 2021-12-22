@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
-import SearchBar from "../components/SearchBar/";
-import { setRegionListToState } from "../store/reducers/Declare/regions";
+import SearchBar from ".";
+import { setRegionListToState } from "../../store/reducers/Declare/regions";
 
 const mapStateToProps = (state) => ({
   regions: state.region.regions,

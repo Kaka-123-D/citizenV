@@ -1,7 +1,7 @@
 import React from 'react';
-import LoginForm from "../../../containers/LoginForm";
+import LoginForm from "../../../components/Login.Form/connectStore";
 import Home from "../Home"
-import "./login.scss"
+import "./style.scss"
 
 export default function Login() {
     return (

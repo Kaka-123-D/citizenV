@@ -1,8 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import {Link } from "react-router-dom"
-import "./login.scss";
-// import { isEmpty } from "validator";
+import { Link } from "react-router-dom";
+import "./style.scss";
 
 export default function Login({ login, message }) {
   const [username, setUsername] = useState("");
@@ -10,22 +9,27 @@ export default function Login({ login, message }) {
   // const [keepLogin, setKeepLogin] = useState(false);
   const [filledUsername, setFilledUsername] = useState(true);
   const [filledPassword, setFilledPassword] = useState(true);
-  const [remember, setRemember] = useState(false);
+  const [remember, setRemember] = useState(true);
   const navigate = useNavigate();
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (!username) setFilledUsername(false); 
+    if (!username) setFilledUsername(false);
     if (!password) setFilledPassword(false);
     if (username && password) {
-      login(username, password, remember, navigate);
-    } 
+      login(username.trim(), password, remember, navigate);
+    }
   }
 
   function handleChangeUsername(value) {
-    setUsername(value);
-    if (value) setFilledUsername(true);
-    else setFilledUsername(false);
+    if (value && value !== " ") {
+      setFilledUsername(true);
+      if (username.length <= 2) setUsername(" " + value.trim());
+      else setUsername(value.trim());
+    } else {
+      setFilledUsername(false);
+      setUsername("");
+    }
   }
   function handleChangePassword(value) {
     setPassword(value);
@@ -75,17 +79,21 @@ export default function Login({ login, message }) {
       )}
       <div className="service-auth">
         <div className="remember-me">
-          <input type="checkbox" onChange={() => setRemember(!remember)} />
+          <input
+            type="checkbox"
+            checked={remember}
+            onChange={() => setRemember(!remember)}
+          />
           <span className="text">Duy trì đăng nhập </span>
         </div>
 
-        <Link to="/resetPassword" className="forget-pass">
+        {/* <Link to="/resetPassword" className="forget-pass">
           Quên mật khẩu?
-        </Link>
+        </Link> */}
+        <button className="submitBtn" type="submit">
+          Đăng nhập
+        </button>
       </div>
-      <button className="submitBtn">
-        <input type="submit" value="Đăng nhập" />
-      </button>
     </form>
   );
 }

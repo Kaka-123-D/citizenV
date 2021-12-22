@@ -12,7 +12,7 @@ import SetTimeDeclare from "../features/SetTimeDeclare";
 import Person from "../features/Person"
 import InputPerson from "../features/InputPerson";
 
-export default function routes({ status, executor, resetAuthState, setMessageError}) {
+export default function routes({ status, executor, resetAuthState, setMessageError, isFirstLogin}) {
   console.log("status: ", status);
   console.log("group: ", executor);
   if (!document.cookie.includes("sid")) {
@@ -30,7 +30,7 @@ export default function routes({ status, executor, resetAuthState, setMessageErr
               executor === "admin" ? (
                 <Admin />
               ) : (
-                <HomeUser />
+                <HomeUser executor={executor} isFirstLogin={isFirstLogin}/>
               )
             ) : (
               <Navigate replace to="/login" />

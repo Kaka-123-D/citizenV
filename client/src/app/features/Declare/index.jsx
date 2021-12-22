@@ -1,7 +1,7 @@
 import React from 'react'
-import DeclareForm from "../../../containers/Declare";
-import Navbar from "../../../containers/Navbar"; 
-import ProvideAcc from "../../../containers/ProvideAcc";
+import DeclareForm from "../../../components/Declare.Form/connectStore";
+import Navbar from "../../../components/NavBar/connectStore";
+import ProvideAcc from "../../../components/Provide.Account/connectStore";
 import "./declare.scss"
 
 export default function Declare() {
