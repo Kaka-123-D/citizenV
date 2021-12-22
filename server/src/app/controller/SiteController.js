@@ -45,6 +45,7 @@ class SiteController {
       return res.json({ status: 0, error: "USERNAME_ERROR!" });
     }
     try {
+      var isFirstLogin = false;
       //
       const user = await User.findOne({
         where: { username: username },
@@ -53,12 +54,15 @@ class SiteController {
       if (!bcrypt.compareSync(password, user.password)) {
         return res.json({ status: 0, error: "PASSWORD_ERROR!" });
       }
+      if (!validationPassword(password)) {
+        isFirstLogin = true;
+      }
       //Create session to user
       req.session.username = username;
       req.session.group = user.group;
       req.session.userId = user.userId;
       //
-      return res.json({ status: 1, group: user.group });
+      return res.json({ status: 1, group: user.group, isFirstLogin });
     } catch (e) {
       return res.json({ status: 0, error: "LOGIN_ERROR!" });
     }
