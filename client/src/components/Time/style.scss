@@ -1,11 +1,63 @@
-// .table-regions {
-//   border: 1px solid black;
-//   border-collapse: collapse;
+.provide-time-form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 
-//   th,
-//   tr,
-//   td {
-//     border: 1px solid black;
-//     padding: 5px;
-//   }
-// }
+  .clock-countdown {
+    text-align: center;
+    font-size: 35px;
+    margin: 15px auto;
+
+    .alert {
+      color: red;
+      font-weight: bold;
+      font-size: 35px;
+    }
+
+    .clock {
+      font-weight: bold;
+      .type-p {
+        font-size: 25px;
+        font-weight: normal;
+      }
+    }
+  }
+
+  .table-regions {
+    border: 1px solid black;
+    border-collapse: collapse;
+    font-size: 16px;
+    background-color: #893745;
+    border-radius: 15px;
+
+    .field {
+      text-align: center;
+    }
+
+    td,
+    th {
+      background-color: #d69da7;
+
+      border: 1px solid black;
+      padding: 10px;
+    }
+
+    .id-column {
+      padding: 5px;
+      color: #3c4fe0;
+      min-width: 40px;
+      text-align: center;
+    }
+    .name-column {
+      min-width: 200px;
+    }
+    .des-column {
+      min-width: 250px;
+    }
+    .tickBox {
+      cursor: pointer;
+    }
+  }
+}

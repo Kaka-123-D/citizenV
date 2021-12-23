@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
 import { setMessageError } from "../../store/reducers/Message";
-import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+// import { toast } from "react-toastify";
+// import "react-toastify/dist/ReactToastify.css";
+import {isNumber} from "../../validation"
 
 export default function DeclareForm({ declareRegion, executor, message }) {
   const [id, setId] = useState("");
@@ -29,12 +30,7 @@ export default function DeclareForm({ declareRegion, executor, message }) {
 
   function handleSubmit(event) {
     event.preventDefault();
-    if (!id.match(/^[0-9]+$/g)) {
-       toast.error("Mã khu vực chỉ gồm chữ số!", {
-         position: toast.POSITION.TOP_LEFT,
-       });
-      return;
-    }
+    if (!isNumber(id)) return;
     if (!id) setFilledId(false);
     if (!name) setFilledName(false);
     if (id && name) {
@@ -74,7 +70,7 @@ export default function DeclareForm({ declareRegion, executor, message }) {
   }
 
   return (
-    <div>
+    <div className="form-wrap">
       <h2>Khai báo mã khu vực: </h2>
       <form onSubmit={handleSubmit} className="form-horizontal">
         <div className="inputs-group">

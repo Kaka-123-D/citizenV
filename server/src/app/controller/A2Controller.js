@@ -68,41 +68,41 @@ class A2Controller {
           },
         });
         var permission = null;
+        var ts = 0;
+        var ms = 0;
+        var progress = -1;
+        var wardUsers = null;
         if (user) {
           permission = await Permission.findOne({
-            attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+            attributes: ["permissionId", "isComplete", "isFinish", "timeStart", "timeEnd"],
             where: {
               userId: user.userId,
             },
           });
-        }
-
-        var progress = -1;
-        const wardUsers = await user.getUsers();
-        const ms = wardUsers.length;
-        var ts = 0;
-
-        if (ms > 0) {
-          for (const user of wardUsers) {
-            const permission = await Permission.findOne({
-              attributes: [
-                "permissionId",
-                "isComplete",
-                "timeStart",
-                "timeEnd",
-              ],
-              where: {
-                userId: user.userId,
-              },
-            });
-            if (permission) {
-              if (permission.isComplete) {
-                ts++;
+          wardUsers = await user.getUsers();
+          ms = wardUsers.length;
+          if (ms > 0) {
+            for (const user of wardUsers) {
+              const permission = await Permission.findOne({
+                attributes: [
+                  "permissionId",
+                  "isComplete",
+                  "timeStart",
+                  "timeEnd",
+                ],
+                where: {
+                  userId: user.userId,
+                },
+              });
+              if (permission) {
+                if (permission.isComplete) {
+                  ts++;
+                }
               }
             }
-          }
-          if (ts > 0) {
-            progress = ts / ms;
+            if (ts > 0) {
+              progress = ts / ms;
+            }
           }
         }
 

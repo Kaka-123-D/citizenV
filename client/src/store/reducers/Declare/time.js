@@ -2,10 +2,10 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { setPermissionByRegionIds } from "./regions";
 
 const initialState = {
   status: 0,
-  timeRemaining: 0,
 };
 
 const timeDeclare = createSlice({
@@ -33,7 +33,7 @@ const { declareSuccess, declareError, cancelSuccess, cancelError } =
   timeDeclare.actions;
 
 export const declareTimeStart =
-  (executor, ids, timeStart, timeEnd) => async (dispatch) => {
+  (executor, ids, timeStart, timeEnd, setArrayId) => async (dispatch) => {
     const URL = "http://localhost:8080/" + executor + "/grantDeclare";
     const res = await axios.post(
       URL,
@@ -48,8 +48,13 @@ export const declareTimeStart =
     if (res.data.status === 1) {
       toast.success("Mở thời gian khai báo thành công");
       dispatch(declareSuccess());
+      res.data.tag = "declare";
+      dispatch(setPermissionByRegionIds(res.data));
+      setArrayId([]);
     } else {
-      toast.error("Lỗi gì đó rồi");
+      if (res.data.error.includes("TIME")) {
+        toast.warning("Thời gian kết thúc vượt quá phạm vi quyền khai báo");
+      } else toast.error("Lỗi gì đó rồi");
       dispatch(declareError(res.data));
     }
   };
@@ -65,11 +70,11 @@ export const cancelDeclareTime = (executor, ids) => async (dispatch) => {
   );
 
   if (res.data.status === 1) {
-      toast.success("Hủy cuộc điều tra thành công");
-
+    toast.success("Hủy cuộc điều tra thành công");
     dispatch(cancelSuccess());
+    dispatch(setPermissionByRegionIds({ id: ids[0], tag: "cancel"}));
   } else {
-          toast.error("Lỗi gì đó rồi");
+    toast.error("Lỗi gì đó rồi");
 
     dispatch(cancelError(res.data));
   }
@@ -80,26 +85,20 @@ export const confirmDeclareComplete = (executor) => async (dispatch) => {
   const res = await axios.put(URL, {}, { withCredentials: true });
 
   if (res.data.status === 1) {
-      toast.success("Đã hoàn thành khai báo");
+    toast.success("Đã hoàn thành khai báo");
   } else {
-      toast.error("Lỗi gì đó rồi");
+    toast.error("Lỗi gì đó rồi");
   }
 };
 
 export const cancelDeclareComplete = (executor) => async (dispatch) => {
   const URL = "http://localhost:8080/" + executor + "/cancelDeclareComplete";
-  const res = await axios.put(
-    URL,
-    {
-    
-    },
-    { withCredentials: true }
-  );
+  const res = await axios.put(URL, {}, { withCredentials: true });
 
   if (res.data.status === 1) {
-      toast.success("Hủy thành công");
+    toast.success("Hủy thành công");
   } else {
-      toast.error("Lỗi gì đó rồi");
+    toast.error("Lỗi gì đó rồi");
   }
 };
 

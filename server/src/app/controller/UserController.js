@@ -128,6 +128,7 @@ class UserController {
     }
     //
     try {
+      var permissions = [];
       for (const i in ids) {
         const user = users[i];
         const id = ids[i];
@@ -138,6 +139,7 @@ class UserController {
           isComplete: false,
         });
         await user.addPermission(permission);
+        permissions.push({id, permission});
         //
         schedule.scheduleJob(`start_${id}`, timeStartD, async function () {
           console.log("GRANT_DECLARE_START!");
@@ -164,7 +166,7 @@ class UserController {
         });
       }
       //
-      res.json({ status: 1 });
+      res.json({ status: 1, permissions });
     } catch (e) {
       return res.json({ status: 0, error: "GRANT_DECLARE_ERROR!" });
     }

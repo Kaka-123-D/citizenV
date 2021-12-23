@@ -9,6 +9,7 @@ const Province = require('../model/Province');
 const District = require('../model/District')
 const Ward = require('../model/Ward');
 const Village = require('../model/Village');
+const Permission = require('../model/Permission')
 
 const { SESS_NAME, SALT_ROUND } = process.env;
 
@@ -50,20 +51,35 @@ class SiteController {
       user = data.user;
     }
     try {
-      var isFirstLogin = false;
       //
+      var isFirstLogin = false;
       if (!bcrypt.compareSync(password, user.password)) {
         return res.json({ status: 0, error: "PASSWORD_ERROR!" });
       }
-      if (!validationPassword(password)) {
-        isFirstLogin = true;
-      }
+      const permission = await Permission.findOne({
+        where: {
+          userId: user.userId,
+        },
+      });
       //Create session to user
       req.session.username = username;
       req.session.group = user.group;
       req.session.userId = user.userId;
+      await User.update({lastLogin: new Date()}, {
+        where: {
+          username: username
+        }
+      });
+      if (!user.lastLogin) {
+        isFirstLogin = true;
+      }
       //
-      return res.json({ status: 1, group: user.group, isFirstLogin });
+      return res.json({
+        status: 1,
+        group: user.group,
+        isFirstLogin,
+        permission,
+      });
     } catch (e) {
       return res.json({ status: 0, error: "LOGIN_ERROR!" });
     }
@@ -108,10 +124,8 @@ class SiteController {
   }
 
   async test(req, res) {
-    await Province.sync();
-    await District.sync();
-    await Ward.sync();
-    await Village.sync();
+    await User.sync();
+    await Permission.sync();
     res.json({ status: 1 });
   }
 }

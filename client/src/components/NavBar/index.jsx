@@ -41,7 +41,7 @@ export default function NavBar() {
               >
                 <NavDropdown.Item
                   as={Link}
-                  to="/chart"
+                  to="/analysis"
                   className="nav-item-drop"
                 >
                   Phân tích số liệu dân số

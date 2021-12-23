@@ -49,35 +49,41 @@ class A1Controller {
           },
         });
         var permission = null;
+        var districtUsers = null;
+        var progress = -1;
+        var ms = 0;
+        var ts = 0;
         if (user) {
           permission = await Permission.findOne({
-            attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+            attributes: ["permissionId", "isComplete", "isFinish", "timeStart", "timeEnd"],
             where: {
               userId: user.userId,
             },
           });
-        }
-        var progress = -1;
-        const districtUsers = await user.getUsers();
-        const ms = districtUsers.length;
-        var ts = 0;
-
-        if (ms > 0) {
-          for (const user of districtUsers) {
-            const permission = await Permission.findOne({
-              attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
-              where: {
-                userId: user.userId,
-              }
-            });
-            if (permission) {
-              if (permission.isComplete) {
-                ts++;
+          districtUsers = await user.getUsers();
+          ms = districtUsers.length;
+          if (ms > 0) {
+            for (const user of districtUsers) {
+              const permission = await Permission.findOne({
+                attributes: [
+                  "permissionId",
+                  "isComplete",
+                  "timeStart",
+                  "timeEnd",
+                ],
+                where: {
+                  userId: user.userId,
+                },
+              });
+              if (permission) {
+                if (permission.isComplete) {
+                  ts++;
+                }
               }
             }
-          }
-          if (ts > 0) {
-            progress = ts / ms;
+            if (ts > 0) {
+              progress = ts / ms;
+            }
           }
         }
 
@@ -92,6 +98,7 @@ class A1Controller {
       }
       res.json({ status: 1, regions: result });
     } catch (e) {
+      console.log(e);
       res.json({ status: 0, error: "GET_REGIONS_ERROR!" });
     }
   }

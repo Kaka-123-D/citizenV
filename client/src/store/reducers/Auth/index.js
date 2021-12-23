@@ -9,6 +9,8 @@ const initialState = {
   group: null,
   status: 0,
   isFirstLogin: null,
+  permission: null,
+  skipChangePass: null,
   listLogged: [],
 };
 
@@ -22,6 +24,7 @@ const auth = createSlice({
       state.status = 1;
       state.group = action.payload.group;
       state.isFirstLogin = action.payload.isFirstLogin;
+      state.permission = action.payload.permission;
       if (!state.listLogged.includes(action.payload.username))
         state.listLogged.push(action.payload.username);
     },
@@ -35,12 +38,20 @@ const auth = createSlice({
     changePasswordSuccess(state, action) {
       state.isFirstLogin = false;
     },
+    skipChangePass(state, action) {
+      state.skipChangePass = action.payload;
+    },
   },
 });
 
 // lấy hàm loginSuccess và loginFailure trong slice để sau khi fetch data thì sử dụng
-const { loginSuccess, logoutSuccess, logoutFailure, changePasswordSuccess } =
-  auth.actions;
+const {
+  loginSuccess,
+  logoutSuccess,
+  logoutFailure,
+  changePasswordSuccess,
+  skipChangePass,
+} = auth.actions;
 
 // gửi username với password lên server để xác thực
 // nếu status của res trả về là 1 thì gọi hàm loginSuccess.
@@ -62,12 +73,16 @@ export const login =
           group: res.data.group,
           isFirstLogin: res.data.isFirstLogin,
           username,
+          permission: res.data.permission,
         })
       );
       navigate("/" + res.data.group);
       toast.success("Hello " + res.data.group + ". Chúc 1 ngày vui vẻ");
     } else {
-      if (res.data.error.includes("PASSWORD"))
+      if (
+        res.data.error.includes("PASSWORD") ||
+        res.data.error.includes("USERNAME")
+      )
         dispatch(setMessageError("Username or password is incorrect"));
       else toast.error("Lỗi gì đó rồi");
     }

@@ -67,7 +67,7 @@ class B1Controller {
         var permission = null;
         if (user) {
           permission = await Permission.findOne({
-            attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+            attributes: ["permissionId", "isComplete", "isFinish", "timeStart", "timeEnd"],
             where: {
               userId: user.userId,
             },

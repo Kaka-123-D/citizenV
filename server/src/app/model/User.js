@@ -36,6 +36,9 @@ User.init({
     type: DataTypes.STRING,
     allowNull: false
   },
+  lastLogin: {
+    type: DataTypes.DATE
+  }
 }, {
   sequelize,
   modelName: 'User',

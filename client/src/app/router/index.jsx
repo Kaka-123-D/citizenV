@@ -12,6 +12,7 @@ import SetTimeDeclare from "../features/SetTimeDeclare";
 import Person from "../features/Person"
 import InputPerson from "../features/InputPerson";
 import { ToastContainer} from "react-toastify";
+import Analysis from "../features/AnalysisData";
 
 export default function routes({ status, executor, resetAuthState, setMessageError, isFirstLogin}) {
   if (!document.cookie.includes("sid")) {
@@ -44,6 +45,7 @@ export default function routes({ status, executor, resetAuthState, setMessageErr
           <Route path="/setTimeDeclare" element={<SetTimeDeclare />} />
           <Route path="/person" element={<Person />} />
           <Route path="/input" element={<InputPerson />} />
+          <Route path="/analysis" element={<Analysis />} />
 
           <Route path="*" element={<Navigate replace to="/" />} />
         </Routes>
