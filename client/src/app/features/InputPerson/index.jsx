@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "../../../components/NavBar/connectStore"; 
 
 export default function InputPerson({ addPerson, executor }) {
   const [id, setId] = useState("");
@@ -15,7 +14,6 @@ export default function InputPerson({ addPerson, executor }) {
 
   return (
     <div>
-      <Navbar />
       <br/>
       <input
         type="text"

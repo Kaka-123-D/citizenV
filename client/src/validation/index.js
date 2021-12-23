@@ -34,6 +34,16 @@ export const isNumber = (str) => {
       position: toast.POSITION.TOP_LEFT,
     });
     return false;
-  } 
+  }
+  return true;
+};
+
+export const validationPassword = (str) => {
+  if (
+    !str.match(
+      /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/g
+    )
+  )
+    return false;
   return true;
 };

@@ -10,7 +10,8 @@ const initialState = {
   status: 0,
   isFirstLogin: null,
   permission: null,
-  skipChangePass: null,
+  skip: false,
+  clickChangePass: false,
   listLogged: [],
 };
 
@@ -31,15 +32,21 @@ const auth = createSlice({
     logoutSuccess(state, action) {
       state.status = 0;
       state.group = null;
+      state.skip = false;
     },
     logoutFailure(state, action) {
       alert("Logout failed");
     },
     changePasswordSuccess(state, action) {
       state.isFirstLogin = false;
+      state.clickChangePass = false;
     },
-    skipChangePass(state, action) {
-      state.skipChangePass = action.payload;
+    setSkip(state, action) {
+      state.skip = true;
+      state.clickChangePass = false;
+    },
+    setClickChangePass(state, action) {
+      state.clickChangePass = true;
     },
   },
 });
@@ -50,8 +57,16 @@ const {
   logoutSuccess,
   logoutFailure,
   changePasswordSuccess,
-  skipChangePass,
+  setSkip,
+  setClickChangePass,
 } = auth.actions;
+
+export const skipChangePass = () => (dispatch) => {
+  dispatch(setSkip());
+};
+export const clickChangePass = () => (dispatch) => {
+  dispatch(setClickChangePass());
+};
 
 // gửi username với password lên server để xác thực
 // nếu status của res trả về là 1 thì gọi hàm loginSuccess.
@@ -84,7 +99,7 @@ export const login =
         res.data.error.includes("USERNAME")
       )
         dispatch(setMessageError("Username or password is incorrect"));
-      else toast.error("Lỗi gì đó rồi");
+      else toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
     }
   };
 
@@ -102,12 +117,12 @@ export const logout = (navigate) => async (dispatch) => {
     toast.success("Đăng xuất thành công");
   } else {
     dispatch(logoutFailure(res.data));
-    toast.error("Lỗi gì đó rồi");
+    toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
   }
 };
 
 export const changePassword =
-  (curPassword, newPassword, navigate) => async (dispatch) => {
+  (curPassword, newPassword, navigate, pathname) => async (dispatch) => {
     const res = await axios.put(
       "http://localhost:8080/changePassword",
       { curPassword, newPassword },
@@ -118,16 +133,11 @@ export const changePassword =
     if (res.data.status === 1) {
       toast.success("Đổi mật khẩu thành công");
       dispatch(changePasswordSuccess());
-      navigate("/");
+      navigate(pathname);
     } else {
       if (res.data.error.includes("CURRENT"))
         dispatch(setMessageError("Sai mật khẩu hiện tại!"));
-      else
-        dispatch(
-          setMessageError(
-            "Mật khẩu phải gồm ít nhất 1 ký tự đặc biệt, 1 ký tự in hoa, 1 ký tự in thường và 1 ký tự số "
-          )
-        );
+      else toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
     }
   };
 

@@ -150,7 +150,7 @@ export const addPerson =
       toast.success("Thêm thành công");
     } else {
       dispatch(addError());
-      toast.error("Lỗi gì đó rồi");
+      toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
     }
   };
 
@@ -194,7 +194,7 @@ export const updatePerson =
       toast.success("Cập nhật thành công");
     } else {
       dispatch(updateError(res.data));
-      toast.error("Lỗi gì đó rồi");
+      toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
     }
   };
 
@@ -215,7 +215,7 @@ export const deletePerson = (executor, stt) => async (dispatch) => {
         dispatch(deletePersonInState(stt));
         toast.success("Xóa thành công");
       } else {
-        toast.error("Lỗi gì đó rồi");
+        toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
       }
     });
 };

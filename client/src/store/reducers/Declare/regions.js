@@ -9,7 +9,6 @@ import "react-toastify/dist/ReactToastify.css";
 // refreshToken dùng để
 const initialState = {
   regions: [],
-  countPermission: 0,
 };
 
 // tạo slice auth chứa actions và reducer cho admin
@@ -28,13 +27,6 @@ const region = createSlice({
     },
     setRegionList(state, action) {
       state.regions = action.payload.regions;
-      let count = 0;
-      for (const r of action.payload.regions) {
-        if (r.permission && r.permission.isFinish === false) {
-          count++;
-        }
-      }
-      state.countPermission = count;
     },
     setPermissionByRegionIds(state, action) {
       if (action.payload.tag === "declare") {

@@ -33,7 +33,7 @@ export const createAccountForA1 =
       toast.success("Cấp tài khoản thành công");
     } else {
       dispatch(createAccountError());
-      toast.error("Lỗi gì đó rồi");
+      toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
     }
   };
 
@@ -51,7 +51,7 @@ export const createAccountForA2toB2 = (executor, ids) => async (dispatch) => {
     toast.success("Cấp tài khoản thành công");
   } else {
     dispatch(createAccountError());
-    toast.error("Lỗi gì đó rồi");
+    toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
   }
 };
 

@@ -10,7 +10,6 @@ const mapStateToProps = (state) => ({
   executor: state.auth.group,
   regions: state.region.regions,
   permission: state.auth.permission,
-  countPermission: state.region.countPermission,
 });
 
 const mapActionToProps = { declareTimeStart, setRegionListToState, cancelDeclareTime };

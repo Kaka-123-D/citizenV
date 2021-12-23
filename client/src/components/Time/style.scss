@@ -25,12 +25,26 @@
     }
   }
 
+  .search-bar {
+    border-radius: 10px;
+    height: 40px;
+    width: 300px;
+  }
+
   .table-regions {
+    margin-top: 20px;
     border: 1px solid black;
     border-collapse: collapse;
     font-size: 16px;
-    background-color: #893745;
-    border-radius: 15px;
+    background-color: #e095a1;
+    // border-radius: 15px;
+
+    .region-row {
+      &:hover {
+        background-color: #8cdf8c;
+        cursor: pointer;
+      }
+    }
 
     .field {
       text-align: center;
@@ -38,8 +52,6 @@
 
     td,
     th {
-      background-color: #d69da7;
-
       border: 1px solid black;
       padding: 10px;
     }

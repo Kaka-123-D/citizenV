@@ -54,7 +54,11 @@ export const declareTimeStart =
     } else {
       if (res.data.error.includes("TIME")) {
         toast.warning("Thời gian kết thúc vượt quá phạm vi quyền khai báo");
-      } else toast.error("Lỗi gì đó rồi");
+      } else if (res.data.error.includes("ID")) {
+        toast.warning("Không thể mở quyển khai báo cho khu vực chưa được cấp tài khoản!");
+      } else {
+        toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!")
+      }
       dispatch(declareError(res.data));
     }
   };
@@ -74,7 +78,7 @@ export const cancelDeclareTime = (executor, ids) => async (dispatch) => {
     dispatch(cancelSuccess());
     dispatch(setPermissionByRegionIds({ id: ids[0], tag: "cancel"}));
   } else {
-    toast.error("Lỗi gì đó rồi");
+    toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
 
     dispatch(cancelError(res.data));
   }
@@ -87,7 +91,7 @@ export const confirmDeclareComplete = (executor) => async (dispatch) => {
   if (res.data.status === 1) {
     toast.success("Đã hoàn thành khai báo");
   } else {
-    toast.error("Lỗi gì đó rồi");
+    toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
   }
 };
 
@@ -98,7 +102,7 @@ export const cancelDeclareComplete = (executor) => async (dispatch) => {
   if (res.data.status === 1) {
     toast.success("Hủy thành công");
   } else {
-    toast.error("Lỗi gì đó rồi");
+    toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
   }
 };
 

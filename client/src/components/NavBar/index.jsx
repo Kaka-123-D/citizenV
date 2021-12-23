@@ -1,15 +1,17 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import LogoutBtn from "../Logout.Button/connectStore"
+import LogoutBtn from "../Logout.Button/connectStore";
 
 import { Link } from "react-router-dom";
 
-import "./style.scss"
+import "./style.scss";
 
-export default function NavBar() {
+export default function NavBar({ clickChangePass }) {
+  const location = useLocation();
   return (
     <div className="nav-bar-wrap">
       <Navbar expand="lg" fixed="top" className="nav-bar">
@@ -54,11 +56,15 @@ export default function NavBar() {
                 >
                   Danh sách dân số
                 </NavDropdown.Item>
-
-                {/* <NavDropdown.Item as={Link} to="/action5">
-                  Mở thời gian khai báo{" "}
-                </NavDropdown.Item> */}
               </NavDropdown>
+              <Nav.Link
+                as={Link}
+                className="nav-item"
+                to={location.pathname}
+                onClick={() => clickChangePass()}
+              >
+                Đổi mật khẩu
+              </Nav.Link>
             </Nav>
             {/* <Form className="d-flex">
               <FormControl

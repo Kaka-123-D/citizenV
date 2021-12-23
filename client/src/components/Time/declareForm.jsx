@@ -36,20 +36,16 @@ export default function Declare({
   }
 
   function handleAddArrayId(newId) {
+    let tickBoxArr = document.getElementsByClassName("tickBox");
+
     if (ids.filter((item) => item == newId).length == 0) {
       ids.push(newId);
       console.log(ids);
-      if (
-        Array.isArray(regions) &&
-        ids.length === (regions.length - countPermission)
-      )
+      if (Array.isArray(regions) && ids.length === tickBoxArr.length - 1)
         setTickAll(true);
       console.log("add");
     } else {
-      if (
-        Array.isArray(regions) &&
-        ids.length === (regions.length - countPermission)
-      )
+      if (Array.isArray(regions) && ids.length === tickBoxArr.length - 1)
         setTickAll(false);
       setArrayId(ids.filter((item) => item != newId));
       console.log("delete");
@@ -60,16 +56,22 @@ export default function Declare({
     let tickBoxArr = document.getElementsByClassName("tickBox");
     //
     if (!tickAll) {
-      for (let i = 0; i < tickBoxArr.length; i++) {
-        if (!regions[i].permission || regions[i].permission.isFinish) ids.push(regions[i].id);
+      for (let i = 0; i < regions.length; i++) {
+        if (
+          xoa_dau(regions[i].name)
+            .toLocaleLowerCase()
+            .startsWith(xoa_dau(textSearch).toLocaleLowerCase()) &&
+          (!regions[i].permission || regions[i].permission.isFinish)
+        )
+          ids.push(regions[i].id);
       }
-      
-      for (let i = 0; i < tickBoxArr.length; i++) {
+      console.log(ids);
+      for (let i = 1; i < tickBoxArr.length; i++) {
         tickBoxArr[i].checked = true;
       }
     } else {
       setArrayId([]);
-      for (let i = 0; i < tickBoxArr.length; i++) {
+      for (let i = 1; i < tickBoxArr.length; i++) {
         tickBoxArr[i].checked = false;
       }
     }
@@ -105,26 +107,52 @@ export default function Declare({
     }
   };
 
+  function handleInputSearch(value) {
+    setTextSearch(value);
+    setTickAll(false);
+  }
+
+  function viewInfoById(id) {
+    // console.log(regions[0].permission);
+  }
+
   return (
     <div className="provide-time-form">
       <div className="clock-countdown">
-        {permission ? (
-          <CountDown
-            date={
-              Date.now() + (new Date(permission.timeEnd) - new Date(Date.now()))
-            }
-            renderer={rendererClock}
-          />
+        {permission && new Date(permission.timeStart) < new Date(Date.now()) ? (
+          <>
+            <span className="alert">
+              {new Date(permission.timeStart).getHours()}:{""}
+              {new Date(permission.timeStart).getMinutes()} {" - "}
+              {new Date(permission.timeStart).getDate()}/
+              {new Date(permission.timeStart).getMonth() + 1}/
+              {new Date(permission.timeStart).getFullYear()} &rarr;{" "}
+              {new Date(permission.timeEnd).getHours()}:{""}
+              {new Date(permission.timeEnd).getMinutes()} {" - "}
+              {new Date(permission.timeEnd).getDate()}/
+              {new Date(permission.timeEnd).getMonth() + 1}/
+              {new Date(permission.timeEnd).getFullYear()}
+            </span>
+            <br />
+            <CountDown
+              date={
+                Date.now() +
+                (new Date(permission.timeEnd) - new Date(Date.now()))
+              }
+              renderer={rendererClock}
+            />
+          </>
         ) : null}
       </div>
       <form>
-        <label htmlFor="timeStart">Thời gian bắt đầu </label>
+        <label htmlFor="timeStart">Thời gian bắt đầu </label>{" "}
         <input
           type="datetime-local"
           id="timeStart"
           onChange={(e) => setTimeStart(e.target.valueAsNumber)}
         />
-        <label htmlFor="timeStart"> Thời gian kết thúc </label>
+        {"  "}
+        <label htmlFor="timeStart"> Thời gian kết thúc </label>{" "}
         <input
           type="datetime-local"
           id="timeFinish"
@@ -138,9 +166,9 @@ export default function Declare({
           value={textSearch}
           type="text"
           placeholder="Search.."
-          onChange={(e) => setTextSearch(e.target.value)}
+          onChange={(e) => handleInputSearch(e.target.value)}
+          className="search-bar"
         />
-
         <div>
           {Array.isArray(regions) && regions.length == 0 ? (
             <span className="alert">Chưa có khu vực nào được khai báo</span>
@@ -164,7 +192,7 @@ export default function Declare({
                   </th>
                 </tr>
               </thead>
-              <tbody >
+              <tbody>
                 {regions.map((region) => {
                   let textTemp = region.name;
                   if (
@@ -174,7 +202,11 @@ export default function Declare({
                     true
                   ) {
                     return (
-                      <tr key={region.id}>
+                      <tr
+                        key={region.id}
+                        onClick={() => viewInfoById(region.id)}
+                        className="region-row"
+                      >
                         <td className="id-column">{region.id}</td>
                         <td className="name-column">{region.name}</td>
                         <td className="des-column">{region.textDes}</td>
