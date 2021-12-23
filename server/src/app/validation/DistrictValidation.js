@@ -43,16 +43,18 @@ class DistrictValidation {
             userId: user.userId,
           },
         });
-        if (!permission) return true;
-        if (permission.isFinish == false) {
-          return false;
-        } else {
-          await Permission.destroy({
-            where: {
-              userId: user.userId,
-            },
-          });
+        if (permission) {
+          if (permission.isFinish == false) {
+            return false;
+          } else {
+            await Permission.destroy({
+              where: {
+                userId: user.userId,
+              },
+            });
+          }
         }
+        return { district, user, permission };
       }
 
       if (tag == "cancelDeclare") {
@@ -65,9 +67,10 @@ class DistrictValidation {
         });
         if (!permission) return false;
         if (permission.isFinish == true) return false;
+        return { district, user, permission };
       }
 
-      return true;
+      return {district, user};
     } catch (e) {
       return false;
     }

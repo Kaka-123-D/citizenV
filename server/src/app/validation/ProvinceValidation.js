@@ -40,16 +40,18 @@ class ProvinceValidation {
             userId: user.userId,
           },
         });
-        if (!permission) return true;
-        if (permission.isFinish == false) {
-          return false;
-        } else {
-          await Permission.destroy({
-            where: {
-              userId: user.userId,
-            },
-          });
+        if (permission) {
+          if (permission.isFinish == false) {
+            return false;
+          } else {
+            await Permission.destroy({
+              where: {
+                userId: user.userId,
+              },
+            });
+          }
         }
+        return { province, user, permission };
       }
 
       if (tag == "cancelDeclare") {
@@ -62,9 +64,10 @@ class ProvinceValidation {
         });
         if (!permission) return false;
         if (permission.isFinish == true) return false;
+        return { province, user, permission };
       }
 
-      return true;
+      return {province, user};
     } catch (e) {
       return false;
     }

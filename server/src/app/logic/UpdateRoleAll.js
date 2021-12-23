@@ -4,24 +4,31 @@ async function UpdateRoleAll(username) {
   try {
     const user = await User.findOne({
       where: {
-        username
+        username:username,
       }
     });
     if (user) {
-      await User.update({
-        role: 'view'
-      }, {
-        where: {
-          username
-        }
-      });
+      if (user.role == 'view') {
+        return true;
+      } else {
+        await User.update(
+          {
+            role: "view",
+          },
+          {
+            where: {
+              username: username,
+            },
+          }
+        );
+      }
     }
     const users = await user.getUsers();
     if (users.length == 0) {
       return true;
     }
-    for (const u of users) {
-      await UpdateRoleAll(u.username);
+    for (const user of users) {
+      await UpdateRoleAll(user.username);
     }
   } catch (e) {
     return false;

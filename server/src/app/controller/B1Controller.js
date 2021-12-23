@@ -22,9 +22,9 @@ class B1Controller {
 
   async declare(req, res) {
     const { id, name, type, textDes } = req.body;
-    if (!(await validationVillageId(id, "declare", req.session.username)))
+    if (!await validationVillageId(id, "declare", req.session.username))
       return res.json({ status: 0, error: "VILLAGE_ID_ERROR!" });
-    if (!(await validationVillageName(name)))
+    if (!await validationVillageName(name))
       return res.json({ status: 0, error: "VILLAGE_NAME_ERROR!" });
     if (!validationVillageType(type))
       return res.json({ status: 0, error: "VILLAGE_TYPE_ERROR!" });
@@ -91,7 +91,7 @@ class B1Controller {
     const { ids } = req.body;
     if (!ids) return res.json({ status: 0, error: "USERNAME_ERROR!" });
     for (const id of ids) {
-      if (!(await validationVillageId(id, "register", req.session.username)))
+      if (!await validationVillageId(id, "register", req.session.username))
         return res.json({ status: 0, error: "USERNAME_ERROR!" });
     }
     try {
@@ -101,15 +101,17 @@ class B1Controller {
         },
       });
       for (const id of ids) {
-        const villageUser = await siteController.register({
+        const data = await siteController.register({
           username: id,
           password: id,
           role: "view",
           group: "b2",
         });
-        if (!villageUser)
+        if (!data) {
           return res.json({ status: 0, error: "REGISTER_ERROR!" });
-        await user.addUser(villageUser);
+        } else {
+          await user.addUser(data.user);
+        }
       }
       return res.json({ status: 1 });
     } catch (e) {
@@ -145,17 +147,14 @@ class B1Controller {
       const villageNames = [];
       var personsResult = [];
       for (const id of ids) {
-        if (
-          await validationVillageId(
-            id,
-            "getPerson",
-            req.session.username,
-            req.session.group
-          )
-        ) {
-          const village = await Village.findOne({
-            where: { villageId: id },
-          }); 
+        const data = await validationVillageId(
+          id,
+          "getPerson",
+          req.session.username,
+          req.session.group
+        );
+        if (data) {
+          const village = data.village;
           villageNames.push(await village.getAddress());
         }
       }

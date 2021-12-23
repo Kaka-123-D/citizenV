@@ -20,9 +20,9 @@ class A1Controller {
 
   async declare(req, res) {
     const { id, name, type, textDes } = req.body;
-    if (!(await validationProvinceId(id, "declare")))
+    if (!await validationProvinceId(id, "declare"))
       return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
-    if (!(await validationProvinceName(name)))
+    if (!await validationProvinceName(name))
       return res.json({ status: 0, error: "PROVINCE_NAME_ERROR!" });
     if (!validationProvinceType(type))
       return res.json({ status: 0, error: "PROVINCE_TYPE_ERROR!" });
@@ -57,12 +57,37 @@ class A1Controller {
             },
           });
         }
+        var progress = -1;
+        const districtUsers = await user.getUsers();
+        const ms = districtUsers.length;
+        var ts = 0;
+
+        if (ms > 0) {
+          for (const user of districtUsers) {
+            const permission = await Permission.findOne({
+              attributes: ["permissionId", "isComplete", "timeStart", "timeEnd"],
+              where: {
+                userId: user.userId,
+              }
+            });
+            if (permission) {
+              if (permission.isComplete) {
+                ts++;
+              }
+            }
+          }
+          if (ts > 0) {
+            progress = ts / ms;
+          }
+        }
+
         result.push({
           id: province.provinceId,
           name: province.provinceName,
           type: province.provinceType,
           textDes: province.textDes,
-          permission,
+          permission, 
+          progress
         });
       }
       res.json({ status: 1, regions: result });
@@ -75,18 +100,16 @@ class A1Controller {
     const { ids } = req.body;
     if (!ids) return res.json({ status: 0, error: "USERNAME_ERROR!" });
     for (const id of ids) {
-      if (!(await validationProvinceId(id, "register")))
+      if (!await validationProvinceId(id, "register"))
         return res.json({ status: 0, error: "USERNAME_ERROR!" });
     }
     for (const id of ids) {
-      if (
-        !(await siteController.register({
-          username: id,
-          password: id,
-          role: "view",
-          group: "a2",
-        }))
-      ) {
+      if (!await siteController.register({
+        username: id,
+        password: id,
+        role: "view",
+        group: "a2",
+      })) {
         return res.json({ status: 0, error: "REGISTER_ERROR!" });
       }
     }
@@ -110,10 +133,9 @@ class A1Controller {
       const provinceNames = [];
       var personsResult = [];
       for (const id of ids) {
-        if (await validationProvinceId(id, "getPerson")) {
-          const province = await Province.findOne({
-            where: { provinceId: id },
-          });
+        const data = await validationProvinceId(id, "getPerson");
+        if (data) {
+          const province = data.province;
           provinceNames.push(province.provinceName);
         }
       }

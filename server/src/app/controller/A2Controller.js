@@ -25,9 +25,9 @@ class A2Controller {
 
   async declare(req, res) {
     const { id, name, type, textDes } = req.body;
-    if (!(await validationDistrictId(id, "declare", req.session.username)))
+    if (!await validationDistrictId(id, "declare", req.session.username))
       return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
-    if (!(await validationDistrictName(name)))
+    if (!await validationDistrictName(name))
       return res.json({ status: 0, error: "DISTRICT_NAME_ERROR!" });
     if (!validationDistrictType(type))
       return res.json({ status: 0, error: "DISTRICT_TYPE_ERROR!" });
@@ -76,12 +76,43 @@ class A2Controller {
             },
           });
         }
+
+        var progress = -1;
+        const wardUsers = await user.getUsers();
+        const ms = wardUsers.length;
+        var ts = 0;
+
+        if (ms > 0) {
+          for (const user of wardUsers) {
+            const permission = await Permission.findOne({
+              attributes: [
+                "permissionId",
+                "isComplete",
+                "timeStart",
+                "timeEnd",
+              ],
+              where: {
+                userId: user.userId,
+              },
+            });
+            if (permission) {
+              if (permission.isComplete) {
+                ts++;
+              }
+            }
+          }
+          if (ts > 0) {
+            progress = ts / ms;
+          }
+        }
+
         result.push({
           id: district.districtId,
           name: district.districtName,
           type: district.districtType,
           textDes: district.textDes,
-          permission
+          permission,
+          progress
         });
       }
       res.json({ status: 1, regions: result });
@@ -94,7 +125,7 @@ class A2Controller {
     const { ids } = req.body;
     if (!ids) return res.json({ status: 0, error: "USERNAME_ERROR!" });
     for (const id of ids) {
-      if (!(await validationDistrictId(id, "register", req.session.username)))
+      if (!await validationDistrictId(id, "register", req.session.username))
         return res.json({ status: 0, error: "USERNAME_ERROR!" });
     }
     try {
@@ -104,15 +135,17 @@ class A2Controller {
         },
       });
       for (const id of ids) {
-        const districtUser = await siteController.register({
+        const data = await siteController.register({
           username: id,
           password: id,
           role: "view",
           group: "a3",
         });
-        if (!districtUser)
+        if (!data) {
           return res.json({ status: 0, error: "REGISTER_ERROR!" });
-        await user.addUser(districtUser);
+        } else {
+          await user.addUser(data.user);
+        }          
       }
       return res.json({ status: 1 });
     } catch (e) {

@@ -43,16 +43,18 @@ class VillageValidation {
             userId: user.userId,
           },
         });
-        if (!permission) return true;
-        if (permission.isFinish == false) {
-          return false;
-        } else {
-          await Permission.destroy({
-            where: {
-              userId: user.userId,
-            },
-          });
+        if (permission) {
+          if (permission.isFinish == false) {
+            return false;
+          } else {
+            await Permission.destroy({
+              where: {
+                userId: user.userId,
+              },
+            });
+          }
         }
+        return { village, user, permission };
       }
 
       if (tag == "cancelDeclare") {
@@ -65,9 +67,10 @@ class VillageValidation {
         });
         if (!permission) return false;
         if (permission.isFinish == true) return false;
+        return { village, user, permission };
       }
 
-      return true;
+      return {village, user};
     } catch (e) {
       return false;
     }

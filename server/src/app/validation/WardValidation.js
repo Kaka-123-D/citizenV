@@ -43,16 +43,18 @@ class WardValidation {
             userId: user.userId,
           },
         });
-        if (!permission) return true;
-        if (permission.isFinish == false) {
-          return false;
-        } else {
-          await Permission.destroy({
-            where: {
-              userId: user.userId,
-            },
-          });
+        if (permission) {
+          if (permission.isFinish == false) {
+            return false;
+          } else {
+            await Permission.destroy({
+              where: {
+                userId: user.userId,
+              },
+            });
+          }
         }
+        return { ward, user, permission };
       }
 
       if (tag == "cancelDeclare") {
@@ -65,9 +67,10 @@ class WardValidation {
         });
         if (!permission) return false;
         if (permission.isFinish == true) return false;
+        return { ward, user, permission };
       }
 
-      return true;
+      return {user, ward};
     } catch (e) {
       return false;
     }

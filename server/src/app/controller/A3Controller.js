@@ -23,9 +23,9 @@ class A3Controller {
 
   async declare(req, res) {
     const { id, name, type, textDes } = req.body;
-    if (!(await validationWardId(id, "declare", req.session.username)))
+    if (!await validationWardId(id, "declare", req.session.username))
       return res.json({ status: 0, error: "WARD_ID_ERROR!" });
-    if (!(await validationWardName(name)))
+    if (!await validationWardName(name))
       return res.json({ status: 0, error: "WARD_NAME_ERROR!" });
     if (!validationWardType(type))
       return res.json({ status: 0, error: "WARD_TYPE_ERROR!" });
@@ -74,6 +74,7 @@ class A3Controller {
             },
           });
         }
+
         result.push({
           id: ward.wardId,
           name: ward.wardName,
@@ -92,7 +93,7 @@ class A3Controller {
     const { ids } = req.body;
     if (!ids) return res.json({ status: 0, error: "USERNAME_ERROR!" });
     for (const id of ids) {
-      if (!(await validationWardId(id, "register", req.session.username)))
+      if (!await validationWardId(id, "register", req.session.username))
         return res.json({ status: 0, error: "USERNAME_ERROR!" });
     }
     try {
@@ -102,14 +103,17 @@ class A3Controller {
         },
       });
       for (const id of ids) {
-        const wardUser = await siteController.register({
+        const data = await siteController.register({
           username: id,
           password: id,
           role: "view",
           group: "b1",
-        });
-        if (!wardUser) return res.json({ status: 0, error: "REGISTER_ERROR!" });
-        await user.addUser(wardUser);
+        }); 
+        if (!data) {
+          return res.json({ status: 0, error: "REGISTER_ERROR!" });
+        } else {
+          await user.addUser(data.user);
+        }
       }
       return res.json({ status: 1 });
     } catch (e) {

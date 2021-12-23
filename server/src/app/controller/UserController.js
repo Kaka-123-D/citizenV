@@ -9,8 +9,6 @@ dotenv.config();
 const User = require("../model/User");
 const Permission = require("../model/Permission");
 const Person = require("../model/Person");
-const District = require("../model/District");
-const Ward = require("../model/Ward");
 
 
 const { SALT_ROUND } = process.env;
@@ -40,6 +38,7 @@ class UserController {
   //Cấp quyền khai báo
   async grantDeclare(req, res) {
     const { ids = [], timeStart, timeEnd } = req.body;
+    const users = [];
     //
     if (!validationTime(timeStart, timeEnd)) {
       return res.json({ status: 0, error: "TIME_ERROR!" });
@@ -49,57 +48,89 @@ class UserController {
     //
     if (req.session.group == "a1") {
       for (const id of ids) {
-        if (!(await validationProvinceId(id, "grantDeclare"))) {
+        const data = await validationProvinceId(id, "grantDeclare");
+        if (!data) {
           return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
+        } else {
+          users.push(data.user);
         }
       }
     }
     if (req.session.group == "a2") {
       for (const id of ids) {
-        if (
-          !(await validationDistrictId(
-            id,
-            "grantDeclare",
-            req.session.username,
-            req.session.group
-          ))
-        ) {
+        //có thể là object or false
+        const data = await validationDistrictId(
+          id,
+          "grantDeclare",
+          req.session.username,
+          req.session.group
+        );
+        if (!data) {
           return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
+        } else {
+          users.push(data.user);
         }
+      }
+      const permission = await Permission.findOne({
+        where: {
+          userId: req.session.userId,
+        }
+      });
+      if (timeEndD > permission.timeEnd) {
+        return res.json({ status: 0, error: "TIME_ERROR!" });
       }
     }
     if (req.session.group == "a3") {
       for (const id of ids) {
-        if (
-          !(await validationWardId(
-            id,
-            "grantDeclare",
-            req.session.username,
-            req.session.group
-          ))
-        ) {
+        const data = await validationWardId(
+          id,
+          "grantDeclare",
+          req.session.username,
+          req.session.group
+        );
+        if (!data) {
           return res.json({ status: 0, error: "WARD_ID_ERROR!" });
+        } else {
+          users.push(data.user);
         }
+      }
+      const permission = await Permission.findOne({
+        where: {
+          userId: req.session.userId,
+        },
+      });
+      if (timeEnd > permission.timeEnd) {
+        return res.json({ status: 0, error: "TIME_ERROR!" });
       }
     }
     if (req.session.group == "b1") {
       for (const id of ids) {
-        if (
-          !(await validationVillageId(
-            id,
-            "grantDeclare",
-            req.session.username,
-            req.session.group
-          ))
-        ) {
+        const data = await validationVillageId(
+          id,
+          "grantDeclare",
+          req.session.username,
+          req.session.group
+        );
+        if (!data) {
           return res.json({ status: 0, error: "VILLAGE_ID_ERROR!" });
+        } else {
+          users.push(data.user);
         }
+      }
+      const permission = await Permission.findOne({
+        where: {
+          userId: req.session.userId,
+        },
+      });
+      if (timeEnd > permission.timeEnd) {
+        return res.json({ status: 0, error: "TIME_ERROR!" });
       }
     }
     //
     try {
-      for (const id of ids) {
-        const user = await User.findOne({ where: { username: id } });
+      for (const i in ids) {
+        const user = users[i];
+        const id = ids[i];
         const permission = await Permission.create({
           timeStart: timeStartD,
           timeEnd: timeEndD,
@@ -108,7 +139,7 @@ class UserController {
         });
         await user.addPermission(permission);
         //
-        schedule.scheduleJob(`start_${id}`, timeStartD, async () => {
+        schedule.scheduleJob(`start_${id}`, timeStartD, async function () {
           console.log("GRANT_DECLARE_START!");
           await User.update(
             { role: "edit" },
@@ -119,7 +150,7 @@ class UserController {
             }
           );
         });
-        schedule.scheduleJob(`end_${id}`, timeEndD, async () => {
+        schedule.scheduleJob(`end_${id}`, timeEndD, async function() {
           await Permission.update(
             { isFinish: true },
             {
@@ -142,69 +173,74 @@ class UserController {
   //Hủy quyền khai báo
   async cancelDeclare(req, res) {
     const { ids } = req.body;
+    const users = [];
 
     if (req.session.group == "a1") {
       for (const id of ids) {
-        if (!(await validationProvinceId(id, "cancelDeclare"))) {
+        const data = await validationProvinceId(id, "cancelDeclare");
+        if (!data) {
           return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
+        } else {
+          users.push(data.user);
         }
       }
     }
     if (req.session.group == "a2") {
       for (const id of ids) {
-        if (
-          !(await validationDistrictId(
-            id,
-            "cancelDeclare",
-            req.session.username,
-            req.session.group
-          ))
-        ) {
+        const data = await validationDistrictId(
+          id,
+          "cancelDeclare",
+          req.session.username,
+          req.session.group
+        );
+        if (!data) {
           return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
+        } else {
+          users.push(data.user);
         }
       }
     }
     if (req.session.group == "a3") {
       for (const id of ids) {
-        if (
-          !(await validationWardId(
-            id,
-            "cancelDeclare",
-            req.session.username,
-            req.session.group
-          ))
-        ) {
+        const data = await validationWardId(
+          id,
+          "cancelDeclare",
+          req.session.username,
+          req.session.group
+        );
+        if (!data) {
           return res.json({ status: 0, error: "WARD_ID_ERROR!" });
+        } else {
+          users.push(data.user);
         }
       }
     }
     if (req.session.group == "b1") {
       for (const id of ids) {
-        if (
-          !(await validationVillageId(
-            id,
-            "cancelDeclare",
-            req.session.username,
-            req.session.group
-          ))
-        ) {
+        const data = await validationVillageId(
+          id,
+          "cancelDeclare",
+          req.session.username,
+          req.session.group
+        );
+        if (!data) {
           return res.json({ status: 0, error: "VILLAGE_ID_ERROR!" });
+        } else {
+          users.push(data.user);
         }
       }
     }
     try {
-      for (const id of ids) {
+      for (const i in ids) {
         const jobNames = _.keys(schedule.scheduledJobs);
-        const user = await User.findOne({
-          where: {
-            username: id,
-          },
-        });
+        const user = users[i];
+        const id = ids[i];
         for (const name of jobNames) {
           if (name == `start_${id}`) {
             schedule.cancelJob(name);
           }
           if (name == `end_${id}`) {
+            schedule.cancelJob(name);
             await Permission.update(
               { isFinish: true },
               {
@@ -214,6 +250,7 @@ class UserController {
                 },
               }
             );
+            console.log("GRANT_DECLARE_END!");
             await UpdateRoleAll(id);
           }
         }
@@ -262,25 +299,19 @@ class UserController {
 
   async getPersonByPersonId(req, res) {
     const { personId } = req.body;
-    if (
-      !(await validationPersonId(
-        personId,
-        "getPerson",
-        req.session.username,
-        req.session.group
-      ))
-    )
+    var person = null;
+    const data = await validationPersonId(
+      personId,
+      "getPerson",
+      req.session.username,
+      req.session.group
+    );
+    if (!data) {
       return res.json({ status: 0, error: "PERSON_ID_ERROR!" });
-    try {
-      const person = await Person.findOne({
-        where: {
-          personId: personId,
-        },
-      });
-      return res.json({ status: 1, person });
-    } catch (e) {
-      return res.json({ status: 0, error: "GET_PERSON_BY_PERSON_ID_ERROR!" });
+    } else {
+      person = data.person;
     }
+    return res.json({ status: 1, person });
   }
 
   async addPerson(req, res) {
@@ -296,7 +327,7 @@ class UserController {
       educationLevel,
       job,
     } = req.body;
-    if (!(await validationPersonId(personId, "add")))
+    if (!await validationPersonId(personId, "add"))
       return res.json({ status: 0, error: "PERSON_ID_ERROR!" });
     if (!validationFullName(fullName))
       return res.json({ status: 0, error: "FULL_NAME_ERROR!" });
@@ -349,9 +380,9 @@ class UserController {
       educationLevel,
       job,
     } = req.body;
-    if (!(await validationStt(stt, req.session.group, req.session.username)))
+    if (!await validationStt(stt, req.session.group, req.session.username))
       return res.json({ status: 0, error: "STT_ERROR!" });
-    if (!(await validationPersonId(personId, "update")))
+    if (!await validationPersonId(personId, "update"))
       return res.json({ status: 0, error: "PERSON_ID_ERROR!" });
     if (!validationFullName(fullName))
       return res.json({ status: 0, error: "FULL_NAME_ERROR!" });
@@ -399,7 +430,7 @@ class UserController {
 
   async deletePerson(req, res) {
     const { stt } = req.body;
-    if (!validationStt(stt))
+    if (!await validationStt(stt, req.session.group, req.session.username))
       return res.json({ status: 0, error: "STT_ERROR!" });
     try {
       await Person.destroy({
@@ -420,17 +451,14 @@ class UserController {
       const districtNames = [];
       var personsResult = [];
       for (const id of ids) {
-        if (
-          await validationDistrictId(
-            id,
-            "getPerson",
-            req.session.username,
-            req.session.group
-          )
-        ) {
-          const district = await District.findOne({
-            where: { districtId: id },
-          });
+        const data = await validationDistrictId(
+          id,
+          "getPerson",
+          req.session.username,
+          req.session.group
+        );
+        if (data) {
+          const district = data.district;
           districtNames.push(await district.getAddress());
         }
       }
@@ -458,17 +486,14 @@ class UserController {
       const wardNames = [];
       var personsResult = [];
       for (const id of ids) {
-        if (
-          await validationWardId(
-            id,
-            "getPerson",
-            req.session.username,
-            req.session.group
-          )
-        ) {
-          const ward = await Ward.findOne({
-            where: { wardId: id },
-          });
+        const data = await validationWardId(
+          id,
+          "getPerson",
+          req.session.username,
+          req.session.group
+        );
+        if (data) {
+          const ward = data.ward;
           wardNames.push(await ward.getAddress());
         }
       }
@@ -493,43 +518,37 @@ class UserController {
   async getNewPassword(req, res) {
     const { id } = req.body;
     if (req.session.group == "a1") {
-      if (!(await validationProvinceId(id, "getNewPassword"))) {
+      if (!await validationProvinceId(id, "getNewPassword")) {
         return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
       }
     }
     if (req.session.group == "a2") {
-      if (
-        !(await validationDistrictId(
-          id,
-          "getNewPassword",
-          req.session.username,
-          req.session.group
-        ))
-      ) {
+      if (!await validationDistrictId(
+        id,
+        "getNewPassword",
+        req.session.username,
+        req.session.group
+      )) {
         return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
       }
     }
     if (req.session.group == "a3") {
-      if (
-        !(await validationWardId(
-          id,
-          "getNewPassword",
-          req.session.username,
-          req.session.group
-        ))
-      ) {
+      if (!await validationWardId(
+        id,
+        "getNewPassword",
+        req.session.username,
+        req.session.group
+      )) {
         return res.json({ status: 0, error: "WARD_ID_ERROR!" });
       }
     }
     if (req.session.group == "b1") {
-      if (
-        !(await validationVillageId(
-          id,
-          "getNewPassword",
-          req.session.username,
-          req.session.group
-        ))
-      ) {
+      if (!await validationVillageId(
+        id,
+        "getNewPassword",
+        req.session.username,
+        req.session.group
+      )) {
         return res.json({ status: 0, error: "VILLAGE_ID_ERROR!" });
       }
     }
@@ -543,7 +562,6 @@ class UserController {
       );
       return res.json({ status: 1 });
     } catch (e) {
-      console.log(e);
       return res.json({ status: 0, error: "GET_NEW_PASSWORD_ERROR!" });
     }
   }

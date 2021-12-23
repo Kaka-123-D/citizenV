@@ -26,7 +26,7 @@ class SiteController {
   async register(data) {
     try {
       const hash = bcrypt.hashSync(data.password, parseInt(SALT_ROUND));
-      return await User.create({
+      const user = await User.create({
         username: data.username,
         password: hash,
         fullName: data.fullName,
@@ -34,22 +34,23 @@ class SiteController {
         role: data.role,
         group: data.group,
       });
+      return {user};
     } catch {
-      return null;
+      return false;
     }
   }
 
   async login(req, res) {
     const { username, password } = req.body;
-    if (!(await validationUsername(username, "login"))) {
+    var user = null;
+    const data = await validationUsername(username, "login");
+    if (!data) {
       return res.json({ status: 0, error: "USERNAME_ERROR!" });
+    } else {
+      user = data.user;
     }
     try {
       var isFirstLogin = false;
-      //
-      const user = await User.findOne({
-        where: { username: username },
-      });
       //
       if (!bcrypt.compareSync(password, user.password)) {
         return res.json({ status: 0, error: "PASSWORD_ERROR!" });

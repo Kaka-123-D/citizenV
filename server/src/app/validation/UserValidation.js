@@ -18,7 +18,7 @@ class UserValidation {
         if (!user) return false;
       }
       //
-      return true;
+      return {user};
     } catch (e) {
       return false;
     }
