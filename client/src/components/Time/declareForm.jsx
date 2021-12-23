@@ -4,6 +4,7 @@ import CountDown from "react-countdown";
 import { xoa_dau } from "../../validation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import ProgressBar from "react-bootstrap/ProgressBar";
 
 export default function Declare({
   executor,
@@ -12,7 +13,7 @@ export default function Declare({
   setRegionListToState,
   permission,
   cancelDeclareTime,
-  countPermission,
+  confirmDeclareComplete,
 }) {
   const [timeStart, setTimeStart] = useState("");
   const [timeFinish, setTimeFinish] = useState("");
@@ -112,6 +113,77 @@ export default function Declare({
     setTickAll(false);
   }
 
+  function handleConfirmComplete(event) {
+    event.preventDefault();
+    confirmDeclareComplete(executor);
+  }
+
+  function handleCheckStatus(permission) {
+    if (!permission || permission.isFinish) return 0;
+    if (!permission.isComplete) return 1;
+    return 2;
+  }
+
+  const handleShowIcon = (permission, id) => {
+    const status = handleCheckStatus(permission);
+    if (status === 0)
+      return (
+        <input
+          type="checkbox"
+          className="tickBox"
+          onChange={() => handleAddArrayId(id)}
+        />
+      );
+    if (status === 1)
+      return (
+        <span
+          className="cancel"
+          onClick={(e) => handleCancelDeclareTime(e, id)}
+        >
+          <i className="fas fa-window-close"></i>
+        </span>
+      );
+    if (status === 2)
+      return (
+        <span className="complete">
+          <i class="fas fa-check-circle"></i>{" "}
+        </span>
+      );
+  };
+
+  const handleProgressBarOrButton = () => {
+    let showButton = true;
+    let countSuccess = 0;
+    for (let i = 0; i < regions.length; i++) {
+      const status = handleCheckStatus(regions[i].permission);
+      if (status === 0 || status === 1) {
+        showButton = false;
+      } else countSuccess++;
+    }
+    if (showButton)
+      return (
+        <button
+          className="completeBtn"
+          onClick={(e) => handleConfirmComplete(e)}
+        >
+          Hoàn thành điều tra
+        </button>
+      );
+    else
+      return (
+        <div className="progress-declare">
+          <h3>Tiến độ</h3>
+          <ProgressBar
+            variant="success"
+            animated
+            label
+            now={(countSuccess * 100) / regions.length}
+            className="progress-bar-custom"
+          />
+        </div>
+      );
+  };
+
   function viewInfoById(id) {
     // console.log(regions[0].permission);
   }
@@ -121,19 +193,23 @@ export default function Declare({
       <div className="clock-countdown">
         {permission && new Date(permission.timeStart) < new Date(Date.now()) ? (
           <>
-            <span className="alert">
-              {new Date(permission.timeStart).getHours()}:{""}
-              {new Date(permission.timeStart).getMinutes()} {" - "}
-              {new Date(permission.timeStart).getDate()}/
-              {new Date(permission.timeStart).getMonth() + 1}/
-              {new Date(permission.timeStart).getFullYear()} &rarr;{" "}
-              {new Date(permission.timeEnd).getHours()}:{""}
-              {new Date(permission.timeEnd).getMinutes()} {" - "}
-              {new Date(permission.timeEnd).getDate()}/
-              {new Date(permission.timeEnd).getMonth() + 1}/
-              {new Date(permission.timeEnd).getFullYear()}
-            </span>
-            <br />
+            {new Date(permission.timeEnd) - new Date(Date.now()) < 0 ? null : (
+              <>
+              <span className="alert">
+                {new Date(permission.timeStart).getHours()}:{""}
+                {new Date(permission.timeStart).getMinutes()} {" - "}
+                {new Date(permission.timeStart).getDate()}/
+                {new Date(permission.timeStart).getMonth() + 1}/
+                {new Date(permission.timeStart).getFullYear()} &rarr;{" "}
+                {new Date(permission.timeEnd).getHours()}:{""}
+                {new Date(permission.timeEnd).getMinutes()} {" - "}
+                {new Date(permission.timeEnd).getDate()}/
+                {new Date(permission.timeEnd).getMonth() + 1}/
+                {new Date(permission.timeEnd).getFullYear()}
+              </span>
+              <br />
+              </>
+            )}
             <CountDown
               date={
                 Date.now() +
@@ -145,30 +221,38 @@ export default function Declare({
         ) : null}
       </div>
       <form>
-        <label htmlFor="timeStart">Thời gian bắt đầu </label>{" "}
-        <input
-          type="datetime-local"
-          id="timeStart"
-          onChange={(e) => setTimeStart(e.target.valueAsNumber)}
-        />
-        {"  "}
-        <label htmlFor="timeStart"> Thời gian kết thúc </label>{" "}
-        <input
-          type="datetime-local"
-          id="timeFinish"
-          onChange={(e) => setTimeFinish(e.target.valueAsNumber)}
-        />
-        <button onClick={(e) => handleSubmit(e)}>Ok</button>
-        <br />
-        <br />
-        <br />
-        <input
-          value={textSearch}
-          type="text"
-          placeholder="Search.."
-          onChange={(e) => handleInputSearch(e.target.value)}
-          className="search-bar"
-        />
+        <div className="service-declare">
+          <div className="progress-input">
+            {handleProgressBarOrButton()}
+            <input
+              value={textSearch}
+              type="text"
+              placeholder="Search.."
+              onChange={(e) => handleInputSearch(e.target.value)}
+              className="search-bar"
+            />
+          </div>
+
+          <div className="select-time">
+            <div className="time">
+              <label htmlFor="timeStart">Thời gian bắt đầu </label>{" "}
+              <input
+                type="datetime-local"
+                id="timeStart"
+                onChange={(e) => setTimeStart(e.target.valueAsNumber)}
+              />
+              <br />
+              <label htmlFor="timeStart"> Thời gian kết thúc </label>{" "}
+              <input
+                type="datetime-local"
+                id="timeFinish"
+                onChange={(e) => setTimeFinish(e.target.valueAsNumber)}
+              />
+            </div>
+
+            <button onClick={(e) => handleSubmit(e)}>Ok</button>
+          </div>
+        </div>
         <div>
           {Array.isArray(regions) && regions.length == 0 ? (
             <span className="alert">Chưa có khu vực nào được khai báo</span>
@@ -179,10 +263,8 @@ export default function Declare({
                   <th className="field">Mã</th>
                   <th className="field">Tên</th>
                   <th className="field">Mô tả</th>
-                  <th className="field">Trạng thái</th>
-                  {/* <th className="field">Tiến độ</th> */}
-                  {/* <th className="field">Hủy quyền khai báo</th> */}
-                  <th>
+                  <th className="field">
+                    Trạng thái <br />
                     <input
                       type="checkbox"
                       onChange={() => handleTickAll()}
@@ -190,6 +272,8 @@ export default function Declare({
                       className="tickBox"
                     />
                   </th>
+                  {/* <th className="field">Tiến độ</th> */}
+                  {/* <th className="field">Hủy quyền khai báo</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -210,26 +294,8 @@ export default function Declare({
                         <td className="id-column">{region.id}</td>
                         <td className="name-column">{region.name}</td>
                         <td className="des-column">{region.textDes}</td>
-                        {}
-                        <td className="">{}</td>
-
-                        <td>
-                          {region.permission && !region.permission.isFinish ? (
-                            <span
-                              className="cancel"
-                              onClick={(e) =>
-                                handleCancelDeclareTime(e, region.id)
-                              }
-                            >
-                              <i className="fas fa-window-close"></i>
-                            </span>
-                          ) : (
-                            <input
-                              type="checkbox"
-                              className="tickBox"
-                              onChange={() => handleAddArrayId(region.id)}
-                            />
-                          )}
+                        <td className="status-column">
+                          {handleShowIcon(region.permission, region.id)}
                         </td>
                       </tr>
                     );

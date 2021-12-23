@@ -1,5 +1,4 @@
 import React from "react";
-import Navbar from "../../../components/NavBar/connectStore";
 import "./style.scss";
 import faker from "faker";
 import {dataMigration, dataGender, dataAge, dataReligion, dataEducation, dataTowerAge} from "./data";
@@ -29,7 +28,6 @@ ChartJS.register(
 export default function Analysis() {
   return (
     <>
-      <Navbar />
       <div className="pie-chart">
         <h2>Phân bố dân cư</h2>
         <Pie data={dataGender} className="gender " />
