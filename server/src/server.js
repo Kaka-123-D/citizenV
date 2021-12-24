@@ -24,47 +24,50 @@ const corsOptions = {
 };
 
 db.connect()
-  .then(() => {
+  .then(async () => {
     //Session store
-    const sequelize = db.sequelize;
-    const myStore = new SequelizeStore({
-      db: sequelize,
-      tableName: "sessions",
-      checkExpirationInterval: parseInt(SESS_REMOVE_DB_TIME) * 60 * 60 * 1000,
-    });
+    const InitSchedule = require("./app/init/InitSchedule");
+    if (await InitSchedule.init()) {
+      const sequelize = db.sequelize;
+      const myStore = new SequelizeStore({
+        db: sequelize,
+        tableName: "sessions",
+        checkExpirationInterval: parseInt(SESS_REMOVE_DB_TIME) * 60 * 60 * 1000,
+      });
 
-    const app = express();
+      const app = express();
 
-    // Middleware
-    app.use(cors(corsOptions));
-    app.use(
-      express.urlencoded({
-        extended: true,
-      })
-    );
-    app.use(express.json());
-    app.use(
-      session({
-        name: SESS_NAME,
-        resave: false,
-        store: myStore,
-        saveUninitialized: false,
-        secret: SESS_SECRET,
-        cookie: {
-          maxAge: parseInt(SESS_LIFETIME) * 60 * 60 * 1000,
-          sameSite: true,
-          secure: IN_PROD,
-          httpOnly: false,
-        },
-      })
-    );
+      // Middleware
+      app.use(cors(corsOptions));
+      app.use(
+        express.urlencoded({
+          extended: true,
+        })
+      );
+      app.use(express.json());
+      app.use(
+        session({
+          name: SESS_NAME,
+          resave: false,
+          store: myStore,
+          saveUninitialized: false,
+          secret: SESS_SECRET,
+          cookie: {
+            maxAge: parseInt(SESS_LIFETIME) * 60 * 60 * 1000,
+            sameSite: true,
+            secure: IN_PROD,
+            httpOnly: false,
+          },
+        })
+      );
 
-    //router
-    route(app);
+      //router
+      route(app);
 
-    app.listen(PORT, () => {
-      console.log(`--------->Server running at http://localhost:${PORT}`);
-    });
+      app.listen(PORT, () => {
+        console.log(`--------->Server running at http://localhost:${PORT}`);
+      });
+    }
   })
   .catch(() => {
     console.log("--------->SERVER_ERROR!");
