@@ -94,8 +94,8 @@ export const declareRegion =
   };
 
 export const setRegionListToState = (executor) => async (dispatch) => {
-  let tailURL = "/regions";
-  const URL = "http://localhost:8080/" + executor + tailURL;
+  let tag = "/regions";
+  const URL = "http://localhost:8080/" + executor + tag;
   const res = await axios.get(URL, { withCredentials: true });
   if (res.data.status === 1) {
     dispatch(setRegionList(res.data));
@@ -103,6 +103,13 @@ export const setRegionListToState = (executor) => async (dispatch) => {
     const data = { regions: [] };
     dispatch(setRegionList(data));
   }
+};
+
+export const getDataRegionById = (executor, id) => async (dispatch) => {
+  let tag = "";
+  const URL = "http://localhost:8080/" + executor + tag;
+  // const res = await axios.get(URL, { withCredentials: true });
+  return {};
 };
 
 export default region.reducer;

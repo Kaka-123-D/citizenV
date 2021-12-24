@@ -66,15 +66,6 @@ export default function NavBar({ clickChangePass }) {
                 Đổi mật khẩu
               </Nav.Link>
             </Nav>
-            {/* <Form className="d-flex">
-              <FormControl
-                type="search"
-                placeholder="Search"
-                className="me-2"
-                aria-label="Search"
-              />
-              <Button variant="outline-success">Search</Button>
-            </Form> */}
             <LogoutBtn />
           </Navbar.Collapse>
         </Container>

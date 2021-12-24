@@ -69,7 +69,7 @@ export const getListAllPersonInRegion = (executor) => async (dispatch) => {
 };
 
 export const getPersonList = (executor, place, ids) => async (dispatch) => {
-  // let tailURL = "/personByProvince";
+  // let tag = "/personByProvince";
   const URL = "http://localhost:8080/" + executor + "/personBy" + place;
   const res = await axios.get(
     URL,

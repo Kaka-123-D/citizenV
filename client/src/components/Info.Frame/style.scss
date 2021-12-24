@@ -1,0 +1,98 @@
+.frame-wrap {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 5;
+  // text-align: center;
+  margin-top: 0;
+  color: white;
+
+  // z-index: 10;
+  .layout-outside {
+    z-index: 1;
+    // background-color: rgba(59, 158, 112, 0.5);
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+  }
+
+  .frame-info {
+    box-shadow: 8px -6px 42px 6px rgba(0, 0, 0, 0.55);
+    -webkit-box-shadow: 8px -6px 42px 6px rgba(0, 0, 0, 0.55);
+    -moz-box-shadow: 8px -6px 42px 6px rgba(0, 0, 0, 0.55);
+    position: fixed;
+    z-index: 2;
+    background-color: #a86a52e7;
+    width: 70vw;
+    height: 70vh;
+    overflow-y: scroll;
+    margin-top: 12vh;
+    margin-left: 15vw;
+    margin-right: 15vw;
+    min-width: 300px;
+    border-radius: 10px;
+    padding: 5vw;
+    -ms-overflow-style: none; // hide scrollbar for IE and Edge
+    scrollbar-width: none; // hide scrollbar for Firefox
+
+    &::-webkit-scrollbar {
+      display: none; // Hide scrollbar for Chrome, Safari and Opera
+    }
+
+    @media (max-width: 400px) {
+      margin-top: 5vh;
+    }
+    @media (max-width: 250px) {
+      margin-top: 10vh;
+    }
+
+    .back-btn {
+      position: absolute;
+      right: 0;
+      top: 0;
+      background-color: #e08a68;
+      outline: none;
+      border-radius: 10px;
+      width: 35px;
+      height: 35px;
+    }
+
+    .info-region {
+      font-size: 25px;
+      font-weight: bold;
+      p {
+        font-weight: normal;
+        display: inline-block;
+      }
+    }
+
+    .time {
+      label {
+        font-size: 25px;
+        // font-weight: bold;
+        margin-right: 10px;
+      }
+
+      #time-start,
+      #time-end {
+        display: inline-block;
+        font-size: 24px;
+        font-weight: bold;
+      }
+    }
+
+    h2 {
+      margin-top: 10px;
+      font-size: 40px;
+      font-weight: bold;
+    }
+    .progress-bar-custom {
+      border: 2px solid #343422;
+      border-radius: 10px;
+      width: 100%;
+      height: 50px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+  }
+}

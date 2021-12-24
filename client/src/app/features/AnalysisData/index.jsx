@@ -1,7 +1,7 @@
 import React from "react";
 import "./style.scss";
 import faker from "faker";
-import {dataMigration, dataGender, dataAge, dataReligion, dataEducation, dataTowerAge} from "./data";
+import {dataMigration, dataRegion, dataAge, dataReligion, dataEducation, dataTowerAge} from "./data";
 import {optionsMigration, optionsEducation, optionsTowerAge} from "./options";
 import {
   Chart as ChartJS,
@@ -30,7 +30,7 @@ export default function Analysis() {
     <>
       <div className="pie-chart">
         <h2>Phân bố dân cư</h2>
-        <Pie data={dataGender} className="gender " />
+        <Pie data={dataRegion} className="gender " />
       </div>
       <div className="pie-chart">
         <h2>Tỉ trọng cơ cấu nhóm tuổi</h2>

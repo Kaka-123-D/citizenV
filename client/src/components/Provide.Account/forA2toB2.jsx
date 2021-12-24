@@ -55,17 +55,19 @@ export default function forA2toB2({
   return (
     <div>
       <h2>Cấp tài khoản: </h2>
-      <input
-        value={textSearch}
-        className="search-region"
-        type="text"
-        placeholder="Search.."
-        onChange={(e) => setTextSearch(e.target.value)}
-      />
+      <div className="service-provide-acc">
+        <input
+          value={textSearch}
+          className="search-region"
+          type="text"
+          placeholder="Search.."
+          onChange={(e) => setTextSearch(e.target.value)}
+        />
 
-      <button className="create-btn" onClick={(e) => handleSubmit(e)}>
-        Cấp tài khoản
-      </button>
+        <button className="create-btn" onClick={(e) => handleSubmit(e)}>
+          Cấp tài khoản
+        </button>
+      </div>
       <RegionsTable
         regions={regions}
         handleTickAll={handleTickAll}
