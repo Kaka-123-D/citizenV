@@ -9,6 +9,9 @@ dotenv.config();
 const User = require("../model/User");
 const Permission = require("../model/Permission");
 const Person = require("../model/Person");
+const Province = require("../model/Province");
+const District = require("../model/District");
+const Ward = require("../model/Ward");
 
 
 const { SALT_ROUND } = process.env;
@@ -574,8 +577,36 @@ class UserController {
   }
 
   async getPercentAge(req, res) {
-    const percentAgeFemale = await Person.getPercentAgeFemale();
-    const percentAgeMale = await Person.getPercentAgeMale();
+    var address = "";
+    if (req.session.group == 'a1') {
+      address = "nationwide";
+    }
+    if (req.session.group == "a2") {
+      const province = await Province.findOne({
+        where: {
+          provinceId: req.session.username,
+        },
+      });
+      address = province.getAddress();
+    }
+    if (req.session.group == "a3") {
+      const district = await District.findOne({
+        where: {
+          districtId: req.session.username,
+        },
+      });
+      address = await district.getAddress();
+    }
+    if (req.session.group == "b1") {
+      const ward = await Ward.findOne({
+        where: {
+          wardId: req.session.username,
+        },
+      });
+      address = await ward.getAddress();
+    }
+    const percentAgeFemale = await Person.getPercentAgeFemale(address);
+    const percentAgeMale = await Person.getPercentAgeMale(address);
     return res.json({
       status: 1,
       male: percentAgeMale,
@@ -584,7 +615,19 @@ class UserController {
   }
 
   async getPercentRegion(req, res) {
-    const percentCity = await Person.getPercentRegionCity();
+    var address = "";
+    if (req.session.group == "a1") {
+      address = "nationwide";
+    }
+    if (req.session.group == "a2") {
+      const province = await Province.findOne({
+        where: {
+          provinceId: req.session.username,
+        },
+      });
+      address = province.getAddress();
+    }
+    const percentCity = await Person.getPercentRegionCity(address);
     return res.json({ status: 1, city: percentCity, country: 1 - percentCity });
   }
 
@@ -594,18 +637,86 @@ class UserController {
   }
 
   async getPercentGroupAge(req, res) {
-    const percentGroupAge = await Person.getPercentGroupAge();
+    var address = "";
+    if (req.session.group == "a1") {
+      address = "nationwide";
+    }
+    if (req.session.group == "a2") {
+      const province = await Province.findOne({
+        where: {
+          provinceId: req.session.username,
+        },
+      });
+      address = province.getAddress();
+    }
+    if (req.session.group == "a3") {
+      const district = await District.findOne({
+        where: {
+          districtId: req.session.username,
+        },
+      });
+      address = await district.getAddress();
+    }
+    if (req.session.group == "b1") {
+      const ward = await Ward.findOne({
+        where: {
+          wardId: req.session.username,
+        },
+      });
+      address = await ward.getAddress();
+    }
+    const percentGroupAge = await Person.getPercentGroupAge(address);
     return res.json({ status: 1, groupAge: percentGroupAge });
   }
 
   async getPercentReligion(req, res) {
-    const percentReligion = await Person.getPercentReligion();
+    var address = "";
+    if (req.session.group == "a1") {
+      address = "nationwide";
+    }
+    if (req.session.group == "a2") {
+      const province = await Province.findOne({
+        where: {
+          provinceId: req.session.username,
+        },
+      });
+      address = province.getAddress();
+    }
+    if (req.session.group == "a3") {
+      const district = await District.findOne({
+        where: {
+          districtId: req.session.username,
+        },
+      });
+      address = await district.getAddress();
+    }
+    if (req.session.group == "b1") {
+      const ward = await Ward.findOne({
+        where: {
+          wardId: req.session.username,
+        },
+      });
+      address = await ward.getAddress();
+    }
+    const percentReligion = await Person.getPercentReligion(address);
     return res.json({ status: 1, religion: percentReligion });
   }
 
   async getPercentEducation(req, res) {
-    const percentEducationFemale = await Person.getPercentEducationFemale();
-    const percentEducationMale = await Person.getPercentEducationMale();
+    var address = "";
+    if (req.session.group == "a1") {
+      address = "nationwide";
+    }
+    if (req.session.group == "a2") {
+      const province = await Province.findOne({
+        where: {
+          provinceId: req.session.username,
+        },
+      });
+      address = province.getAddress();
+    }
+    const percentEducationFemale = await Person.getPercentEducationFemale(address);
+    const percentEducationMale = await Person.getPercentEducationMale(address);
     return res.json({
       status: 1,
       male: percentEducationMale,

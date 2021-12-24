@@ -21,5 +21,8 @@ router.post("/grantDeclare", userMiddleware.roleCUD, userController.grantDeclare
 router.post("/cancelDeclare", userMiddleware.roleCUD, userController.cancelDeclare);
 router.put("/confirmDeclareComplete", userMiddleware.roleCUD, userController.confirmDeclareComplete);
 router.put("/cancelDeclareComplete", userMiddleware.roleCUD, userController.cancelDeclareComplete);
+router.get("/percentAge", userController.getPercentAge);
+router.get("/percentGroupAge", userController.getPercentGroupAge);
+router.get("/percentReligion", userController.getPercentReligion);
 
 module.exports = router;

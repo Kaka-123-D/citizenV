@@ -55,8 +55,7 @@ class A3Controller {
       const wards = await Ward.findAll({
         where: {
           districtId: req.session.username,
-        },
-        attributes: ["wardId", "wardName", "textDes"],
+        }
       });
       const result = [];
       for (const ward of wards) {
@@ -66,7 +65,7 @@ class A3Controller {
           },
         });
         //Lấy sô dân của xã
-        var amountPerson = await Person.getAmountPerson(ward.getAddress());
+        var amountPerson = await Person.getAmountPerson(await ward.getAddress());
         var permission = null;
         if (user) {
           permission = await Permission.findOne({

@@ -54,8 +54,7 @@ class B1Controller {
       const villages = await Village.findAll({
         where: {
           wardId: req.session.username,
-        },
-        attributes: ["villageId", "villageName", "textDes"],
+        }
       });
       const result = [];
       for (const village of villages) {
@@ -65,7 +64,7 @@ class B1Controller {
           },
         });
         // Lấy số dân của thôn
-        var amountPerson = await Person.getAmountPerson(village.getAddress());
+        var amountPerson = await Person.getAmountPerson(await village.getAddress());
         var permission = null;
         if (user) {
           permission = await Permission.findOne({

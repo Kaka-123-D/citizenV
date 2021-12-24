@@ -57,8 +57,7 @@ class A2Controller {
       const districts = await District.findAll({
         where: {
           provinceId: req.session.username,
-        },
-        attributes: ["districtId", "districtName", "textDes"],
+        }
       });
       const result = [];
       for (const district of districts) {
@@ -73,7 +72,7 @@ class A2Controller {
         var progress = -1;
         var wardUsers = null;
         //Lấy số dân của 1 huyện
-        var amountPerson = await Person.getAmountPerson(district.getAddress());
+        var amountPerson = await Person.getAmountPerson(await district.getAddress());
         if (user) {
           permission = await Permission.findOne({
             attributes: ["permissionId", "isComplete", "isFinish", "timeStart", "timeEnd"],
@@ -120,6 +119,7 @@ class A2Controller {
       }
       res.json({ status: 1, regions: result });
     } catch (e) {
+      console.log(e);
       res.json({ status: 0, error: "GET_REGIONS_ERROR!" });
     }
   }
