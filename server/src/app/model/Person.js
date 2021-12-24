@@ -98,6 +98,7 @@ class Person extends Model {
 
   static async getPercentGroupAge(address) {
     const percentGroupAge = [];
+    var sumPercent = 0;
     try {
       const result = await sequelize.query(
         "CALL getPercentGroupAge( :address );",
@@ -111,7 +112,11 @@ class Person extends Model {
       for (let i = 0; i < result.length - 1; i++) {
         percentGroupAge.push(result[i]["0"][`age_${i}`]);
       }
-      return [...percentGroupAge, 1 - percentGroupAge[0] - percentGroupAge[1]];
+      for (let i = 0; i < percentGroupAge.length; i++) {
+        percentGroupAge[i] = Math.floor(percentGroupAge[i] * 100) / 100;
+        sumPercent += percentGroupAge[i];
+      }
+      return [...percentGroupAge, 1 - sumPercent];
     } catch (e) {
       return [];
     }
@@ -119,6 +124,7 @@ class Person extends Model {
 
   static async getPercentReligion(address) {
     const percentReligion = [];
+    var sumPercent = 0;
     try {
       const result = await sequelize.query(
         "CALL getPercentReligion( :address );",
@@ -129,13 +135,12 @@ class Person extends Model {
           },
         }
       );
-      var totalPercent = 0;
       for (let i = 0; i < result.length - 1; i++) {
         const percent = result[i]["0"][`r_${i + 1}`];
-        totalPercent += percent;
-        percentReligion.push(percent);
+        percentReligion.push(Math.floor(percent * 100) / 100);
+        sumPercent += (Math.floor(percent * 100) / 100);
       }
-      return [...percentReligion, 1 - totalPercent];
+      return [...percentReligion, 1 - sumPercent];
     } catch (e) {
       return [];
     }

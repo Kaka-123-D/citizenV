@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
 import CountDown from "react-countdown";
-import { xoa_dau, formatTimeClock } from "../../validation";
+import { xoa_dau, formatTimeClock, checkTimePassed } from "../../validation";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProgressBar from "react-bootstrap/ProgressBar";
@@ -167,7 +167,7 @@ export default function Declare({
     if (status === 2)
       return (
         <span className="complete tdStatus">
-          <i class="fas fa-check-circle"></i>{" "}
+          <i className="fas fa-check-circle"></i>{" "}
         </span>
       );
   };
@@ -181,7 +181,7 @@ export default function Declare({
         showButton = false;
       } else countSuccess++;
     }
-    if (showButton)
+    if (showButton && permission && !permission.isFinish && checkTimePassed(permission.timeStart))
       return (
         <button
           className="completeBtn"
@@ -190,7 +190,7 @@ export default function Declare({
           Hoàn thành điều tra
         </button>
       );
-    else {
+    else if ((permission && checkTimePassed(permission.timeStart)) || executor === "a1") {
       let progress = (countSuccess * 100) / regions.length;
       return (
         <div className="progress-declare">
@@ -215,14 +215,14 @@ export default function Declare({
       // và ngược lại nếu chưa chọn
       handleAddArrayId(region.id);
       tdStatus[index + 1].checked = !tdStatus[index + 1].checked;
-    } else if (status === 1) {
+    } else {
       // hiện khung thông tin gồm time start, time end, tiến độ
       const data = {
         id: region.id,
         name: region.name,
         timeStart: region.permission.timeStart,
         timeEnd: region.permission.timeEnd,
-        progress: region.progress,
+        progress: Math.round(region.progress * 100),
       };
       setClickedRow(true);
       setData(data);
@@ -237,11 +237,9 @@ export default function Declare({
       ) : null}
       <div className="provide-time-form">
         <div className="clock-countdown">
-          {permission &&
-          new Date(permission.timeStart) < new Date(Date.now()) ? (
+          {permission && checkTimePassed(permission.timeStart) ? (
             <>
-              {new Date(permission.timeEnd) - new Date(Date.now()) <
-              0 ? null : (
+              {checkTimePassed(permission.timeEnd) ? null : (
                 <>
                   <span className="start-end-time">
                     <div className="start-time">

@@ -10,6 +10,8 @@ const mapStateToProps = (state) => ({
     dataRegion: state.analysis.dataRegion,
     dataReligion: state.analysis.dataReligion,
     dataEducation: state.analysis.dataEducation,
+    dataGender: state.analysis.dataGender,
+    unemployedRate: state.analysis.unemployedRate,
 });
 
 const mapActionToProps = { getDataByTag };

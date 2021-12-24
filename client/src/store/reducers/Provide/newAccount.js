@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {setIsRegisteredByIds} from "../Declare/regions"
 
 const initialState = {};
 
@@ -30,6 +31,7 @@ export const createAccountForA1 =
     });
     if (res.data.status === 1) {
       dispatch(createAccountSuccess());
+      
       toast.success("Cấp tài khoản thành công");
     } else {
       dispatch(createAccountError());
@@ -37,22 +39,25 @@ export const createAccountForA1 =
     }
   };
 
-export const createAccountForA2toB2 = (executor, ids) => async (dispatch) => {
-  const URL = "http://localhost:8080/" + executor + "/register";
-  const res = await axios.post(
-    URL,
-    { ids },
-    {
-      withCredentials: true,
+export const createAccountForA2toB2 =
+  (executor, ids, setArrayId) => async (dispatch) => {
+    const URL = "http://localhost:8080/" + executor + "/register";
+    const res = await axios.post(
+      URL,
+      { ids },
+      {
+        withCredentials: true,
+      }
+    );
+    if (res.data.status === 1) {
+      dispatch(createAccountSuccess());
+      setArrayId([]);
+      dispatch(setIsRegisteredByIds(ids));
+      toast.success("Cấp tài khoản thành công");
+    } else {
+      dispatch(createAccountError());
+      toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
     }
-  );
-  if (res.data.status === 1) {
-    dispatch(createAccountSuccess());
-    toast.success("Cấp tài khoản thành công");
-  } else {
-    dispatch(createAccountError());
-    toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
-  }
-};
+  };
 
 export default newAccount.reducer;

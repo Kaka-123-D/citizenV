@@ -40,11 +40,15 @@ export default function Analysis({
   dataMigration,
   dataTowerAge,
   dataEducation,
+  unemployedRate,
+  dataGender,
 }) {
   useEffect(() => {
     getDataByTag(executor, "Age"); // All
     getDataByTag(executor, "GroupAge"); // All
     getDataByTag(executor, "Religion"); // All
+    getDataByTag(executor, "Gender"); // All
+    getDataByTag(executor, "Unemployment"); // All
 
     if (executor === "a1") getDataByTag(executor, "Migrate"); // A1
     if (executor === "a1" || executor === "a2") {
@@ -55,6 +59,11 @@ export default function Analysis({
 
   return (
     <>
+    {console.log(dataGender)}
+      <div className="pie-chart">
+        <h2>Chênh lệch giới tính</h2>
+        <Pie data={dataGender} className="gender " />
+      </div>
       {executor === "a1" || executor === "a2" ? (
         <div className="pie-chart">
           <h2>Phân bố dân cư</h2>
@@ -98,6 +107,8 @@ export default function Analysis({
           />
         </div>
       ) : null}
+      {console.log(unemployedRate)}
+      <h2>Tỉ lệ thất nghiệp: {unemployedRate} %</h2>
     </>
   );
 }

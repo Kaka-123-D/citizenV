@@ -2,26 +2,27 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
+  unemployedRate: 0,
   dataTowerAge: {
-    labels:  [
-  "80+",
-  "75-79",
-  "70-74",
-  "65-69",
-  "60-64",
-  "55-59",
-  "50-54",
-  "45-49",
-  "40-44",
-  "35-39",
-  "30-34",
-  "25-29",
-  "20-24",
-  "15-19",
-  "10-14",
-  "05-09",
-  "0-04",
-],
+    labels: [
+      "80+",
+      "75-79",
+      "70-74",
+      "65-69",
+      "60-64",
+      "55-59",
+      "50-54",
+      "45-49",
+      "40-44",
+      "35-39",
+      "30-34",
+      "25-29",
+      "20-24",
+      "15-19",
+      "10-14",
+      "05-09",
+      "0-04",
+    ],
     datasets: [
       {
         label: "Nam",
@@ -72,6 +73,18 @@ const initialState = {
     datasets: [
       {
         label: "# of Votes",
+        data: [0, 0],
+        backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
+        borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
+        borderWidth: 1,
+      },
+    ],
+  },
+  dataGender: {
+    labels: ["Nữ", "Nam"],
+    datasets: [
+      {
+        label: "S of Votes",
         data: [0, 0],
         backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(54, 162, 235, 0.2)"],
         borderColor: ["rgba(255, 99, 132, 1)", "rgba(54, 162, 235, 1)"],
@@ -137,7 +150,7 @@ const initialState = {
     datasets: [
       {
         label: "# of Votes",
-        data: [3222, 3893, 4754],
+        data: [0, 0, 0],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -161,37 +174,46 @@ const analysis = createSlice({
   reducers: {
     // các actions
     getDataSuccess(state, action) {
-        console.log("action:", action.payload.tag);
       switch (action.payload.tag) {
+        case "GroupAge": {
+          state.dataAge.datasets[0].data = action.payload.groupAge.map((k) => Math.round(k*10000)/100);
+          break;
+        }
         case "Age": {
-          state.dataTowerAge.datasets[0].data = action.payload.male.reverse();
-          state.dataTowerAge.datasets[1].data = action.payload.female.reverse().map((k) => -k);
+          state.dataTowerAge.datasets[0].data = action.payload.male.reverse().map((k) => Math.round(k*10000)/100);
+          state.dataTowerAge.datasets[1].data = action.payload.female.reverse().map((k) => -Math.round(k*10000)/100);
           break;
         }
         case "Migrate": {
-            console.log(action.payload.migrate[0]);
-          state.dataMigration.datasets[0].data[0] = action.payload.migrate[0];
-          state.dataMigration.datasets[1].data[0] = action.payload.migrate[1];
-          state.dataMigration.datasets[2].data[0] = action.payload.migrate[2];
-          state.dataMigration.datasets[3].data[0] = action.payload.migrate[3];
+          state.dataMigration.datasets[0].data[0] = Math.round(action.payload.migrate[0] * 10000)/100;
+          state.dataMigration.datasets[1].data[0] = Math.round(action.payload.migrate[1] * 10000)/100;
+          state.dataMigration.datasets[2].data[0] = Math.round(action.payload.migrate[2] * 10000)/100;
+          state.dataMigration.datasets[3].data[0] = Math.round(action.payload.migrate[3] * 10000)/100;
           break;
         }
         case "Region": {
-          state.dataRegion.datasets[0].data[0] = action.payload.city;
-          state.dataRegion.datasets[0].data[1] = action.payload.country;
+          state.dataRegion.datasets[0].data[0] = Math.round(action.payload.city * 10000)/100;
+          state.dataRegion.datasets[0].data[1] = Math.round(action.payload.country * 10000)/100;
           break;
         }
         case "Religion": {
-          state.dataReligion.datasets[0].data = action.payload.religion;
+          state.dataReligion.datasets[0].data = action.payload.religion.map((k) => Math.round(k*10000)/100);
           break;
         }
         case "Education": {
-          state.dataEducation.datasets[0].data = action.payload.male;
-          state.dataEducation.datasets[1].data = action.payload.female;
+          state.dataEducation.datasets[0].data = action.payload.male.map((k) => Math.round(k*10000)/100);
+          state.dataEducation.datasets[1].data = action.payload.female.map((k) => Math.round(k*10000)/100);
           break;
         }
-        case "GroupAge": {
-          state.dataAge.datasets[0].data = action.payload.groupAge;
+        case "Gender": {
+          console.log(action.payload.male);
+          state.dataGender.datasets[0].data[0] = Math.round(action.payload.male * 10000)/100;
+          state.dataGender.datasets[0].data[1] = Math.round(action.payload.female * 10000)/100;
+          console.log(state.dataGender.datasets[0].data[0]);
+          break;
+        }
+        case "Unemployment": {
+          state.unemployedRate = Math.round(action.payload.percentUnemployment * 10000)/100;
           break;
         }
       }

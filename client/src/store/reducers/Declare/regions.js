@@ -28,6 +28,15 @@ const region = createSlice({
     setRegionList(state, action) {
       state.regions = action.payload.regions;
     },
+    setIsRegisteredByIds(state, action) {
+      for (const id of action.payload) {
+        for (const region of state.regions) {
+          if (region.id === id) {
+            region.isRegistered = true;
+          }
+        }
+      }
+    },
     setPermissionByRegionIds(state, action) {
       if (action.payload.tag === "declare") {
         for (const p of action.payload.permissions) {
@@ -47,7 +56,7 @@ const region = createSlice({
         }
       }
     },
-  },
+  }, 
 });
 
 // lấy hàm loginSuccess và loginFailure trong slice để sau khi fetch data thì sử dụng
@@ -56,6 +65,7 @@ export const {
   declareError,
   setRegionList,
   setPermissionByRegionIds,
+  setIsRegisteredByIds,
 } = region.actions;
 
 // gửi username với password lên server để xác thực
@@ -103,13 +113,6 @@ export const setRegionListToState = (executor) => async (dispatch) => {
     const data = { regions: [] };
     dispatch(setRegionList(data));
   }
-};
-
-export const getDataRegionById = (executor, id) => async (dispatch) => {
-  let tag = "";
-  const URL = "http://localhost:8080/" + executor + tag;
-  // const res = await axios.get(URL, { withCredentials: true });
-  return {};
 };
 
 export default region.reducer;

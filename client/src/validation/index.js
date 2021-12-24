@@ -88,3 +88,7 @@ export const formatCountDownClock = (time) => {
 
    return clock;
 }
+
+export const checkTimePassed = (time) => {
+  return new Date(time) <= new Date(Date.now());
+}

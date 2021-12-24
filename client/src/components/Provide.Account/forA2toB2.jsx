@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./forA2toB2.scss";
 import RegionsTable from "../Regions.Table";
+import {xoa_dau} from "../../validation"
 
 export default function forA2toB2({
   createAccount,
@@ -13,13 +14,15 @@ export default function forA2toB2({
   const [ids, setArrayId] = useState([]);
 
   function handleAddArrayId(newId) {
+    let tickBoxArr = document.getElementsByClassName("tickBox");
+
     if (ids.filter((item) => item == newId).length == 0) {
       ids.push(newId);
-      if (Array.isArray(regions) && ids.length === regions.length)
+      if (Array.isArray(regions) && ids.length === tickBoxArr.length - 1)
         setTickAll(true);
       console.log("add");
     } else {
-      if (Array.isArray(regions) && ids.length === regions.length)
+      if (Array.isArray(regions) && ids.length === tickBoxArr.length - 1)
         setTickAll(false);
       setArrayId(ids.filter((item) => item != newId));
       console.log("delete");
@@ -30,7 +33,16 @@ export default function forA2toB2({
     let tickBoxArr = document.getElementsByClassName("tickBox");
     //
     if (!tickAll) {
-      setArrayId(regions.map((region) => region.id));
+      for (let i = 0; i < regions.length; i++) {
+        if (
+          xoa_dau(regions[i].name)
+            .toLocaleLowerCase()
+            .startsWith(xoa_dau(textSearch).toLocaleLowerCase()) &&
+          !regions[i].isRegistered
+        )
+          ids.push(regions[i].id);
+      }
+      console.log(ids);
       for (let i = 0; i < tickBoxArr.length; i++) {
         tickBoxArr[i].checked = true;
       }
@@ -49,7 +61,7 @@ export default function forA2toB2({
 
   function handleSubmit(event) {
     event.preventDefault();
-    createAccount(executor, ids);
+    createAccount(executor, ids, setArrayId);
   }
 
   return (
