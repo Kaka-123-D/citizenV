@@ -5,7 +5,10 @@ import {
   cancelDeclareTime,
   confirmDeclareComplete,
 } from "../../store/reducers/Declare/time";
-import { setRegionListToState } from "../../store/reducers/Declare/regions";
+import {
+  setRegionListToState,
+  getDataRegionById,
+} from "../../store/reducers/Declare/regions";
 
 const mapStateToProps = (state) => ({
   executor: state.auth.group,
@@ -18,6 +21,7 @@ const mapActionToProps = {
   setRegionListToState,
   cancelDeclareTime,
   confirmDeclareComplete,
+  getDataRegionById,
 };
 
 export default connect(mapStateToProps, mapActionToProps)(TimeDeclare);

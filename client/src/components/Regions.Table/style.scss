@@ -1,5 +1,6 @@
 .something {
   .table-regions {
+    margin: 10px auto;
     border: 1px solid black;
     border-collapse: collapse;
     font-size: 16px;
@@ -18,19 +19,20 @@
     }
 
     .id-column {
+      width: 10vw;
       padding: 5px;
       color: #3c4fe0;
-      min-width: 40px;
       text-align: center;
     }
     .name-column {
-      min-width: 200px;
+      width: 30vw;
     }
     .des-column {
-      min-width: 250px;
+      width: 50vw;
     }
     .tickBox {
       cursor: pointer;
+      // width: 10%;
     }
   }
 }

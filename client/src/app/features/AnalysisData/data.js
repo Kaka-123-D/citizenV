@@ -30,7 +30,7 @@ export const dataMigration = {
   ],
 };
 
-export const dataGender = {
+export const dataRegion = {
   labels: ["Thành thị", "Nông thôn"],
   datasets: [
     {

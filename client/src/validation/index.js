@@ -47,3 +47,44 @@ export const validationPassword = (str) => {
     return false;
   return true;
 };
+
+// input: y/m/dTh:m:s.000Z 
+export const formatTimeClock = (time) => {
+  let date = new Date(time);
+
+  let hour = date.getHours();
+  let minute = date.getMinutes();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+
+  if (hour.length === 1) hour = "0" + hour;
+  if (minute.length === 1) minute = "0" + minute;
+  if (day.length === 1) day = "0" + day;
+  if (month.length === 1) month = "0" + month;
+  
+   let tag = "AM";
+   if (hour >= "12") tag = "PM"; 
+
+  let clock = hour + ":" + minute + " " + tag + " - " + day + "/" + month + "/" + year;
+
+  return clock;
+}
+
+export const formatCountDownClock = (time) => {
+  let date = new Date(time);
+
+  let hour = date.getHours();
+  let minute = date.getMinutes();
+  let second = date.getSeconds();
+  let day = date.getDate();
+
+   if (hour.length === 1) hour = "0" + hour;
+   if (minute.length === 1) minute = "0" + minute;
+   if (second.length === 1) second = "0" + second;
+   if (day.length === 1) day = "0" + day;
+
+   let clock = day + " Ngày : " + hour + " Giờ : " + minute + " Phút : " + second + " Giây";
+
+   return clock;
+}
