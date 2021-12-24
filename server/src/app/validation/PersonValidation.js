@@ -219,12 +219,14 @@ class PersonValidation {
       return false;
     }
   }
-  //Thêm tính tuổi phải 0<age<130
+  //Thêm tính tuổi phải 0<age<130(người cao tuổi nhất thế giới)
   validationBirthday(birthday) {
     if (!birthday) return false;
     birthday = birthday.toString();
     const day = new Date(birthday);
     if (isNaN(day.getTime())) return false;
+    const age = (new Date() - day) / (1000 * 60 * 60 * 24 * 365);
+    if (age < 0 || age > 130) return false;
     return true;
   }
   validationSex(sex) {
@@ -248,7 +250,7 @@ class PersonValidation {
     if (!religion) return false;
     if (
       !religion.match(
-        /^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s]{5,25}$/g
+        /^[aAàÀảẢãÃáÁạẠăĂằẰẳẲẵẴắẮặẶâÂầẦẩẨẫẪấẤậẬbBcCdDđĐeEèÈẻẺẽẼéÉẹẸêÊềỀểỂễỄếẾệỆfFgGhHiIìÌỉỈĩĨíÍịỊjJkKlLmMnNoOòÒỏỎõÕóÓọỌôÔồỒổỔỗỖốỐộỘơƠờỜởỞỡỠớỚợỢpPqQrRsStTuUùÙủỦũŨúÚụỤưƯừỪửỬữỮứỨựỰvVwWxXyYỳỲỷỶỹỸýÝỵỴzZ\s0-9]{5,25}$/g
       )
     ) {
       return false;

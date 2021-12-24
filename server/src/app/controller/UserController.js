@@ -578,7 +578,7 @@ class UserController {
 
   async getPercentAge(req, res) {
     var address = "";
-    if (req.session.group == 'a1') {
+    if (req.session.group == "a1") {
       address = "nationwide";
     }
     if (req.session.group == "a2") {
@@ -715,12 +715,87 @@ class UserController {
       });
       address = province.getAddress();
     }
-    const percentEducationFemale = await Person.getPercentEducationFemale(address);
+    const percentEducationFemale = await Person.getPercentEducationFemale(
+      address
+    );
     const percentEducationMale = await Person.getPercentEducationMale(address);
     return res.json({
       status: 1,
       male: percentEducationMale,
       female: percentEducationFemale,
+    });
+  }
+
+  async getPercentGender(req, res) {
+    var address = "";
+    if (req.session.group == "a1") {
+      address = "nationwide";
+    }
+    if (req.session.group == "a2") {
+      const province = await Province.findOne({
+        where: {
+          provinceId: req.session.username,
+        },
+      });
+      address = province.getAddress();
+    }
+    if (req.session.group == "a3") {
+      const district = await District.findOne({
+        where: {
+          districtId: req.session.username,
+        },
+      });
+      address = await district.getAddress();
+    }
+    if (req.session.group == "b1") {
+      const ward = await Ward.findOne({
+        where: {
+          wardId: req.session.username,
+        },
+      });
+      address = await ward.getAddress();
+    }
+    const percentMale = await Person.getPercentMale(address);
+    return res.json({
+      status: 1,
+      male: percentMale,
+      female: 1 - percentMale,
+    });
+  }
+
+  async getPercentUnemployment(req, res) {
+    var address = "";
+    if (req.session.group == "a1") {
+      address = "nationwide";
+    }
+    if (req.session.group == "a2") {
+      const province = await Province.findOne({
+        where: {
+          provinceId: req.session.username,
+        },
+      });
+      address = province.getAddress();
+    }
+    if (req.session.group == "a3") {
+      const district = await District.findOne({
+        where: {
+          districtId: req.session.username,
+        },
+      });
+      address = await district.getAddress();
+    }
+    if (req.session.group == "b1") {
+      const ward = await Ward.findOne({
+        where: {
+          wardId: req.session.username,
+        },
+      });
+      address = await ward.getAddress();
+    }
+    const percentUnemployment = await Person.getPercentUnemployment(address);
+    return res.json({
+      status: 1,
+      percentUnemployment
     });
   }
 }

@@ -27,7 +27,7 @@ class A2Controller {
     const { id, name, type, textDes } = req.body;
     if (!await validationDistrictId(id, "declare", req.session.username))
       return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
-    if (!await validationDistrictName(name))
+    if (!await validationDistrictName(name, req.session.username))
       return res.json({ status: 0, error: "DISTRICT_NAME_ERROR!" });
     if (!validationDistrictType(type))
       return res.json({ status: 0, error: "DISTRICT_TYPE_ERROR!" });

@@ -396,7 +396,7 @@ CREATE PROCEDURE getPercentReligion(IN address VARCHAR(255))
 BEGIN
 SELECT getPercentReligionDetails("Kitô Giáo", address) r_1;
 SELECT getPercentReligionDetails("Phật Giáo", address) r_2;
-SELECT getPercentReligionDetails("Đạo Tinh Lành", address) r_3;
+SELECT getPercentReligionDetails("Đạo Tin Lành", address) r_3;
 SELECT getPercentReligionDetails("Phật Giáo Hòa Hảo", address) r_4;
 SELECT getPercentReligionDetails("Đạo Cao Đài", address) r_5;
 SELECT getPercentReligionDetails("Không", address) r_6;
@@ -575,3 +575,81 @@ END $$
 DELIMITER ;
 -- DROP PROCEDURE getPercentEducationFemale;
 -- CALL getPercentEducationFemale();
+
+-- Lấy cơ cấu nam nữ
+DELIMITER $$
+CREATE FUNCTION getPercentMale(address VARCHAR(255)) 
+RETURNS FLOAT
+NO SQL 
+BEGIN
+DECLARE totalPerson INTEGER DEFAULT -1;
+DECLARE ts INTEGER DEFAULT 0;
+DECLARE pattern VARCHAR(255) DEFAULT "";
+IF (address = "nationwide") THEN
+	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
+    
+	SELECT COUNT(*) INTO ts FROM citizens.persons p WHERE p.sex = true;
+    
+	IF (totalPerson = 0) THEN 
+		SET totalPerson = -1;
+	END IF;
+ELSE
+	SET pattern = CONCAT("%", address, "%");
+	SELECT COUNT(*) INTO totalPerson 
+    FROM citizens.persons 
+    WHERE p.thuongTru like pattern;
+    
+	SELECT COUNT(*) INTO ts 
+    FROM citizens.persons p 
+    WHERE p.sex = true
+    AND p.thuongTru like pattern;
+    
+	IF (totalPerson = 0) THEN 
+		SET totalPerson = -1;
+	END IF;
+END IF;
+RETURN ts / totalPerson;
+END $$
+DELIMITER ;
+
+-- DROP FUNCTION getPercentMale;
+-- SELECT getPercentMale("nationwide");
+
+-- Lấy cơ cấu thất nghiệp
+DELIMITER $$
+CREATE FUNCTION getPercentUnemployment(address VARCHAR(255)) 
+RETURNS FLOAT
+NO SQL 
+BEGIN
+DECLARE totalPerson INTEGER DEFAULT -1;
+DECLARE ts INTEGER DEFAULT 0;
+DECLARE pattern VARCHAR(255) DEFAULT "";
+IF (address = "nationwide") THEN
+	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
+    
+	SELECT COUNT(*) INTO ts FROM citizens.persons p WHERE p.job = "thất nghiệp";
+    
+	IF (totalPerson = 0) THEN 
+		SET totalPerson = -1;
+	END IF;
+ELSE
+	SET pattern = CONCAT("%", address, "%");
+	SELECT COUNT(*) INTO totalPerson 
+    FROM citizens.persons 
+    WHERE p.thuongTru like pattern;
+    
+	SELECT COUNT(*) INTO ts 
+    FROM citizens.persons p 
+    WHERE p.job = "thất nghiệp"
+    AND p.thuongTru like pattern;
+    
+	IF (totalPerson = 0) THEN 
+		SET totalPerson = -1;
+	END IF;
+END IF;
+RETURN ts / totalPerson;
+END $$
+DELIMITER ;
+
+-- DROP FUNCTION getPercentUnemployment;
+-- SELECT getPercentUnemployment("nationwide");

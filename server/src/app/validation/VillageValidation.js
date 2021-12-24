@@ -76,7 +76,7 @@ class VillageValidation {
     }
   }
 
-  async validationVillageName(villageName) {
+  async validationVillageName(villageName, username) {
     if (!villageName) return false;
     if (
       !villageName.match(
@@ -89,6 +89,7 @@ class VillageValidation {
       const village = await Village.findOne({
         where: {
           villageName: villageName,
+          wardId: username
         },
       });
       if (village) return false;

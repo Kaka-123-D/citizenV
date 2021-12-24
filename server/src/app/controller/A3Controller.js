@@ -25,7 +25,7 @@ class A3Controller {
     const { id, name, type, textDes } = req.body;
     if (!await validationWardId(id, "declare", req.session.username))
       return res.json({ status: 0, error: "WARD_ID_ERROR!" });
-    if (!await validationWardName(name))
+    if (!await validationWardName(name, req.session.username))
       return res.json({ status: 0, error: "WARD_NAME_ERROR!" });
     if (!validationWardType(type))
       return res.json({ status: 0, error: "WARD_TYPE_ERROR!" });

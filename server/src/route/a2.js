@@ -27,5 +27,7 @@ router.get("/percentRegion", userController.getPercentRegion);
 router.get("/percentGroupAge", userController.getPercentGroupAge);
 router.get("/percentReligion", userController.getPercentReligion);
 router.get("/percentEducation", userController.getPercentEducation);
+router.get("/percentGender", userController.getPercentGender);
+router.get("/percentUnemployment", userController.getPercentUnemployment);
 
 module.exports = router;

@@ -24,7 +24,7 @@ class B1Controller {
     const { id, name, type, textDes } = req.body;
     if (!await validationVillageId(id, "declare", req.session.username))
       return res.json({ status: 0, error: "VILLAGE_ID_ERROR!" });
-    if (!await validationVillageName(name))
+    if (!await validationVillageName(name, req.session.username))
       return res.json({ status: 0, error: "VILLAGE_NAME_ERROR!" });
     if (!validationVillageType(type))
       return res.json({ status: 0, error: "VILLAGE_TYPE_ERROR!" });

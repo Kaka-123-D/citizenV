@@ -8,12 +8,15 @@ class Person extends Model {
   static async getPercentAgeMale(address) {
     const percentAgeMale = [];
     try {
-      const result = await sequelize.query("CALL getPercentAgeMale( :address );", {
-        type: QueryTypes.SELECT,
-        replacements: { 
-          address: address
+      const result = await sequelize.query(
+        "CALL getPercentAgeMale( :address );",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
         }
-      });
+      );
       for (let i = 0; i < result.length - 1; i++) {
         percentAgeMale.push(result[i]["0"][`age_${i * 5}`]);
       }
@@ -26,12 +29,15 @@ class Person extends Model {
   static async getPercentAgeFemale(address) {
     const percentAgeFemale = [];
     try {
-      const result = await sequelize.query("CALL getPercentAgeFemale( :address );", {
-        type: QueryTypes.SELECT,
-        replacements: {
-          address: address
+      const result = await sequelize.query(
+        "CALL getPercentAgeFemale( :address );",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
         }
-      });
+      );
       for (let i = 0; i < result.length - 1; i++) {
         percentAgeFemale.push(result[i]["0"][`age_${i * 5}`]);
       }
@@ -60,13 +66,16 @@ class Person extends Model {
 
   static async getPercentRegionCity(address) {
     try {
-      const result = await sequelize.query("SELECT getPercentRegionCity( :address ) as r;", {
-        type: QueryTypes.SELECT,
-        replacements: { 
-          address: address
+      const result = await sequelize.query(
+        "SELECT getPercentRegionCity( :address ) as r;",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
         }
-      });
-      return result[0]['r'];
+      );
+      return result[0]["r"];
     } catch (e) {
       return 0;
     }
@@ -90,12 +99,15 @@ class Person extends Model {
   static async getPercentGroupAge(address) {
     const percentGroupAge = [];
     try {
-      const result = await sequelize.query("CALL getPercentGroupAge( :address );", {
-        type: QueryTypes.SELECT,
-        replacements: {
-          address: address
+      const result = await sequelize.query(
+        "CALL getPercentGroupAge( :address );",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
         }
-      });
+      );
       for (let i = 0; i < result.length - 1; i++) {
         percentGroupAge.push(result[i]["0"][`age_${i}`]);
       }
@@ -108,12 +120,15 @@ class Person extends Model {
   static async getPercentReligion(address) {
     const percentReligion = [];
     try {
-      const result = await sequelize.query("CALL getPercentReligion( :address );", {
-        type: QueryTypes.SELECT,
-        replacements: {
-          address: address
+      const result = await sequelize.query(
+        "CALL getPercentReligion( :address );",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
         }
-      });
+      );
       var totalPercent = 0;
       for (let i = 0; i < result.length - 1; i++) {
         const percent = result[i]["0"][`r_${i + 1}`];
@@ -129,12 +144,15 @@ class Person extends Model {
   static async getPercentEducationMale(address) {
     const percentEducationMale = [];
     try {
-      const result = await sequelize.query("CALL getPercentEducationMale( :address );", {
-        type: QueryTypes.SELECT,
-        replacements: {
-          address: address
+      const result = await sequelize.query(
+        "CALL getPercentEducationMale( :address );",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
         }
-      });
+      );
       for (let i = 0; i < result.length - 1; i++) {
         percentEducationMale.push(result[i]["0"][`m_${i + 1}`]);
       }
@@ -147,18 +165,55 @@ class Person extends Model {
   static async getPercentEducationFemale(address) {
     const percentEducationFemale = [];
     try {
-      const result = await sequelize.query("CALL getPercentEducationFemale( :address );", {
-        type: QueryTypes.SELECT,
-        replacements: {
-          address: address
+      const result = await sequelize.query(
+        "CALL getPercentEducationFemale( :address );",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
         }
-      });
+      );
       for (let i = 0; i < result.length - 1; i++) {
         percentEducationFemale.push(result[i]["0"][`f_${i + 1}`]);
       }
       return percentEducationFemale;
     } catch (e) {
       return [];
+    }
+  }
+
+  static async getPercentMale(address) {
+    try {
+      const result = await sequelize.query(
+        "SELECT getPercentMale( :address ) as m;",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
+        }
+      );
+      return result[0]["m"];
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  static async getPercentUnemployment(address) {
+    try {
+      const result = await sequelize.query(
+        "SELECT getPercentUnemployment( :address ) as u;",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
+        }
+      );
+      return result[0]["u"];
+    } catch (e) {
+      return 0;
     }
   }
 }

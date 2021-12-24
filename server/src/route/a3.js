@@ -24,5 +24,7 @@ router.put("/cancelDeclareComplete", userMiddleware.roleCUD, userController.canc
 router.get("/percentAge", userController.getPercentAge);
 router.get("/percentGroupAge", userController.getPercentGroupAge);
 router.get("/percentReligion", userController.getPercentReligion);
+router.get("/percentGender", userController.getPercentGender);
+router.get("/percentUnemployment", userController.getPercentUnemployment);
 
 module.exports = router;
