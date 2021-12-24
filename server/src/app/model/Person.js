@@ -1,9 +1,146 @@
 const { DataTypes, Model } = require("sequelize");
+const { QueryTypes } = require("sequelize");
 const db = require("../../config/db");
 
 const sequelize = db.sequelize;
 
-class Person extends Model {}
+class Person extends Model {
+  static async getPercentAgeMale() {
+    const percentAgeMale = [];
+    try {
+      const result = await sequelize.query("CALL getPercentAgeMale();", {
+        type: QueryTypes.SELECT,
+      });
+      for (let i = 0; i < result.length - 1; i++) {
+        percentAgeMale.push(result[i]["0"][`age_${i * 5}`]);
+      }
+      return percentAgeMale;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static async getPercentAgeFemale() {
+    const percentAgeFemale = [];
+    try {
+      const result = await sequelize.query("CALL getPercentAgeFemale();", {
+        type: QueryTypes.SELECT,
+      });
+      for (let i = 0; i < result.length - 1; i++) {
+        percentAgeFemale.push(result[i]["0"][`age_${i * 5}`]);
+      }
+      return percentAgeFemale;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static async getAmountPerson(address) {
+    try {
+      const result = await sequelize.query(
+        "CALL getAmountPerson( :address );",
+        {
+          type: QueryTypes.SELECT,
+          replacements: {
+            address: address,
+          },
+        }
+      );
+      return result[0]["0"]["amountPerson"];
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  static async getPercentRegionCity() {
+    try {
+      const result = await sequelize.query("getPercentRegionCity();", {
+        type: QueryTypes.SELECT,
+      });
+      return result;
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  static async getPercentMigrate() {
+    const percentMigrate = [];
+    try {
+      const result = await sequelize.query("CALL getPercentMigrate();", {
+        type: QueryTypes.SELECT,
+      });
+      for (let i = 0; i < result.length - 1; i++) {
+        percentMigrate.push(result[i]["0"][`row_${i + 1}`]);
+      }
+      return percentMigrate;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static async getPercentGroupAge() {
+    const percentGroupAge = [];
+    try {
+      const result = await sequelize.query("CALL getPercentGroupAge();", {
+        type: QueryTypes.SELECT,
+      });
+      for (let i = 0; i < result.length - 1; i++) {
+        percentGroupAge.push(result[i]["0"][`age_${i}`]);
+      }
+      return [...percentGroupAge, 1 - percentGroupAge[0] - percentGroupAge[1]];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static async getPercentReligion() {
+    const percentReligion = [];
+    try {
+      const result = await sequelize.query("CALL getPercentReligion();", {
+        type: QueryTypes.SELECT,
+      });
+      var totalPercent = 0;
+      for (let i = 0; i < result.length - 1; i++) {
+        const percent = result[i]["0"][`r_${i + 1}`];
+        totalPercent += percent;
+        percentReligion.push(percent);
+      }
+      return [...percentReligion, 1 - totalPercent];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static async getPercentEducationMale() {
+    const percentEducationMale = [];
+    try {
+      const result = await sequelize.query("CALL getPercentEducationMale();", {
+        type: QueryTypes.SELECT,
+      });
+      for (let i = 0; i < result.length - 1; i++) {
+        percentEducationMale.push(result[i]["0"][`m_${i + 1}`]);
+      }
+      return percentEducationMale;
+    } catch (e) {
+      return [];
+    }
+  }
+
+  static async getPercentEducationFemale() {
+    const percentEducationFemale = [];
+    try {
+      const result = await sequelize.query("CALL getPercentEducationFemale();", {
+        type: QueryTypes.SELECT,
+      });
+      for (let i = 0; i < result.length - 1; i++) {
+        percentEducationFemale.push(result[i]["0"][`f_${i + 1}`]);
+      }
+      return percentEducationFemale;
+    } catch (e) {
+      return [];
+    }
+  }
+}
 
 Person.init(
   {

@@ -4,7 +4,9 @@ const db = require('../../config/db');
 const sequelize = db.sequelize;
 
 class Province extends Model {
-  
+  getAddress() {
+    return `${this.provinceType} ${this.provinceName}`;
+  }
 }
 
 Province.init({

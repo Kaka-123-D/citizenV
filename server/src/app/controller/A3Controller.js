@@ -65,6 +65,8 @@ class A3Controller {
             username: ward.wardId,
           },
         });
+        //Lấy sô dân của xã
+        var amountPerson = await Person.getAmountPerson(ward.getAddress());
         var permission = null;
         if (user) {
           permission = await Permission.findOne({
@@ -80,7 +82,8 @@ class A3Controller {
           name: ward.wardName,
           type: ward.wardType,
           textDes: ward.textDes,
-          permission
+          permission,
+          amountPerson
         });
       }
       res.json({ status: 1, regions: result });

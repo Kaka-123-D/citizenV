@@ -34,7 +34,6 @@ const {
 } = require("../validation/PersonValidation");
 
 class UserController {
-  
   //Cấp quyền khai báo
   async grantDeclare(req, res) {
     const { ids = [], timeStart, timeEnd } = req.body;
@@ -74,7 +73,7 @@ class UserController {
       const permission = await Permission.findOne({
         where: {
           userId: req.session.userId,
-        }
+        },
       });
       if (timeEndD > permission.timeEnd) {
         return res.json({ status: 0, error: "TIME_ERROR!" });
@@ -139,7 +138,7 @@ class UserController {
           isComplete: false,
         });
         await user.addPermission(permission);
-        permissions.push({id, permission});
+        permissions.push({ id, permission });
         //
         schedule.scheduleJob(`start_${id}`, timeStartD, async function () {
           console.log("GRANT_DECLARE_START!");
@@ -152,7 +151,7 @@ class UserController {
             }
           );
         });
-        schedule.scheduleJob(`end_${id}`, timeEndD, async function() {
+        schedule.scheduleJob(`end_${id}`, timeEndD, async function () {
           await Permission.update(
             { isFinish: true },
             {
@@ -329,7 +328,7 @@ class UserController {
       educationLevel,
       job,
     } = req.body;
-    if (!await validationPersonId(personId, "add"))
+    if (!(await validationPersonId(personId, "add")))
       return res.json({ status: 0, error: "PERSON_ID_ERROR!" });
     if (!validationFullName(fullName))
       return res.json({ status: 0, error: "FULL_NAME_ERROR!" });
@@ -382,9 +381,9 @@ class UserController {
       educationLevel,
       job,
     } = req.body;
-    if (!await validationStt(stt, req.session.group, req.session.username))
+    if (!(await validationStt(stt, req.session.group, req.session.username)))
       return res.json({ status: 0, error: "STT_ERROR!" });
-    if (!await validationPersonId(personId, "update"))
+    if (!(await validationPersonId(personId, "update")))
       return res.json({ status: 0, error: "PERSON_ID_ERROR!" });
     if (!validationFullName(fullName))
       return res.json({ status: 0, error: "FULL_NAME_ERROR!" });
@@ -432,7 +431,7 @@ class UserController {
 
   async deletePerson(req, res) {
     const { stt } = req.body;
-    if (!await validationStt(stt, req.session.group, req.session.username))
+    if (!(await validationStt(stt, req.session.group, req.session.username)))
       return res.json({ status: 0, error: "STT_ERROR!" });
     try {
       await Person.destroy({
@@ -520,37 +519,43 @@ class UserController {
   async getNewPassword(req, res) {
     const { id } = req.body;
     if (req.session.group == "a1") {
-      if (!await validationProvinceId(id, "getNewPassword")) {
+      if (!(await validationProvinceId(id, "getNewPassword"))) {
         return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
       }
     }
     if (req.session.group == "a2") {
-      if (!await validationDistrictId(
-        id,
-        "getNewPassword",
-        req.session.username,
-        req.session.group
-      )) {
+      if (
+        !(await validationDistrictId(
+          id,
+          "getNewPassword",
+          req.session.username,
+          req.session.group
+        ))
+      ) {
         return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
       }
     }
     if (req.session.group == "a3") {
-      if (!await validationWardId(
-        id,
-        "getNewPassword",
-        req.session.username,
-        req.session.group
-      )) {
+      if (
+        !(await validationWardId(
+          id,
+          "getNewPassword",
+          req.session.username,
+          req.session.group
+        ))
+      ) {
         return res.json({ status: 0, error: "WARD_ID_ERROR!" });
       }
     }
     if (req.session.group == "b1") {
-      if (!await validationVillageId(
-        id,
-        "getNewPassword",
-        req.session.username,
-        req.session.group
-      )) {
+      if (
+        !(await validationVillageId(
+          id,
+          "getNewPassword",
+          req.session.username,
+          req.session.group
+        ))
+      ) {
         return res.json({ status: 0, error: "VILLAGE_ID_ERROR!" });
       }
     }
@@ -566,6 +571,46 @@ class UserController {
     } catch (e) {
       return res.json({ status: 0, error: "GET_NEW_PASSWORD_ERROR!" });
     }
+  }
+
+  async getPercentAge(req, res) {
+    const percentAgeFemale = await Person.getPercentAgeFemale();
+    const percentAgeMale = await Person.getPercentAgeMale();
+    return res.json({
+      status: 1,
+      male: percentAgeMale,
+      female: percentAgeFemale,
+    });
+  }
+
+  async getPercentRegion(req, res) {
+    const percentCity = await Person.getPercentRegionCity();
+    return res.json({ status: 1, city: percentCity, country: 1 - percentCity });
+  }
+
+  async getPercentMigrate(req, res) {
+    const percentMigrate = await Person.getPercentMigrate();
+    return res.json({ status: 1, migrate: percentMigrate });
+  }
+
+  async getPercentGroupAge(req, res) {
+    const percentGroupAge = await Person.getPercentGroupAge();
+    return res.json({ status: 1, groupAge: percentGroupAge });
+  }
+
+  async getPercentReligion(req, res) {
+    const percentReligion = await Person.getPercentReligion();
+    return res.json({ status: 1, religion: percentReligion });
+  }
+
+  async getPercentEducation(req, res) {
+    const percentEducationFemale = await Person.getPercentEducationFemale();
+    const percentEducationMale = await Person.getPercentEducationMale();
+    return res.json({
+      status: 1,
+      male: percentEducationMale,
+      female: percentEducationFemale,
+    });
   }
 }
 

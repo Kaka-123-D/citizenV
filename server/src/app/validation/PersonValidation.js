@@ -219,6 +219,7 @@ class PersonValidation {
       return false;
     }
   }
+  //Thêm tính tuổi phải 0<age<130
   validationBirthday(birthday) {
     if (!birthday) return false;
     birthday = birthday.toString();

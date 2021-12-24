@@ -1,14 +1,13 @@
 const path = require("path");
 const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
+const db = require("../../config/db");
+const {QueryTypes} = require('sequelize');
+const sequelize = db.sequelize;
 
 dotenv.config();
 
 const User = require("../model/User");
-const Province = require('../model/Province');
-const District = require('../model/District')
-const Ward = require('../model/Ward');
-const Village = require('../model/Village');
 const Permission = require('../model/Permission')
 
 const { SESS_NAME, SALT_ROUND } = process.env;
@@ -17,6 +16,7 @@ const {
   validationUsername,
   validationPassword,
 } = require("../validation/UserValidation");
+const Person = require("../model/Person");
 
 class SiteController {
   
@@ -124,8 +124,7 @@ class SiteController {
   }
 
   async test(req, res) {
-    await User.sync();
-    await Permission.sync();
+    console.log(await Person.getPercentRegionCity());
     res.json({ status: 1 });
   }
 }

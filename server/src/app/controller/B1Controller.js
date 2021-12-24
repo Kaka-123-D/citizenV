@@ -64,6 +64,8 @@ class B1Controller {
             username: village.villageId,
           },
         });
+        // Lấy số dân của thôn
+        var amountPerson = await Person.getAmountPerson(village.getAddress());
         var permission = null;
         if (user) {
           permission = await Permission.findOne({
@@ -78,7 +80,8 @@ class B1Controller {
           name: village.villageName,
           type: village.villageType,
           textDes: village.textDes,
-          permission
+          permission,
+          amountPerson
         });
       }
       res.json({ status: 1, regions: result });

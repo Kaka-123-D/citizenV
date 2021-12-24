@@ -27,13 +27,14 @@ CREATE TABLE `users` (
   `phone` varchar(255) DEFAULT NULL,
   `group` varchar(255) NOT NULL,
   `role` varchar(255) NOT NULL,
+  `lastLogin` datetime DEFAULT NULL,
   `createdAt` datetime NOT NULL,
   `updatedAt` datetime NOT NULL,
   `managerId` int DEFAULT NULL,
   PRIMARY KEY (`userId`),
   KEY `managerId` (`managerId`),
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`managerId`) REFERENCES `users` (`userId`) ON DELETE SET NULL ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 -- Table structure for table `permissions`
 CREATE TABLE `permissions` (

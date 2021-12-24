@@ -20,5 +20,11 @@ router.post("/cancelDeclare", userController.cancelDeclare);
 router.post('/person', userController.addPerson);
 router.put('/person', userController.updatePerson);
 router.delete('/person', userController.deletePerson);
+router.get("/percentAge", userController.getPercentAge);
+router.get("/percentRegion", userController.getPercentRegion);
+router.get("/percentMigrate", userController.getPercentMigrate);
+router.get("/percentGroupAge", userController.getPercentGroupAge);
+router.get("/percentReligion", userController.getPercentReligion);
+router.get("/percentEducation", userController.getPercentEducation);
 
 module.exports = router;

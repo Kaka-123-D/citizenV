@@ -72,6 +72,8 @@ class A2Controller {
         var ms = 0;
         var progress = -1;
         var wardUsers = null;
+        //Lấy số dân của 1 huyện
+        var amountPerson = await Person.getAmountPerson(district.getAddress());
         if (user) {
           permission = await Permission.findOne({
             attributes: ["permissionId", "isComplete", "isFinish", "timeStart", "timeEnd"],
@@ -112,7 +114,8 @@ class A2Controller {
           type: district.districtType,
           textDes: district.textDes,
           permission,
-          progress
+          progress,
+          amountPerson
         });
       }
       res.json({ status: 1, regions: result });

@@ -39,27 +39,34 @@ class A1Controller {
   async getRegions(req, res) {
     try {
       const provinces = await Province.findAll({
-        attributes: ["provinceId", "provinceName", "textDes"],
+        attributes: ["provinceId", "provinceType", "provinceName", "textDes"],
       });
       const result = [];
+      var isRegistered = false;
       for (const province of provinces) {
         const user = await User.findOne({
           where: {
             username: province.provinceId,
           },
         });
+        isRegistered = false;
         var permission = null;
         var districtUsers = null;
         var progress = -1;
         var ms = 0;
         var ts = 0;
+        var amountPerson = await Person.getAmountPerson(province.getAddress());
+        //Lấy số dân của một tỉnh
         if (user) {
+          isRegistered = true;
+          //Lấy permission của user
           permission = await Permission.findOne({
             attributes: ["permissionId", "isComplete", "isFinish", "timeStart", "timeEnd"],
             where: {
               userId: user.userId,
             },
           });
+          //Lấy tiến độ
           districtUsers = await user.getUsers();
           ms = districtUsers.length;
           if (ms > 0) {
@@ -92,8 +99,10 @@ class A1Controller {
           name: province.provinceName,
           type: province.provinceType,
           textDes: province.textDes,
-          permission, 
-          progress
+          permission,
+          progress,
+          isRegistered,
+          amountPerson,
         });
       }
       res.json({ status: 1, regions: result });
