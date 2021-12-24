@@ -5,6 +5,7 @@ class SequelizeDB {
     this.sequelize = new Sequelize(databaseName, username, password, {
       host: 'localhost',
       dialect: 'mysql',
+      logging: false,
     });
   }
 
