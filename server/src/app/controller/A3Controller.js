@@ -64,10 +64,12 @@ class A3Controller {
             username: ward.wardId,
           },
         });
+        var isRegistered = false;
         //Lấy sô dân của xã
         var amountPerson = await Person.getAmountPerson(await ward.getAddress());
         var permission = null;
         if (user) {
+          isRegistered = true;
           permission = await Permission.findOne({
             attributes: ["permissionId", "isComplete", "isFinish", "timeStart", "timeEnd"],
             where: {
@@ -82,7 +84,8 @@ class A3Controller {
           type: ward.wardType,
           textDes: ward.textDes,
           permission,
-          amountPerson
+          amountPerson,
+          isRegistered
         });
       }
       res.json({ status: 1, regions: result });

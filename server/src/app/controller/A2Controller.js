@@ -66,6 +66,7 @@ class A2Controller {
             username: district.districtId,
           },
         });
+        var isRegistered = false;
         var permission = null;
         var ts = 0;
         var ms = 0;
@@ -74,6 +75,7 @@ class A2Controller {
         //Lấy số dân của 1 huyện
         var amountPerson = await Person.getAmountPerson(await district.getAddress());
         if (user) {
+          isRegistered = true;
           permission = await Permission.findOne({
             attributes: ["permissionId", "isComplete", "isFinish", "timeStart", "timeEnd"],
             where: {
@@ -114,7 +116,8 @@ class A2Controller {
           textDes: district.textDes,
           permission,
           progress,
-          amountPerson
+          amountPerson,
+          isRegistered
         });
       }
       res.json({ status: 1, regions: result });

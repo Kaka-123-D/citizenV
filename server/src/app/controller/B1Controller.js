@@ -63,10 +63,12 @@ class B1Controller {
             username: village.villageId,
           },
         });
+        var isRegistered = false;
         // Lấy số dân của thôn
         var amountPerson = await Person.getAmountPerson(await village.getAddress());
         var permission = null;
         if (user) {
+          isRegistered = true;
           permission = await Permission.findOne({
             attributes: ["permissionId", "isComplete", "isFinish", "timeStart", "timeEnd"],
             where: {
@@ -80,7 +82,8 @@ class B1Controller {
           type: village.villageType,
           textDes: village.textDes,
           permission,
-          amountPerson
+          amountPerson,
+          isRegistered
         });
       }
       res.json({ status: 1, regions: result });

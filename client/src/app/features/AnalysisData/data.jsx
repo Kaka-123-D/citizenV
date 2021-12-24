@@ -118,6 +118,8 @@ export const dataEducation = {
   ],
 };
 
+
+
 const labelsTowerAge = [
   "80+",
   "75-79",
@@ -158,3 +160,6 @@ export const dataTowerAge = {
     },
   ],
 };
+
+
+

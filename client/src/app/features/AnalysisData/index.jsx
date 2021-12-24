@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./style.scss";
-import faker from "faker";
-import {dataMigration, dataRegion, dataAge, dataReligion, dataEducation, dataTowerAge} from "./data";
-import {optionsMigration, optionsEducation, optionsTowerAge} from "./options";
+import { optionsMigration, optionsEducation, optionsTowerAge } from "./options";
+// import {
+//   dataAge,
+//   dataTowerAge,
+//   dataMigration,
+//   dataEducation,
+//   dataRegion,
+//   dataReligion,
+// } from "./data";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -25,13 +31,37 @@ ChartJS.register(
   Legend
 );
 
-export default function Analysis() {
+export default function Analysis({
+  executor,
+  getDataByTag,
+  dataAge,
+  dataRegion,
+  dataReligion,
+  dataMigration,
+  dataTowerAge,
+  dataEducation,
+}) {
+  useEffect(() => {
+    getDataByTag(executor, "Age"); // All
+    getDataByTag(executor, "GroupAge"); // All
+    getDataByTag(executor, "Religion"); // All
+
+    if (executor === "a1") getDataByTag(executor, "Migrate"); // A1
+    if (executor === "a1" || executor === "a2") {
+      getDataByTag(executor, "Region"); // A1, 2
+      getDataByTag(executor, "Education"); // A1, 2
+    }
+  }, []);
+
   return (
     <>
-      <div className="pie-chart">
-        <h2>Phân bố dân cư</h2>
-        <Pie data={dataRegion} className="gender " />
-      </div>
+      {executor === "a1" || executor === "a2" ? (
+        <div className="pie-chart">
+          <h2>Phân bố dân cư</h2>
+          <Pie data={dataRegion} className="region " />
+        </div>
+      ) : null}
+
       <div className="pie-chart">
         <h2>Tỉ trọng cơ cấu nhóm tuổi</h2>
         <Pie data={dataAge} className="age" />
@@ -41,29 +71,33 @@ export default function Analysis() {
         <Pie data={dataReligion} className="religion" />
       </div>
 
+      {executor === "a1" ? (
+        <div className="horizontal-chart">
+          <h2>Luồng di cư và đô thị hóa</h2>
+          <Bar
+            options={optionsMigration}
+            data={dataMigration}
+            className="migration"
+          />
+        </div>
+      ) : null}
       <div className="horizontal-chart">
-        <h2>Luồng di cư và đô thị hóa</h2>
-        <Bar
-          options={optionsMigration}
-          data={dataMigration}
-          className="migration"
-        />
-      </div>
-      <div className="horizontal-chart">
-          <h2>Tháp độ tuổi</h2>
+        <h2>Tháp độ tuổi</h2>
         <Bar data={dataTowerAge} options={optionsTowerAge} />
       </div>
-      <div className="vertical-chart">
-        <h2>
-          Tỷ lệ dân số trong độ tuổi đi học phổ thông nhưng không đi học phổ
-          thông
-        </h2>
-        <Bar
-          options={optionsEducation}
-          data={dataEducation}
-          className="education"
-        />
-      </div>
+      {executor === "a1" || executor === "a2" ? (
+        <div className="vertical-chart">
+          <h2>
+            Tỷ lệ dân số trong độ tuổi đi học phổ thông nhưng không đi học phổ
+            thông
+          </h2>
+          <Bar
+            options={optionsEducation}
+            data={dataEducation}
+            className="education"
+          />
+        </div>
+      ) : null}
     </>
   );
 }

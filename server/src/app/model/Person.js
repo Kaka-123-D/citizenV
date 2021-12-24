@@ -60,13 +60,13 @@ class Person extends Model {
 
   static async getPercentRegionCity(address) {
     try {
-      const result = await sequelize.query("getPercentRegionCity( :address );", {
+      const result = await sequelize.query("SELECT getPercentRegionCity( :address ) as r;", {
         type: QueryTypes.SELECT,
         replacements: { 
           address: address
         }
       });
-      return result;
+      return result[0]['r'];
     } catch (e) {
       return 0;
     }

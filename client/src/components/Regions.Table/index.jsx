@@ -45,11 +45,15 @@ export default function regionsTable({
                       <td className="name-column">{region.name}</td>
                       <td className="des-column">{region.textDes}</td>
                       <td>
-                        <input
-                          type="checkbox"
-                          className="tickBox"
-                          onChange={() => handleAddArrayId(region.id)}
-                        />
+                        {region.isRegistered ? (
+                          <i className="fas fa-check-circle"></i>
+                        ) : (
+                          <input
+                            type="checkbox"
+                            className="tickBox"
+                            onChange={() => handleAddArrayId(region.id)}
+                          />
+                        )}
                       </td>
                     </tr>
                   );

@@ -14,12 +14,12 @@ class PersonValidation {
     try {
       var person = null;
       if (group == "a1" || group == "admin") {
-        if (!person) return false;
         person = await Person.findOne({
           where: {
             stt,
           },
         });
+        if (!person) return false;
         return {person};
       }
 

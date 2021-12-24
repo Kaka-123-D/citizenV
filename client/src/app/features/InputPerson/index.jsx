@@ -12,6 +12,23 @@ export default function InputPerson({ addPerson, executor }) {
   const [educationLevel, setEducationLevel] = useState("");
   const [job, setJob] = useState("");
 
+  function handleAddPerson(event) {
+    event.preventDefault();
+    addPerson(
+      executor,
+      id,
+      fullName,
+      birthday,
+      gender,
+      hometown,
+      permanent,
+      temporary,
+      religion,
+      educationLevel,
+      job
+    );
+  }
+
   return (
     <form className="form-info">
       <input
@@ -95,20 +112,8 @@ export default function InputPerson({ addPerson, executor }) {
       />{" "}
       <br />
       <button
-        onClick={() =>
-          addPerson(
-            executor,
-            id,
-            fullName,
-            birthday,
-            gender,
-            hometown,
-            permanent,
-            temporary,
-            religion,
-            educationLevel,
-            job
-          )
+        onClick={(e) =>
+          handleAddPerson(e)
         }
       >
         Add

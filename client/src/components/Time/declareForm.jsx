@@ -226,20 +226,7 @@ export default function Declare({
       };
       setClickedRow(true);
       setData(data);
-      setTag("REGION_INCOMPLETE");
-      // return <FrameInfo tag={"REGION_INCOMPLETE"} data={data} />;
-      console.log("hello");
-    } else {
-      // hiện khung thông tin gồm số dân, các biểu đồ.
-      setClickedRow(true);
-      setData(getDataRegionById(executor, region.id));
-      setTag("REGION_COMPLETE");
-      // return (
-      //   <FrameInfo
-      //     tag={"REGION_COMPLETE"}
-      //     data={getDataRegionById(executor, region.id)}
-      //   />
-      // );
+      setTag("REGION");
     }
   }
 

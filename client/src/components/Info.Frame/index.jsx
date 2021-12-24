@@ -7,8 +7,8 @@ import {formatTimeClock} from "../../validation"
 export default function FrameInfo({ tag, data, setClose }) {
   const handleShowByTag = () => {
     switch (tag) {
-      case "REGION_INCOMPLETE": {
-        let progress = 30;
+      case "REGION": {
+        let progress = 0;
         if (data.progress > 0) {
           progress = data.progress;
         }
@@ -20,8 +20,24 @@ export default function FrameInfo({ tag, data, setClose }) {
             <div className="info-region">
               <p>Mã khu vực:</p> {data.id} <br />
               <p>Tên khu vực:</p> {data.name} <br />
-              <p>Trạng thái:</p> Đang điều tra dân cư
+              <p>Trạng thái:</p>
+              {progress === 100
+                ? "Đang điều tra dân cư"
+                : "Đã hoàn thành điều tra dân cư"}
             </div>
+            {progress === 100 ? null : (
+              <>
+                {" "}
+                <div className="time">
+                  <label htmlFor="time-start">Thời gian bắt đầu:</label>
+                  <span id="time-start">{formatTimeClock(data.timeStart)}</span>
+                </div>
+                <div className="time">
+                  <label htmlFor="time-end">Thời gian kết thúc:</label>
+                  <span id="time-end">{formatTimeClock(data.timeEnd)}</span>
+                </div>
+              </>
+            )}
             <div className="time">
               <label htmlFor="time-start">Thời gian bắt đầu:</label>
               <span id="time-start">{formatTimeClock(data.timeStart)}</span>
@@ -40,9 +56,6 @@ export default function FrameInfo({ tag, data, setClose }) {
             />
           </div>
         );
-      }
-      case "REGION_COMPLETE": {
-        return <></>;
       }
     }
   };

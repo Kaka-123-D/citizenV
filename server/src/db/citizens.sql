@@ -549,7 +549,7 @@ RETURN ts / totalPerson;
 END $$
 DELIMITER ;
 
-DROP FUNCTION getPercentEducationDetails;
+-- DROP FUNCTION getPercentEducationDetails;
 
 -- Lấy cơ cấu độ tuổi đi học nam
 DELIMITER $$
