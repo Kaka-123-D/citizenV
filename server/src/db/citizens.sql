@@ -341,7 +341,8 @@ DELIMITER $$
 CREATE PROCEDURE getPercentGroupAge(IN address VARCHAR(255)) 
 BEGIN
 SELECT calRatioPopulationWithAge(0, 14, -1, address) age_0;
-SELECT (calRatioPopulationWithAge(15, 62, 1, address) + calRatioPopulationWithAge(15, 60, 0, address)) age_1;
+SELECT (calRatioPopulationWithAge(15, 61, 1, address) + calRatioPopulationWithAge(15, 59, 0, address)) age_1;
+SELECT (calRatioPopulationWithAge(62, 130, 1, address) + calRatioPopulationWithAge(60, 130, 0, address)) age_2;
 END $$
 DELIMITER ;
 
@@ -393,6 +394,7 @@ SELECT getPercentReligionDetails("Đạo Tin Lành", address) r_3;
 SELECT getPercentReligionDetails("Phật Giáo Hòa Hảo", address) r_4;
 SELECT getPercentReligionDetails("Đạo Cao Đài", address) r_5;
 SELECT getPercentReligionDetails("Không", address) r_6;
+SELECT getPercentReligionDetails("Khác", address) r_7;
 END $$
 DELIMITER ;
 
