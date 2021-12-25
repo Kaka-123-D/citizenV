@@ -152,7 +152,7 @@ class A1Controller {
         const data = await validationProvinceId(id, "getPerson");
         if (data) {
           const province = data.province;
-          provinceNames.push(province.provinceName);
+          provinceNames.push(province.getAddress());
         }
       }
 

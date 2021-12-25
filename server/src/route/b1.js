@@ -11,8 +11,8 @@ router.post("/declare", b1Controller.declare);
 
 router.get("/regions", b1Controller.getRegions);
 router.get("/personAll", b1Controller.getPersonWardAll);
-router.get("/personByVillage", b1Controller.getPersonByVillage);
-router.get("/personByPersonId", userController.getPersonByPersonId);
+router.post("/personByVillage", b1Controller.getPersonByVillage);
+router.post("/personByPersonId", userController.getPersonByPersonId);
 
 router.post("/person", userMiddleware.roleCUD, userController.addPerson);
 router.put("/person", userMiddleware.roleCUD, userController.updatePerson);

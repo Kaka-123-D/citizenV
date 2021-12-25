@@ -11,9 +11,9 @@ router.post("/declare", a2Controller.declare);
 
 router.get("/regions", a2Controller.getRegions);
 router.get("/personAll", a2Controller.getPersonProvinceAll);
-router.get("/personByDistrict", userController.getPersonByDistrict);
-router.get("/personByWard", userController.getPersonByWard);
-router.get("/personByPersonId", userController.getPersonByPersonId);
+router.post("/personByDistrict", userController.getPersonByDistrict);
+router.post("/personByWard", userController.getPersonByWard);
+router.post("/personByPersonId", userController.getPersonByPersonId);
 router.post("/wards", userController.getWards);
 router.post("/villages", userController.getVillages);
 

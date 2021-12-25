@@ -6,7 +6,7 @@ const userController = require("../app/controller/UserController");
 
 router.get("/", b2Controller.index);
 
-router.get("/personByPersonId", userController.getPersonByPersonId);
+router.post("/personByPersonId", userController.getPersonByPersonId);
 
 router.post("/person", userMiddleware.roleCUD, userController.addPerson);
 router.put("/person", userMiddleware.roleCUD, userController.updatePerson);

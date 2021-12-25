@@ -137,7 +137,7 @@ class A3Controller {
       const persons = await Person.findAll({
         where: {
           thuongTru: {
-            [Op.like]: `%${district.getAddress()}%`,
+            [Op.like]: `%${await district.getAddress()}%`,
           },
         },
       });

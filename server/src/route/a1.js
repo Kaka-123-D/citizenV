@@ -13,10 +13,10 @@ router.post("/wards", userController.getWards);
 router.post("/villages", userController.getVillages);
 
 router.get('/personAll', a1Controller.getPersonAll);
-router.get('/personByProvince', a1Controller.getPersonByProvince);
-router.get("/personByDistrict", userController.getPersonByDistrict);
-router.get("/personByWard", userController.getPersonByWard);
-router.get("/personByPersonId", userController.getPersonByPersonId);
+router.post('/personByProvince', a1Controller.getPersonByProvince);
+router.post("/personByDistrict", userController.getPersonByDistrict);
+router.post("/personByWard", userController.getPersonByWard);
+router.post("/personByPersonId", userController.getPersonByPersonId);
 
 router.post("/grantDeclare", userController.grantDeclare);
 router.post("/cancelDeclare", userController.cancelDeclare);

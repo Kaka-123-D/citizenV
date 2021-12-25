@@ -170,7 +170,7 @@ class A2Controller {
       const persons = await Person.findAll({
         where: {
           thuongTru: {
-            [Op.like]: `%${province.provinceName}%`,
+            [Op.like]: `%${province.getAddress()}%`,
           },
         },
       });

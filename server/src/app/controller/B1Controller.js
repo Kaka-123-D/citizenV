@@ -135,7 +135,7 @@ class B1Controller {
       const persons = await Person.findAll({
         where: {
           thuongTru: {
-            [Op.like]: `%${ward.getAddress()}%`,
+            [Op.like]: `%${await ward.getAddress()}%`,
           },
         },
       });
