@@ -3,6 +3,7 @@ const router = express.Router();
 const a2Controller = require('../app/controller/A2Controller');
 const userController = require("../app/controller/UserController");
 const userMiddleware = require('../app/middleware/UserMiddleware');
+const chartMiddleware = require("../app/middleware/ChartMiddleware");
 
 router.get('/', a2Controller.index);
 router.post("/register", a2Controller.register);
@@ -24,12 +25,13 @@ router.post("/grantDeclare", userMiddleware.roleCUD, userController.grantDeclare
 router.post("/cancelDeclare", userMiddleware.roleCUD, userController.cancelDeclare);
 router.put("/confirmDeclareComplete", userMiddleware.roleCUD, userController.confirmDeclareComplete);
 router.put("/cancelDeclareComplete", userMiddleware.roleCUD, userController.cancelDeclareComplete);
-router.post("/percentAge", userController.getPercentAge);
-router.post("/percentRegion", userController.getPercentRegion);
-router.post("/percentGroupAge", userController.getPercentGroupAge);
-router.post("/percentReligion", userController.getPercentReligion);
-router.post("/percentEducation", userController.getPercentEducation);
-router.post("/percentGender", userController.getPercentGender);
-router.post("/percentUnemployment", userController.getPercentUnemployment);
+
+router.post("/percentAge", chartMiddleware.index, userController.getPercentAge);
+router.post("/percentRegion", chartMiddleware.index, userController.getPercentRegion);
+router.post("/percentGroupAge", chartMiddleware.index, userController.getPercentGroupAge);
+router.post("/percentReligion", chartMiddleware.index, userController.getPercentReligion);
+router.post("/percentEducation", chartMiddleware.index, userController.getPercentEducation);
+router.post("/percentGender", chartMiddleware.index, userController.getPercentGender);
+router.post("/percentUnemployment", chartMiddleware.index, userController.getPercentUnemployment);
 
 module.exports = router;

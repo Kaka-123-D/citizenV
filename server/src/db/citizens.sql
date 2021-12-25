@@ -122,8 +122,9 @@ CREATE TABLE `villages` (
   CONSTRAINT `villages_ibfk_1` FOREIGN KEY (`wardId`) REFERENCES `wards` (`wardId`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
--- -----------------------------Store Procedure and Function-----------------------------------
--- Lấy %Person with age and sex
+-- ============================> Store Procedure and Function <================================
+
+-- ------------------------------ Lấy %Person theo tuổi, giới tính, nơi ở  --------------------------
 DELIMITER $$
 CREATE FUNCTION calRatioPopulationWithAge(minAge INTEGER, maxAge INTEGER, sex INTEGER, address VARCHAR(255))
 RETURNS FLOAT
@@ -185,7 +186,7 @@ DELIMITER ;
 
 -- DROP FUNCTION calRatioPopulationWithAge;
 
--- Lấy %Nam các tuổi
+-- ----------------------------------------- Lấy %Nam các tuổi -----------------------------
 DELIMITER $$
 CREATE PROCEDURE getPercentAgeMale(IN address VARCHAR(255)) 
 BEGIN
@@ -211,7 +212,7 @@ DELIMITER ;
 
 -- DROP PROCEDURE getPercentAgeMale;
 
--- Lấy %Nữ các tuổi
+-- ------------------------------------- Lấy %Nữ các tuổi -----------------------------
 DELIMITER $$
 CREATE PROCEDURE getPercentAgeFemale(IN address VARCHAR(255)) 
 BEGIN
@@ -237,7 +238,7 @@ DELIMITER ;
 
 -- DROP PROCEDURE getPercentAgeFemale;
 
--- Lấy số lượng người dân
+-- ------------------------------ Lấy số lượng người dân ---------------------------------
 DELIMITER $$
 CREATE FUNCTION getAmountPerson(address VARCHAR(255)) 
 RETURNS INTEGER
@@ -261,7 +262,7 @@ DELIMITER ;
 -- SELECT getAmountPerson("nationwide");
 
 
--- Lấy % thành thị
+-- ------------------------------------ Lấy % thành thị ---------------------------------
 
 DELIMITER $$
 CREATE FUNCTION getPercentRegionCity(address VARCHAR(255)) 
@@ -299,7 +300,7 @@ DELIMITER ;
 -- DROP FUNCTION getPercentRegionCity;
 -- SELECT getPercentRegionCity("thành phố Hồ Chí Minh|tỉnh An Giang");
 
--- Lấy % luồng di cư detail
+-- ----------------------------------- Hàm lấy % luồng di cư theo start và end -------------------------------
 DELIMITER $$
 CREATE FUNCTION getPercentMigrateDetail(s INTEGER, f INTEGER) 
 RETURNS FLOAT
@@ -329,7 +330,7 @@ RETURN ts / totalPerson;
 END $$
 DELIMITER ;
 
--- Lấy % luồng di cư
+-- ------------------------------------- Chương trình lấy % luồng di cư -----------------------------------
 DELIMITER $$
 CREATE PROCEDURE getPercentMigrate() 
 BEGIN
@@ -343,7 +344,7 @@ DELIMITER ;
 -- DROP PROCEDURE getPercentMigrate;
 -- CALL getPercentMigrate();
 
--- Lấy cơ cấu nhóm tuổi
+-- ------------------------------------- Chương trình lấy cơ cấu nhóm tuổi -------------------------------
 DELIMITER $$
 CREATE PROCEDURE getPercentGroupAge(IN address VARCHAR(255)) 
 BEGIN
@@ -354,9 +355,9 @@ END $$
 DELIMITER ;
 
 -- DROP PROCEDURE getPercentGroupAge;
-CALL getPercentGroupAge("huyện khu bốn, tỉnh An Giang");
+-- CALL getPercentGroupAge("huyện khu bốn, tỉnh An Giang");
 
--- Lấy cơ cấu tôn giáo chi tiết
+-- -------------------------- Hàm tính % theo tôn giáo ---------------------------------
 DELIMITER $$
 CREATE FUNCTION getPercentReligionDetails(religion VARCHAR(255), address VARCHAR(255)) 
 RETURNS FLOAT
@@ -392,7 +393,7 @@ DELIMITER ;
 -- DROP FUNCTION getPercentReligionDetails;
 -- SELECT getPercentReligionDetails("Kitô Giáo", "thành phố Hồ Chí Minh");
 
--- Lấy cơ cấu tôn giáo
+-- ----------------------------------- Chương trình lấy cơ cấu tôn giáo -------------------------------------
 DELIMITER $$
 CREATE PROCEDURE getPercentReligion(IN address VARCHAR(255)) 
 BEGIN
@@ -409,7 +410,7 @@ DELIMITER ;
 -- DROP PROCEDURE getPercentReligion;
 -- CALL getPercentReligion();
 
--- Lấy cơ cấu độ tuổi đi học details
+-- --------------------------------- Hàm tính % học thpt theo giới tính, nơi ở -------------------
 DELIMITER $$
 CREATE FUNCTION getPercentEducationDetails(region VARCHAR(255), sex BOOLEAN, address VARCHAR(255)) 
 RETURNS FLOAT
@@ -547,7 +548,7 @@ DELIMITER ;
 
 -- DROP FUNCTION getPercentEducationDetails;
 
--- Lấy cơ cấu độ tuổi đi học nam
+-- ------------------------------ Chương trình lấy cơ cấu học thpt của nam --------------------------
 DELIMITER $$
 CREATE PROCEDURE getPercentEducationMale(IN address VARCHAR(255)) 
 BEGIN
@@ -560,7 +561,7 @@ DELIMITER ;
 -- DROP PROCEDURE getPercentEducationMale;
 -- CALL getPercentEducationMale();
 
--- Lấy cơ cấu độ tuổi đi học nữ
+-- ------------------------------ Chương trình lấy cơ cấu học thpt của nữ --------------------------
 DELIMITER $$
 CREATE PROCEDURE getPercentEducationFemale(IN address VARCHAR(255)) 
 BEGIN
@@ -572,7 +573,7 @@ DELIMITER ;
 -- DROP PROCEDURE getPercentEducationFemale;
 -- CALL getPercentEducationFemale();
 
--- Lấy cơ cấu nam nữ
+-- ------------------------------- Hàm tính % theo giới tính và nơi ở -------------------------
 DELIMITER $$
 CREATE FUNCTION getPercentGenderDetails(address VARCHAR(255), sex BOOLEAN) 
 RETURNS FLOAT
@@ -609,7 +610,7 @@ DELIMITER ;
 -- DROP FUNCTION getPercentGender;
 -- SELECT getPercentMale("tỉnh An Giang|thành phố Hồ Chí Minh");
 
--- Lấy cơ cấu nam nữ
+-- ---------------------------- Chương trình lấy cơ cấu theo giới tính ------------------------
 DELIMITER $$
 CREATE PROCEDURE getPercentGender(IN address VARCHAR(255)) 
 BEGIN
@@ -618,9 +619,9 @@ BEGIN
 END $$
 DELIMITER ;
 
-CALL getPercentGender("huyện khu 4, tỉnh An Giang");
+-- CALL getPercentGender("huyện khu 4, tỉnh An Giang");
 
--- Lấy cơ cấu thất nghiệp
+-- -------------------------- Hàm tính % thất nghiệp theo nơi ở ---------------------------------
 DELIMITER $$
 CREATE FUNCTION getPercentUnemployment(address VARCHAR(255)) 
 RETURNS FLOAT
