@@ -228,6 +228,7 @@ class UserController {
     try {
       for (const i in ids) {
         const jobNames = _.keys(schedule.scheduledJobs);
+        const user = users[i];
         const id = ids[i];
         for (const name of jobNames) {
           if (name == `start_${id}`) {
@@ -237,6 +238,16 @@ class UserController {
             await UpdateRoleAll(id, "cancel");
           }
         }
+        await Permission.update(
+          { isFinish: true },
+          {
+            where: {
+              userId: user.userId,
+              isFinish: false,
+            },
+          }
+        );
+        console.log("GRANT_DECLARE_END!");
       }
       return res.json({ status: 1 });
     } catch (e) {
@@ -625,7 +636,7 @@ class UserController {
   }
 
   async getPercentUnemployment(req, res) {
-    const percentUnemployment = await Person.getPercentUnemployment(req.Arrayaddress);
+    const percentUnemployment = await Person.getPercentUnemployment(req.address);
     return res.json({
       status: 1,
       percentUnemployment,
