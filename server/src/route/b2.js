@@ -11,5 +11,7 @@ router.get("/personByPersonId", userController.getPersonByPersonId);
 router.post("/person", userMiddleware.roleCUD, userController.addPerson);
 router.put("/person", userMiddleware.roleCUD, userController.updatePerson);
 router.delete("/person", userMiddleware.roleCUD, userController.deletePerson);
+router.put("/confirmDeclareComplete", userMiddleware.roleCUD, userController.confirmDeclareComplete);
+router.put("/cancelDeclareComplete", userMiddleware.roleCUD, userController.cancelDeclareComplete);
 
 module.exports = router;

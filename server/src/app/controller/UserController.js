@@ -12,7 +12,7 @@ const Person = require("../model/Person");
 const Province = require("../model/Province");
 const District = require("../model/District");
 const Ward = require("../model/Ward");
-
+const Village = require("../model/Village");
 
 const { SALT_ROUND } = process.env;
 
@@ -556,9 +556,51 @@ class UserController {
   }
 
   async getPercentAge(req, res) {
+    const {ids, tag} = req.body;
     var address = "";
     if (req.session.group == "a1") {
-      address = "nationwide";
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "province") {
+          for (const id of ids) {
+            const province = await Province.findOne({
+              where: {
+                provinceId: id,
+              },
+            });
+            if (province) {
+              arr.push(province.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = "nationwide";
+      }
     }
     if (req.session.group == "a2") {
       const province = await Province.findOne({
@@ -566,7 +608,37 @@ class UserController {
           provinceId: req.session.username,
         },
       });
-      address = province.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+                provinceId: province.provinceId,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = province.getAddress();
+      }
     }
     if (req.session.group == "a3") {
       const district = await District.findOne({
@@ -574,7 +646,25 @@ class UserController {
           districtId: req.session.username,
         },
       });
-      address = await district.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+                districtId: district.districtId
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await district.getAddress();
+      }
     }
     if (req.session.group == "b1") {
       const ward = await Ward.findOne({
@@ -582,7 +672,28 @@ class UserController {
           wardId: req.session.username,
         },
       });
-      address = await ward.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "village") {
+          for (const id of ids) {
+            const village = await Village.findOne({
+              where: {
+                villageId: id,
+                wardId: ward.wardId,
+              },
+            });
+            if (village) {
+              arr.push(await village.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await ward.getAddress();
+      }
+    }
+    if (address == "") {
+      return res.json({ status: 0, error: "GET_PERCENT_AGE_ERROR!"});
     }
     const percentAgeFemale = await Person.getPercentAgeFemale(address);
     const percentAgeMale = await Person.getPercentAgeMale(address);
@@ -594,9 +705,27 @@ class UserController {
   }
 
   async getPercentRegion(req, res) {
+    const { ids, tag } = req.body;
     var address = "";
     if (req.session.group == "a1") {
-      address = "nationwide";
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "province") {
+          for (const id of ids) {
+            const province = await Province.findOne({
+              where: {
+                provinceId: id,
+              },
+            });
+            if (province) {
+              arr.push(province.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = "nationwide";
+      }
     }
     if (req.session.group == "a2") {
       const province = await Province.findOne({
@@ -605,6 +734,9 @@ class UserController {
         },
       });
       address = province.getAddress();
+    }
+    if (address == "") {
+      return res.json({ status: 0, error: "GET_PERCENT_REGION_ERROR!" });
     }
     const percentCity = await Person.getPercentRegionCity(address);
     return res.json({ status: 1, city: percentCity, country: 1 - percentCity });
@@ -616,9 +748,51 @@ class UserController {
   }
 
   async getPercentGroupAge(req, res) {
+    const { ids, tag } = req.body;
     var address = "";
     if (req.session.group == "a1") {
-      address = "nationwide";
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "province") {
+          for (const id of ids) {
+            const province = await Province.findOne({
+              where: {
+                provinceId: id,
+              },
+            });
+            if (province) {
+              arr.push(province.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = "nationwide";
+      }
     }
     if (req.session.group == "a2") {
       const province = await Province.findOne({
@@ -626,7 +800,37 @@ class UserController {
           provinceId: req.session.username,
         },
       });
-      address = province.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+                provinceId: province.provinceId,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = province.getAddress();
+      }
     }
     if (req.session.group == "a3") {
       const district = await District.findOne({
@@ -634,7 +838,25 @@ class UserController {
           districtId: req.session.username,
         },
       });
-      address = await district.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+                districtId: district.districtId,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await district.getAddress();
+      }
     }
     if (req.session.group == "b1") {
       const ward = await Ward.findOne({
@@ -642,16 +864,79 @@ class UserController {
           wardId: req.session.username,
         },
       });
-      address = await ward.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "village") {
+          for (const id of ids) {
+            const village = await Village.findOne({
+              where: {
+                villageId: id,
+                wardId: ward.wardId,
+              },
+            });
+            if (village) {
+              arr.push(await village.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await ward.getAddress();
+      }
+    }
+    if (address == "") {
+      return res.json({ status: 0, error: "GET_PERCENT_GROUP_AGE_ERROR!" });
     }
     const percentGroupAge = await Person.getPercentGroupAge(address);
     return res.json({ status: 1, groupAge: percentGroupAge });
   }
 
   async getPercentReligion(req, res) {
+    const { ids, tag } = req.body;
     var address = "";
     if (req.session.group == "a1") {
-      address = "nationwide";
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "province") {
+          for (const id of ids) {
+            const province = await Province.findOne({
+              where: {
+                provinceId: id,
+              },
+            });
+            if (province) {
+              arr.push(province.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = "nationwide";
+      }
     }
     if (req.session.group == "a2") {
       const province = await Province.findOne({
@@ -659,7 +944,37 @@ class UserController {
           provinceId: req.session.username,
         },
       });
-      address = province.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+                provinceId: province.provinceId,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = province.getAddress();
+      }
     }
     if (req.session.group == "a3") {
       const district = await District.findOne({
@@ -667,7 +982,25 @@ class UserController {
           districtId: req.session.username,
         },
       });
-      address = await district.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+                districtId: district.districtId,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await district.getAddress();
+      }
     }
     if (req.session.group == "b1") {
       const ward = await Ward.findOne({
@@ -675,16 +1008,55 @@ class UserController {
           wardId: req.session.username,
         },
       });
-      address = await ward.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "village") {
+          for (const id of ids) {
+            const village = await Village.findOne({
+              where: {
+                villageId: id,
+                wardId: ward.wardId,
+              },
+            });
+            if (village) {
+              arr.push(await village.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await ward.getAddress();
+      }
+    }
+    if (address == "") {
+      return res.json({ status: 0, error: "GET_PERCENT_RELIGION_ERROR!" });
     }
     const percentReligion = await Person.getPercentReligion(address);
     return res.json({ status: 1, religion: percentReligion });
   }
 
   async getPercentEducation(req, res) {
+    const { ids, tag } = req.body;
     var address = "";
     if (req.session.group == "a1") {
-      address = "nationwide";
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "province") {
+          for (const id of ids) {
+            const province = await Province.findOne({
+              where: {
+                provinceId: id,
+              },
+            });
+            if (province) {
+              arr.push(province.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = "nationwide";
+      }
     }
     if (req.session.group == "a2") {
       const province = await Province.findOne({
@@ -693,6 +1065,9 @@ class UserController {
         },
       });
       address = province.getAddress();
+    }
+    if (address == "") {
+      return res.json({ status: 0, error: "GET_PERCENT_EDUCATION_ERROR!" });
     }
     const percentEducationFemale = await Person.getPercentEducationFemale(
       address
@@ -706,9 +1081,51 @@ class UserController {
   }
 
   async getPercentGender(req, res) {
+    const { ids, tag } = req.body;
     var address = "";
     if (req.session.group == "a1") {
-      address = "nationwide";
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "province") {
+          for (const id of ids) {
+            const province = await Province.findOne({
+              where: {
+                provinceId: id,
+              },
+            });
+            if (province) {
+              arr.push(province.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = "nationwide";
+      }
     }
     if (req.session.group == "a2") {
       const province = await Province.findOne({
@@ -716,7 +1133,37 @@ class UserController {
           provinceId: req.session.username,
         },
       });
-      address = province.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+                provinceId: province.provinceId,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = province.getAddress();
+      }
     }
     if (req.session.group == "a3") {
       const district = await District.findOne({
@@ -724,7 +1171,25 @@ class UserController {
           districtId: req.session.username,
         },
       });
-      address = await district.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+                districtId: district.districtId,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await district.getAddress();
+      }
     }
     if (req.session.group == "b1") {
       const ward = await Ward.findOne({
@@ -732,7 +1197,28 @@ class UserController {
           wardId: req.session.username,
         },
       });
-      address = await ward.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "village") {
+          for (const id of ids) {
+            const village = await Village.findOne({
+              where: {
+                villageId: id,
+                wardId: ward.wardId,
+              },
+            });
+            if (village) {
+              arr.push(await village.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await ward.getAddress();
+      }
+    }
+    if (address == "") {
+      return res.json({ status: 0, error: "GET_PERCENT_GENDER_ERROR!" });
     }
     const percentMale = await Person.getPercentMale(address);
     return res.json({
@@ -743,9 +1229,51 @@ class UserController {
   }
 
   async getPercentUnemployment(req, res) {
+    const { ids, tag } = req.body;
     var address = "";
     if (req.session.group == "a1") {
-      address = "nationwide";
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "province") {
+          for (const id of ids) {
+            const province = await Province.findOne({
+              where: {
+                provinceId: id,
+              },
+            });
+            if (province) {
+              arr.push(province.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = "nationwide";
+      }
     }
     if (req.session.group == "a2") {
       const province = await Province.findOne({
@@ -753,7 +1281,37 @@ class UserController {
           provinceId: req.session.username,
         },
       });
-      address = province.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "district") {
+          for (const id of ids) {
+            const district = await District.findOne({
+              where: {
+                districtId: id,
+                provinceId: province.provinceId,
+              },
+            });
+            if (district) {
+              arr.push(await district.getAddress());
+            }
+          }
+          address = arr.join("|");
+        } else if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = province.getAddress();
+      }
     }
     if (req.session.group == "a3") {
       const district = await District.findOne({
@@ -761,7 +1319,25 @@ class UserController {
           districtId: req.session.username,
         },
       });
-      address = await district.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "ward") {
+          for (const id of ids) {
+            const ward = await Ward.findOne({
+              where: {
+                wardId: id,
+                districtId: district.districtId,
+              },
+            });
+            if (ward) {
+              arr.push(await ward.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await district.getAddress();
+      }
     }
     if (req.session.group == "b1") {
       const ward = await Ward.findOne({
@@ -769,34 +1345,34 @@ class UserController {
           wardId: req.session.username,
         },
       });
-      address = await ward.getAddress();
+      if (ids && Array.isArray(ids) && ids.length > 0 && tag) {
+        var arr = [];
+        if (tag == "village") {
+          for (const id of ids) {
+            const village = await Village.findOne({
+              where: {
+                villageId: id,
+                wardId: ward.wardId,
+              },
+            });
+            if (village) {
+              arr.push(await village.getAddress());
+            }
+          }
+          address = arr.join("|");
+        }
+      } else {
+        address = await ward.getAddress();
+      }
+    }
+    if (address == "") {
+      return res.json({ status: 0, error: "GET_PERCENT_UNEMPLOYMENT_ERROR!" });
     }
     const percentUnemployment = await Person.getPercentUnemployment(address);
     return res.json({
       status: 1,
       percentUnemployment,
     });
-  }
-
-  async getDistricts(req, res) {
-    const { ids } = req.body;
-    var districts = [];
-    try {
-      if (!ids || !Array.isArray(ids)) {
-        return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
-      }
-      for (const id of ids) {
-        const data = await validationProvinceId(id, "getDistricts");
-        if (!data) {
-          return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
-        } else {
-          districts.push(data.province.getDistricts());
-        }
-      }
-      return res.json({ status: 1, districts });
-    } catch (err) {
-      return res.json({ status: 0, error: "GET_DISTRICTS_ERROR!" });
-    }
   }
 
   async getDistricts(req, res) {

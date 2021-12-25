@@ -131,7 +131,6 @@ NO SQL
 BEGIN
 DECLARE ratio FLOAT DEFAULT 0;
 DECLARE totalPerson INT DEFAULT -1;
-DECLARE pattern VARCHAR(255) DEFAULT "";
 IF (address = "nationwide") THEN
 	SELECT COUNT(*) INTO totalPerson
 	FROM citizens.persons;
@@ -155,10 +154,9 @@ IF (address = "nationwide") THEN
 		RETURN ratio/totalPerson;
 	END IF;
 ELSE 
-	SET pattern = CONCAT("%", address, "%");
 	SELECT COUNT(*) INTO totalPerson
 	FROM citizens.persons p
-    WHERE p.thuongTru like pattern;
+    WHERE p.thuongTru REGEXP address;
 	IF (totalPerson = 0) THEN 
 		SET totalPerson = -1;
 	END IF;
@@ -167,7 +165,7 @@ ELSE
 		FROM citizens.persons p
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge
         AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge 
-        AND p.thuongTru like pattern
+        AND p.thuongTru REGEXP address
         AND p.sex = true;
 		RETURN ratio/totalPerson;
 	ELSEIF (sex = 0) THEN
@@ -175,14 +173,14 @@ ELSE
 		FROM citizens.persons p
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge 
         AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge 
-        AND p.thuongTru like pattern
+        AND p.thuongTru REGEXP address
         AND p.sex = false;
 		RETURN ratio/totalPerson;
 	ELSEIF (sex = -1) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge 
-        AND p.thuongTru like pattern
+        AND p.thuongTru REGEXP address
         AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge;
 		RETURN ratio/totalPerson;
 	END IF;
@@ -191,7 +189,7 @@ RETURN ratio / totalPerson;
 END $$
 DELIMITER ;
 
--- DROP FUNCTION calRatioPopulationWithAge;
+DROP FUNCTION calRatioPopulationWithAge;
 
 -- Lấy %Nam các tuổi
 DELIMITER $$
@@ -266,7 +264,6 @@ NO SQL
 BEGIN
 DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
-DECLARE pattern VARCHAR(255) DEFAULT "";
 IF (address = "nationwide") THEN
 	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
     
@@ -276,15 +273,14 @@ IF (address = "nationwide") THEN
 		SET totalPerson = -1;
 	END IF;
 ELSE
-	SET pattern = CONCAT("%", address, "%");
 	SELECT COUNT(*) INTO totalPerson 
     FROM citizens.persons 
-    WHERE p.thuongTru like pattern;
+    WHERE p.thuongTru REGEXP address;
     
 	SELECT COUNT(*) INTO ts 
     FROM citizens.persons p 
     WHERE p.thuongTru like '%thành phố%'
-    AND p.thuongTru like pattern;
+    AND p.thuongTru REGEXP address;
     
 	IF (totalPerson = 0) THEN 
 		SET totalPerson = -1;
@@ -360,7 +356,6 @@ NO SQL
 BEGIN
 DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
-DECLARE pattern VARCHAR(255) DEFAULT "";
 IF (address = "nationwide") THEN
 	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
 	IF (totalPerson = 0) THEN 
@@ -369,11 +364,9 @@ IF (address = "nationwide") THEN
 	SELECT COUNT(*) INTO ts FROM citizens.persons p 
 	WHERE p.religion = religion;
 ELSE
-	SET pattern = CONCAT("%", address, "%");
-    
     SELECT COUNT(*) INTO totalPerson 
     FROM citizens.persons p
-    WHERE p.thuongTru like pattern;
+    WHERE p.thuongTru REGEXP address;
     
 	IF (totalPerson = 0) THEN 
 		SET totalPerson = -1;
@@ -382,7 +375,7 @@ ELSE
 	SELECT COUNT(*) INTO ts 
     FROM citizens.persons p 
 	WHERE p.religion = religion
-    AND p.thuongTru like pattern;
+    AND p.thuongTru REGEXP address;
 END IF;
 RETURN ts / totalPerson;
 END $$
@@ -414,7 +407,6 @@ NO SQL
 BEGIN
 DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
-DECLARE pattern VARCHAR(255) DEFAULT "";
 IF (region = "thành thị") THEN 
 	IF (address = "nationwide") THEN 
 		SELECT COUNT(*) INTO totalPerson FROM citizens.persons p WHERE p.thuongTru like '%thành phố%';
@@ -432,13 +424,11 @@ IF (region = "thành thị") THEN
 		AND p.educationLevel != "tiến sĩ"
 		AND p.educationLevel != "cử nhân"
 		AND p.sex = sex;
-	ELSE 
-		SET pattern = CONCAT("%", address, "%");
-        
+	ELSE         
 		SELECT COUNT(*) INTO totalPerson 
         FROM citizens.persons p 
         WHERE p.thuongTru like '%thành phố%'
-        AND p.thuongTru like pattern;
+        AND p.thuongTru REGEXP address;
         
 		IF (totalPerson = 0) THEN 
 			SET totalPerson = -1;
@@ -446,7 +436,7 @@ IF (region = "thành thị") THEN
         
 		SELECT COUNT(*) INTO ts FROM citizens.persons p 
 		WHERE p.thuongTru like '%thành phố%' 
-        AND p.thuongTru like pattern
+        AND p.thuongTru REGEXP address
 		AND ((DATEDIFF(NOW(), p.birthday))/365) >= 15
 		AND ((DATEDIFF(NOW(), p.birthday))/365) <= 17
 		AND p.educationLevel != "trung học phổ thông"
@@ -479,12 +469,10 @@ ELSEIF (region = "nông thôn") THEN
 		AND p.educationLevel != "cử nhân"
 		AND p.sex = sex;
 	ELSE 
-		SET pattern = CONCAT("%", address, "%");
-        
 		SELECT COUNT(*) INTO totalPerson 
         FROM citizens.persons p 
         WHERE p.thuongTru not like '%thành phố%'
-        AND p.thuongTru like pattern;
+        AND p.thuongTru REGEXP address;
         
 		IF (totalPerson = 0) THEN 
 			SET totalPerson = -1;
@@ -492,7 +480,7 @@ ELSEIF (region = "nông thôn") THEN
         
 		SELECT COUNT(*) INTO ts FROM citizens.persons p 
 		WHERE p.thuongTru not like '%thành phố%' 
-        AND p.thuongTru like pattern
+        AND p.thuongTru REGEXP address
 		AND ((DATEDIFF(NOW(), p.birthday))/365) >= 15
 		AND ((DATEDIFF(NOW(), p.birthday))/365) <= 17
 		AND p.educationLevel != "trung học phổ thông"
@@ -522,11 +510,9 @@ ELSEIF (region = "toàn phạm vi") THEN
 		AND p.educationLevel != "cử nhân"
 		AND p.sex = sex;
 	ELSE 
-		SET pattern = CONCAT("%", address, "%");
-        
 		SELECT COUNT(*) INTO totalPerson 
         FROM citizens.persons p
-        WHERE p.thuongTru like pattern;
+        WHERE p.thuongTru REGEXP address;
         
 		IF (totalPerson = 0) THEN 
 			SET totalPerson = -1;
@@ -535,7 +521,7 @@ ELSEIF (region = "toàn phạm vi") THEN
 		SELECT COUNT(*) INTO ts FROM citizens.persons p 
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= 15
 		AND ((DATEDIFF(NOW(), p.birthday))/365) <= 17
-        AND p.thuongTru like pattern
+        AND p.thuongTru REGEXP address
 		AND p.educationLevel != "trung học phổ thông"
 		AND p.educationLevel != "đại học"
 		AND p.educationLevel != "cao đẳng"
@@ -584,7 +570,6 @@ NO SQL
 BEGIN
 DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
-DECLARE pattern VARCHAR(255) DEFAULT "";
 IF (address = "nationwide") THEN
 	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
     
@@ -594,15 +579,14 @@ IF (address = "nationwide") THEN
 		SET totalPerson = -1;
 	END IF;
 ELSE
-	SET pattern = CONCAT("%", address, "%");
 	SELECT COUNT(*) INTO totalPerson 
     FROM citizens.persons 
-    WHERE p.thuongTru like pattern;
+    WHERE p.thuongTru REGEXP address;
     
 	SELECT COUNT(*) INTO ts 
     FROM citizens.persons p 
     WHERE p.sex = true
-    AND p.thuongTru like pattern;
+    AND p.thuongTru REGEXP address;
     
 	IF (totalPerson = 0) THEN 
 		SET totalPerson = -1;
@@ -623,7 +607,6 @@ NO SQL
 BEGIN
 DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
-DECLARE pattern VARCHAR(255) DEFAULT "";
 IF (address = "nationwide") THEN
 	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
     
@@ -633,15 +616,14 @@ IF (address = "nationwide") THEN
 		SET totalPerson = -1;
 	END IF;
 ELSE
-	SET pattern = CONCAT("%", address, "%");
 	SELECT COUNT(*) INTO totalPerson 
     FROM citizens.persons 
-    WHERE p.thuongTru like pattern;
+    WHERE p.thuongTru REGEXP address;
     
 	SELECT COUNT(*) INTO ts 
     FROM citizens.persons p 
     WHERE p.job = "thất nghiệp"
-    AND p.thuongTru like pattern;
+    AND p.thuongTru REGEXP address;
     
 	IF (totalPerson = 0) THEN 
 		SET totalPerson = -1;
