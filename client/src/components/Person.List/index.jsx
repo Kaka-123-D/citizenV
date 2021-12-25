@@ -1,35 +1,47 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.scss";
-import SearchBar from "../SearchBar"
+import SelectRegion from "../Region.Select/connectStore";
 
 export default function PersonList({
   personList,
   executor,
-  addPerson,
   updatePerson,
   deletePerson,
   getPersonList,
   getListAllPersonInRegion,
 }) {
+  const [ids, setIds] = useState([]);
+
   useEffect(() => {
     if (executor === "a1") getListAllPersonInRegion(executor);
+    // if (executor === "a2") getList
   }, []);
 
-    // useEffect(() => {
-    //   if (executor === "a1") getListAllPersonInRegion(executor);
-    // }, [personList]);
-
-  function handleEdit(event) {
+  function handleClickViewList(event) {
     event.preventDefault();
+    getPersonList(executor, ids);
   }
 
   return (
     <div>
-      <br />
+      {console.log(ids)}
       <br />
       <h2>Danh sách dân số: </h2>
-      <button className="add-region">+</button>
-      {/* <SearchBar regions={regions} /> */}
+
+      {executor !== "b2" ? (
+        <>
+          <SelectRegion setIds={setIds} ids={ids} />
+
+          <button
+            onClick={(e) => {
+              handleClickViewList(e);
+            }}
+          >
+            Xem danh sách
+          </button>
+        </>
+      ) : null}
+
       <table className="table-person">
         <thead>
           <tr>

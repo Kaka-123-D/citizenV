@@ -50,7 +50,7 @@ class Person extends Model {
   static async getAmountPerson(address) {
     try {
       const result = await sequelize.query(
-        "CALL getAmountPerson( :address );",
+        "SELECT getAmountPerson( :address ) amount;",
         {
           type: QueryTypes.SELECT,
           replacements: {
@@ -58,7 +58,7 @@ class Person extends Model {
           },
         }
       );
-      return result[0]["0"]["amountPerson"];
+      return result[0]["amount"];
     } catch (e) {
       return 0;
     }
@@ -181,10 +181,11 @@ class Person extends Model {
     }
   }
 
-  static async getPercentMale(address) {
+  static async getPercentGender(address) {
     try {
+      const percentGender = [];
       const result = await sequelize.query(
-        "SELECT getPercentMale( :address ) as m;",
+        "CALL getPercentGender( :address );",
         {
           type: QueryTypes.SELECT,
           replacements: {
@@ -192,7 +193,10 @@ class Person extends Model {
           },
         }
       );
-      return result[0]["m"];
+      for (let i = 0; i < result.length - 1; i++) {
+        percentGender.push(result[i]["0"][`g_${i + 1}`]);
+      }
+      return percentGender;
     } catch (e) {
       return 0;
     }

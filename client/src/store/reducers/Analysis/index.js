@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 
 const initialState = {
+  amountPerson: 0,
   unemployedRate: 0,
   dataTowerAge: {
     labels: [
@@ -206,10 +207,9 @@ const analysis = createSlice({
           break;
         }
         case "Gender": {
-          console.log(action.payload.male);
-          state.dataGender.datasets[0].data[0] = Math.round(action.payload.male * 10000)/100;
-          state.dataGender.datasets[0].data[1] = Math.round(action.payload.female * 10000)/100;
-          console.log(state.dataGender.datasets[0].data[0]);
+          state.dataGender.datasets[0].data[0] = Math.round(action.payload.percentGender[1] * 10000)/100;
+          state.dataGender.datasets[0].data[1] = Math.round(action.payload.percentGender[0] * 10000)/100;
+          state.amountPerson = action.payload.amountPerson;
           break;
         }
         case "Unemployment": {
@@ -227,13 +227,20 @@ const analysis = createSlice({
 // lấy hàm loginSuccess và loginFailure trong slice để sau khi fetch data thì sử dụng
 const { getDataSuccess, getDataError } = analysis.actions;
 
-export const getDataByTag = (executor, tag) => async (dispatch) => {
-  let URL = "http://localhost:8080/" + executor + "/percent" + tag;
-  const res = await axios.get(URL, {
+export const getDataByTag = (executor, tailURL, ids) => async (dispatch) => {
+  let URL = "http://localhost:8080/" + executor + "/percent" + tailURL;
+  let tag = "";
+  if (ids.length > 0) {
+    if (ids[0].length === 2) tag = "province";
+    if (ids[0].length === 4) tag = "district";
+    if (ids[0].length === 6) tag = "ward";
+    if (ids[0].length === 8) tag = "village";
+  }
+  const res = await axios.post(URL,{ ids, tag }, {
     withCredentials: true,
   });
   if (res.data.status === 1) {
-    res.data.tag = tag;
+    res.data.tag = tailURL;
     dispatch(getDataSuccess(res.data));
   } else {
     dispatch(getDataError(res.data));

@@ -743,8 +743,13 @@ class UserController {
   }
 
   async getPercentMigrate(req, res) {
-    const percentMigrate = await Person.getPercentMigrate();
-    return res.json({ status: 1, migrate: percentMigrate });
+    const {ids, tag} = req.body;
+    if (ids.length == 0 && tag == "") {
+      const percentMigrate = await Person.getPercentMigrate();
+      return res.json({ status: 1, migrate: percentMigrate });
+    } else {
+      return res.json({ status: 0, error: "GET_PERCENT_MIGRATE!"});
+    }
   }
 
   async getPercentGroupAge(req, res) {
@@ -1220,11 +1225,15 @@ class UserController {
     if (address == "") {
       return res.json({ status: 0, error: "GET_PERCENT_GENDER_ERROR!" });
     }
-    const percentMale = await Person.getPercentMale(address);
+    const amountPerson = await Person.getAmountPerson(address);
+    var percentGender = [];
+    if (amountPerson != 0) {
+      percentGender = await Person.getPercentGender(address);
+    }
     return res.json({
       status: 1,
-      male: percentMale,
-      female: 1 - percentMale,
+      percentGender,
+      amountPerson
     });
   }
 

@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 const initialState = {
-  provinces: [],
   districts: [],
   wards: [],
 };
@@ -33,7 +32,7 @@ const { setProvinces, setDistricts, setWards } = selector.actions;
 export const getRegions = (executor, tag, ids) => async (dispatch) => {
   const URL = "http://localhost:8080/" + executor + "/" + tag;
   fetch(URL, {
-    method: "GET",
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
     },

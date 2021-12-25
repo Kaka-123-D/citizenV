@@ -3,7 +3,7 @@ import "./style.scss";
 import { setMessageError } from "../../store/reducers/Message";
 // import { toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
-import {isNumber} from "../../validation"
+import { isNumber } from "../../validation";
 
 export default function DeclareForm({ declareRegion, executor, message }) {
   const [id, setId] = useState("");
@@ -93,14 +93,10 @@ export default function DeclareForm({ declareRegion, executor, message }) {
             Tên khu vực<span className="required-input">*</span>{" "}
           </label>
           <div className="name-region-group">
-            <select id="type-region">
+            <select id="type-region" onChange={(e) => setType(e.target.value)}>
               {renderSwitch().map((item) => {
                 return (
-                  <option
-                    key={item}
-                    value={item.toLocaleLowerCase()}
-                    onChange={(e) => setType(e.target.value)}
-                  >
+                  <option key={item} value={item.toLocaleLowerCase()}>
                     {item}
                   </option>
                 );

@@ -57,7 +57,6 @@ const {
 } = person.actions;
 
 export const getListAllPersonInRegion = (executor) => async (dispatch) => {
-  // console.log(document.cookie);
   const URL = "http://localhost:8080/" + executor + "/personAll";
   const res = await axios.get(URL, { withCredentials: true });
 
@@ -68,12 +67,17 @@ export const getListAllPersonInRegion = (executor) => async (dispatch) => {
   }
 };
 
-export const getPersonList = (executor, place, ids) => async (dispatch) => {
-  // let tag = "/personByProvince";
+export const getPersonList = (executor, ids) => async (dispatch) => {
+  let place = "";
+  if (ids.length <= 0) dispatch(getListSuccess([])); 
+  else if (ids[0].length === 2) place = "Province";
+  else if (ids[0].length === 4) place = "District";
+  else if (ids[0].length === 6) place = "Ward";
+  else if (ids[0].length === 8) place = "Village";
   const URL = "http://localhost:8080/" + executor + "/personBy" + place;
-  const res = await axios.get(
+  const res = await axios.post(
     URL,
-    { params: { ids } },
+    { ids },
     { withCredentials: true }
   );
 
