@@ -22,10 +22,10 @@ router.post("/grantDeclare", userMiddleware.roleCUD, userController.grantDeclare
 router.post("/cancelDeclare", userMiddleware.roleCUD, userController.cancelDeclare);
 router.put("/confirmDeclareComplete", userMiddleware.roleCUD, userController.confirmDeclareComplete);
 router.put("/cancelDeclareComplete", userMiddleware.roleCUD, userController.cancelDeclareComplete);
-router.get("/percentAge", userController.getPercentAge);
-router.get("/percentGroupAge", userController.getPercentGroupAge);
-router.get("/percentReligion", userController.getPercentReligion);
-router.get("/percentGender", userController.getPercentGender);
-router.get("/percentUnemployment", userController.getPercentUnemployment);
+router.post("/percentAge", userController.getPercentAge);
+router.post("/percentGroupAge", userController.getPercentGroupAge);
+router.post("/percentReligion", userController.getPercentReligion);
+router.post("/percentGender", userController.getPercentGender);
+router.post("/percentUnemployment", userController.getPercentUnemployment);
 
 module.exports = router;
