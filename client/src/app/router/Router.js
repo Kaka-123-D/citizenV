@@ -9,6 +9,7 @@ const mapStateToProps = (state) => ({
   executor: state.auth.group,
   skip: state.auth.skip,
   clickChangePass: state.auth.clickChangePass,
+  permission: state.auth.permission,
 });
 
 const mapActionToProps = { resetAuthState, setAlertError, skipChangePass };

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Chart from "../../../components/HighChartsMap";
+import Chart from "../../../components/HighChartsMap/connectStore";
 import "./style.scss";
 
-export default function Home({ isFirstLogin, skipChangePass, skip}) {
+export default function Home({executor}) {
   const [mapData, setMapData] = useState({});
   useEffect(() => {
     import(`../../../assets/json/RegionFile.json`)
@@ -14,7 +14,7 @@ export default function Home({ isFirstLogin, skipChangePass, skip}) {
 
   return (
     <div className="home-wrap">
-        <Chart mapData={mapData} />
+        {executor === "a1" ? <Chart mapData={mapData} /> : null}
     </div>
   );
 }
