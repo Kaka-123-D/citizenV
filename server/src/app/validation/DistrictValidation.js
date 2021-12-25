@@ -6,7 +6,7 @@ class DistrictValidation {
   async validationDistrictId(districtId, tag, username, group) {
     if (!districtId) return false;
     if (!districtId.match(/^[0-9]{4}$/g)) return false;
-    if (group != "a1" || group != "admin") {
+    if (group != "a1" && group != "admin") {
       if (!districtId.startsWith(username)) return false;
     }
     try {
@@ -27,11 +27,7 @@ class DistrictValidation {
         if (!district) return false;
         if (user) return false;
       }
-      if (tag == "getPerson") {
-        if (!district) return false;
-        if (!user) return false;
-      }
-      if (tag == "getNewPassword") {
+      if (tag == "getPerson" || tag == "getNewPassword" || tag == "getWards") {
         if (!district) return false;
         if (!user) return false;
       }

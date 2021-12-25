@@ -13,6 +13,7 @@ router.get("/regions", a3Controller.getRegions);
 router.get("/personAll", a3Controller.getPersonDistrictAll);
 router.get("/personByWard", userController.getPersonByWard);
 router.get("/personByPersonId", userController.getPersonByPersonId);
+router.get("/villages", userController.getVillages);
 
 router.post("/person", userMiddleware.roleCUD, userController.addPerson);
 router.put("/person", userMiddleware.roleCUD, userController.updatePerson);

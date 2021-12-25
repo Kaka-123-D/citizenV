@@ -24,11 +24,7 @@ class ProvinceValidation {
         if (!province) return false;
         if (user) return false;
       }
-      if (tag == "getPerson") {
-        if (!province) return false;
-        if (!user) return false;
-      }
-      if (tag == "getNewPassword") {
+      if (tag == "getPerson" || tag == "getNewPassword" || tag == "getDistricts") {
         if (!province) return false;
         if (!user) return false;
       }

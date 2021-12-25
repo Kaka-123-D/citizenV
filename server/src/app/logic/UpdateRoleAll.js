@@ -1,14 +1,17 @@
-const User = require('../model/User')
+const schedule = require("node-schedule");
 
-async function UpdateRoleAll(username) {
+const User = require("../model/User");
+const Permission = require("../model/Permission");
+
+async function UpdateRoleAll(username, tag) {
   try {
     const user = await User.findOne({
       where: {
-        username:username,
-      }
+        username: username,
+      },
     });
     if (user) {
-      if (user.role == 'view') {
+      if (user.role == "view") {
         return true;
       } else {
         await User.update(
@@ -21,6 +24,19 @@ async function UpdateRoleAll(username) {
             },
           }
         );
+        if (tag == "cancel") {
+          schedule.cancelJob(`end_${username}`);
+        } 
+        await Permission.update(
+          { isFinish: true },
+          {
+            where: {
+              userId: user.userId,
+              isFinish: false,
+            },
+          }
+        );
+        console.log("GRANT_DECLARE_END!");
       }
     }
     const users = await user.getUsers();
@@ -35,4 +51,4 @@ async function UpdateRoleAll(username) {
   }
 }
 
-module.exports = {UpdateRoleAll};
+module.exports = { UpdateRoleAll };

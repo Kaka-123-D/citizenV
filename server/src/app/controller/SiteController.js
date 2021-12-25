@@ -21,7 +21,7 @@ const Person = require("../model/Person");
 class SiteController {
   
   home(req, res) {
-    res.sendFile(path.join(process.cwd(), "src/dist", "index.html"));
+    res.send('Hello');
   }
 
   async register(data) {

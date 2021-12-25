@@ -6,7 +6,7 @@ class WardValidation {
   async validationWardId(wardId, tag, username, group) {
     if (!wardId) return false;
     if (!wardId.match(/^[0-9]{6}$/g)) return false;
-    if (group != "a1" || group != "admin") {
+    if (group != "a1" && group != "admin") {
       if (!wardId.startsWith(username)) return false;
     }
     try {
@@ -27,11 +27,7 @@ class WardValidation {
         if (!ward) return false;
         if (user) return false;
       }
-      if (tag == "getPerson") {
-        if (!ward) return false;
-        if (!user) return false;
-      }
-      if (tag == "getNewPassword") {
+      if (tag == "getPerson" || tag == "getNewPassword" || tag == "getVillages") {
         if (!ward) return false;
         if (!user) return false;
       }

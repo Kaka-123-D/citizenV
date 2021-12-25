@@ -155,16 +155,7 @@ class UserController {
           );
         });
         schedule.scheduleJob(`end_${id}`, timeEndD, async function () {
-          await Permission.update(
-            { isFinish: true },
-            {
-              where: {
-                permissionId: permission.permissionId,
-              },
-            }
-          );
-          console.log("GRANT_DECLARE_END!");
-          await UpdateRoleAll(id);
+          await UpdateRoleAll(id, "expired");
         });
       }
       //
@@ -237,25 +228,13 @@ class UserController {
     try {
       for (const i in ids) {
         const jobNames = _.keys(schedule.scheduledJobs);
-        const user = users[i];
         const id = ids[i];
         for (const name of jobNames) {
           if (name == `start_${id}`) {
             schedule.cancelJob(name);
           }
           if (name == `end_${id}`) {
-            schedule.cancelJob(name);
-            await Permission.update(
-              { isFinish: true },
-              {
-                where: {
-                  userId: user.userId,
-                  isFinish: false,
-                },
-              }
-            );
-            console.log("GRANT_DECLARE_END!");
-            await UpdateRoleAll(id);
+            await UpdateRoleAll(id, "cancel");
           }
         }
       }
@@ -795,8 +774,92 @@ class UserController {
     const percentUnemployment = await Person.getPercentUnemployment(address);
     return res.json({
       status: 1,
-      percentUnemployment
+      percentUnemployment,
     });
+  }
+
+  async getDistricts(req, res) {
+    const { ids } = req.body;
+    var districts = [];
+    try {
+      if (!ids || !Array.isArray(ids)) {
+        return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
+      }
+      for (const id of ids) {
+        const data = await validationProvinceId(id, "getDistricts");
+        if (!data) {
+          return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
+        } else {
+          districts.push(data.province.getDistricts());
+        }
+      }
+      return res.json({ status: 1, districts });
+    } catch (err) {
+      return res.json({ status: 0, error: "GET_DISTRICTS_ERROR!" });
+    }
+  }
+
+  async getDistricts(req, res) {
+    const { ids } = req.body;
+    var districts = [];
+    try {
+      if (!ids || !Array.isArray(ids)) {
+        return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
+      }
+      for (const id of ids) {
+        const data = await validationProvinceId(id, "getDistricts");
+        if (!data) {
+          return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
+        } else {
+          districts.push(...await data.province.getDistricts());
+        }
+      }
+      return res.json({ status: 1, districts });
+    } catch (err) {
+      return res.json({ status: 0, error: "GET_DISTRICTS_ERROR!" });
+    }
+  }
+
+  async getWards(req, res) {
+    const { ids } = req.body;
+    var wards = [];
+    try {
+      if (!ids || !Array.isArray(ids)) {
+        return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
+      }
+      for (const id of ids) {
+        const data = await validationDistrictId(id, "getWards", req.session.username, req.session.group);
+        if (!data) {
+          return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
+        } else {
+          wards.push(...await data.district.getWards());
+        }
+      }
+      return res.json({ status: 1, wards });
+    } catch (err) {
+      return res.json({ status: 0, error: "GET_WARDS_ERROR!" });
+    }
+  }
+
+  async getVillages(req, res) {
+    const { ids } = req.body;
+    var villages = [];
+    try {
+      if (!ids || !Array.isArray(ids)) {
+        return res.json({ status: 0, error: "WARD_ID_ERROR!" });
+      }
+      for (const id of ids) {
+        const data = await validationWardId(id, "getVillages", req.session.username, req.session.group);
+        if (!data) {
+          return res.json({ status: 0, error: "WARD_ID_ERROR!" });
+        } else {
+          villages.push(...await data.ward.getVillages());
+        }
+      }
+      return res.json({ status: 1, villages });
+    } catch (err) {
+      return res.json({ status: 0, error: "GET_VILLAGES_ERROR!" });
+    }
   }
 }
 
