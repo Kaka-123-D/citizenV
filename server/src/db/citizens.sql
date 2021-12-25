@@ -141,17 +141,14 @@ IF (address = "nationwide") THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge AND p.sex = true;
-		RETURN ratio/totalPerson;
 	ELSEIF (sex = 0) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge AND p.sex = false;
-		RETURN ratio/totalPerson;
 	ELSEIF (sex = -1) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge;
-		RETURN ratio/totalPerson;
 	END IF;
 ELSE 
 	SELECT COUNT(*) INTO totalPerson
@@ -167,7 +164,6 @@ ELSE
         AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge 
         AND p.thuongTru REGEXP address
         AND p.sex = true;
-		RETURN ratio/totalPerson;
 	ELSEIF (sex = 0) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
@@ -175,21 +171,19 @@ ELSE
         AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge 
         AND p.thuongTru REGEXP address
         AND p.sex = false;
-		RETURN ratio/totalPerson;
 	ELSEIF (sex = -1) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge 
         AND p.thuongTru REGEXP address
         AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge;
-		RETURN ratio/totalPerson;
 	END IF;
 END IF;
 RETURN ratio / totalPerson;
 END $$
 DELIMITER ;
 
-DROP FUNCTION calRatioPopulationWithAge;
+-- DROP FUNCTION calRatioPopulationWithAge;
 
 -- Lấy %Nam các tuổi
 DELIMITER $$
@@ -245,15 +239,27 @@ DELIMITER ;
 
 -- Lấy số lượng người dân
 DELIMITER $$
-CREATE PROCEDURE getAmountPerson(IN address VARCHAR(255)) 
+CREATE FUNCTION getAmountPerson(address VARCHAR(255)) 
+RETURNS INTEGER
+NO SQL 
 BEGIN
-DECLARE pattern VARCHAR(255) DEFAULT "";
-SET pattern = CONCAT("%", address, "%");
-SELECT COUNT(*) amountPerson
-FROM citizens.persons p
-WHERE p.thuongTru like pattern;
+
+DECLARE amountPerson INTEGER DEFAULT 0;
+IF (address = "nationwide") THEN 
+	SELECT COUNT(*) INTO amountPerson
+	FROM citizens.persons;
+ELSE 
+	SELECT COUNT(*) INTO amountPerson
+	FROM citizens.persons p
+	WHERE p.thuongTru REGEXP address;
+END IF;
+
+RETURN amountPerson;
 END $$
 DELIMITER ;
+
+-- SELECT getAmountPerson("nationwide");
+
 
 -- Lấy % thành thị
 
@@ -274,7 +280,7 @@ IF (address = "nationwide") THEN
 	END IF;
 ELSE
 	SELECT COUNT(*) INTO totalPerson 
-    FROM citizens.persons 
+    FROM citizens.persons p
     WHERE p.thuongTru REGEXP address;
     
 	SELECT COUNT(*) INTO ts 
@@ -291,6 +297,7 @@ END $$
 DELIMITER ;
 
 -- DROP FUNCTION getPercentRegionCity;
+-- SELECT getPercentRegionCity("thành phố Hồ Chí Minh|tỉnh An Giang");
 
 -- Lấy % luồng di cư detail
 DELIMITER $$
@@ -347,7 +354,7 @@ END $$
 DELIMITER ;
 
 -- DROP PROCEDURE getPercentGroupAge;
--- CALL getPercentGroupAge();
+CALL getPercentGroupAge("huyện khu bốn, tỉnh An Giang");
 
 -- Lấy cơ cấu tôn giáo chi tiết
 DELIMITER $$
@@ -383,6 +390,7 @@ END $$
 DELIMITER ;
 
 -- DROP FUNCTION getPercentReligionDetails;
+-- SELECT getPercentReligionDetails("Kitô Giáo", "thành phố Hồ Chí Minh");
 
 -- Lấy cơ cấu tôn giáo
 DELIMITER $$
@@ -566,7 +574,7 @@ DELIMITER ;
 
 -- Lấy cơ cấu nam nữ
 DELIMITER $$
-CREATE FUNCTION getPercentMale(address VARCHAR(255)) 
+CREATE FUNCTION getPercentGenderDetails(address VARCHAR(255), sex BOOLEAN) 
 RETURNS FLOAT
 NO SQL 
 BEGIN
@@ -575,19 +583,19 @@ DECLARE ts INTEGER DEFAULT 0;
 IF (address = "nationwide") THEN
 	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
     
-	SELECT COUNT(*) INTO ts FROM citizens.persons p WHERE p.sex = true;
+	SELECT COUNT(*) INTO ts FROM citizens.persons p WHERE p.sex = sex;
     
 	IF (totalPerson = 0) THEN 
 		SET totalPerson = -1;
 	END IF;
 ELSE
 	SELECT COUNT(*) INTO totalPerson 
-    FROM citizens.persons 
+    FROM citizens.persons p
     WHERE p.thuongTru REGEXP address;
     
 	SELECT COUNT(*) INTO ts 
     FROM citizens.persons p 
-    WHERE p.sex = true
+    WHERE p.sex = sex
     AND p.thuongTru REGEXP address;
     
 	IF (totalPerson = 0) THEN 
@@ -598,8 +606,19 @@ RETURN ts / totalPerson;
 END $$
 DELIMITER ;
 
--- DROP FUNCTION getPercentMale;
--- SELECT getPercentMale("nationwide");
+-- DROP FUNCTION getPercentGender;
+-- SELECT getPercentMale("tỉnh An Giang|thành phố Hồ Chí Minh");
+
+-- Lấy cơ cấu nam nữ
+DELIMITER $$
+CREATE PROCEDURE getPercentGender(IN address VARCHAR(255)) 
+BEGIN
+	SELECT getPercentGenderDetails(address, true) g_1;
+    SELECT getPercentGenderDetails(address, false) g_2;
+END $$
+DELIMITER ;
+
+CALL getPercentGender("huyện khu 4, tỉnh An Giang");
 
 -- Lấy cơ cấu thất nghiệp
 DELIMITER $$
