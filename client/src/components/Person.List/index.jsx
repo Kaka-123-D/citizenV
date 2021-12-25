@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import "./style.scss";
+import SearchBar from "../SearchBar"
 
 export default function PersonList({
   personList,
@@ -27,6 +28,8 @@ export default function PersonList({
       <br />
       <br />
       <h2>Danh sách dân số: </h2>
+      <button className="add-region">+</button>
+      {/* <SearchBar regions={regions} /> */}
       <table className="table-person">
         <thead>
           <tr>

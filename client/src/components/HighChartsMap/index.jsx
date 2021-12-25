@@ -40,21 +40,33 @@ const initOptions = {
   ],
 };
 
-const HighMaps = ({ mapData }) => {
+const HighMaps = ({ mapData, regions, setRegionListToState, executor}) => {
   const [options, setOptions] = useState({});
   const [mapLoaded, setMapLoaded] = useState(false);
   const chartRef = useRef(null);
 
   useEffect(() => {
-    
+    setRegionListToState(executor);
   }, []); 
 
   useEffect(() => {
-    if (mapData && Object.keys(mapData).length) {
-      const fakeData = mapData.features.map((feature, index) => ({
-        key: feature.properties["hc-key"],
-        value: index * 139,
-      }));
+    if (mapData && regions && Object.keys(mapData).length) {
+      const dataMap = [];
+      for (const f of mapData.features) {
+        for (const r of regions) {
+          if (r.name === f.properties.name) {
+            dataMap.push({
+              key: f.properties["hc-key"],
+              value: r.amountPerson,
+            })
+          }
+        }
+      }
+
+      // const dataMap = mapData.features.map((feature, index) => ({
+      //   key: feature.properties["hc-key"],
+      //   value: regions
+      // }));
 
       setOptions(() => ({
         ...initOptions,
@@ -62,13 +74,13 @@ const HighMaps = ({ mapData }) => {
           text: mapData.title,
         },
         series: [
-          { ...initOptions.series[0], mapData: mapData, data: fakeData },
+          { ...initOptions.series[0], mapData: mapData, data: dataMap },
         ],
       }));
 
       if (!mapLoaded) setMapLoaded(true);
     }
-  }, [mapData, mapLoaded]);
+  }, [mapData, mapLoaded, regions]);
 
   useEffect(() => {
     if (chartRef && chartRef.current) {
@@ -76,7 +88,7 @@ const HighMaps = ({ mapData }) => {
         mapData,
       });
     }
-  }, [options, mapData]);
+  }, [options, mapData, regions]);
 
   if (!mapLoaded) return null;
 

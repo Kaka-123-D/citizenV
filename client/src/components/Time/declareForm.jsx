@@ -96,10 +96,10 @@ export default function Declare({
   const rendererClock = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
       return (
-        <span className="alert">
+        <div className="alert">
           Cuộc điều tra dân số đã kết thúc. <br /> Hãy liên lạc với quản trị
           viên nếu bạn chưa hoàn thành
-        </span>
+        </div>
       );
     } else {
       let day = days.toString();
@@ -107,12 +107,12 @@ export default function Declare({
       let minute = minutes.toString();
       let second = seconds.toString();
 
-       if (day.length === 1) day = "0" + day;
-       if (hour.length === 1) hour = "0" + hour;
-       if (minute.length === 1) minute = "0" + minute;
-       if (second.length === 1) second = "0" + second;
+      if (day.length === 1) day = "0" + day;
+      if (hour.length === 1) hour = "0" + hour;
+      if (minute.length === 1) minute = "0" + minute;
+      if (second.length === 1) second = "0" + second;
 
-       if (day === "00") day ="0";
+      if (day === "00") day = "0";
 
       return (
         <span className="clock">
@@ -181,7 +181,12 @@ export default function Declare({
         showButton = false;
       } else countSuccess++;
     }
-    if (showButton && permission && !permission.isFinish && checkTimePassed(permission.timeStart))
+    if (
+      showButton &&
+      permission &&
+      !permission.isFinish &&
+      checkTimePassed(permission.timeStart)
+    )
       return (
         <button
           className="completeBtn"
@@ -190,7 +195,10 @@ export default function Declare({
           Hoàn thành điều tra
         </button>
       );
-    else if ((permission && checkTimePassed(permission.timeStart)) || executor === "a1") {
+    else if (
+      (permission && checkTimePassed(permission.timeStart)) ||
+      executor === "a1"
+    ) {
       let progress = (countSuccess * 100) / regions.length;
       return (
         <div className="progress-declare">
@@ -237,7 +245,9 @@ export default function Declare({
       ) : null}
       <div className="provide-time-form">
         <div className="clock-countdown">
-          {permission && checkTimePassed(permission.timeStart) ? (
+          {permission &&
+          checkTimePassed(permission.timeStart) &&
+          !permission.isFinish ? (
             <>
               {checkTimePassed(permission.timeEnd) ? null : (
                 <>
@@ -319,38 +329,41 @@ export default function Declare({
                 </thead>
                 <tbody>
                   {regions.map((region, index) => {
-                    let textTemp = region.name;
-                    if (
-                      xoa_dau(textTemp)
-                        .toLocaleLowerCase()
-                        .startsWith(xoa_dau(textSearch).toLocaleLowerCase()) ===
-                      true
-                    ) {
-                      return (
-                        <tr key={region.id} className="region-row">
-                          <td
-                            className="id-column"
-                            onClick={() => viewInfo(index, region)}
-                          >
-                            {region.id}
-                          </td>
-                          <td
-                            className="name-column"
-                            onClick={() => viewInfo(index, region)}
-                          >
-                            {region.name}
-                          </td>
-                          <td
-                            className="des-column"
-                            onClick={() => viewInfo(index, region)}
-                          >
-                            {region.textDes}
-                          </td>
-                          <td className="status-column">
-                            {handleShowIcon(region.permission, region.id)}
-                          </td>
-                        </tr>
-                      );
+                    if (region.isRegistered) {
+                      let textTemp = region.name;
+                      if (
+                        xoa_dau(textTemp)
+                          .toLocaleLowerCase()
+                          .startsWith(
+                            xoa_dau(textSearch).toLocaleLowerCase()
+                          ) === true
+                      ) {
+                        return (
+                          <tr key={region.id} className="region-row">
+                            <td
+                              className="id-column"
+                              onClick={() => viewInfo(index, region)}
+                            >
+                              {region.id}
+                            </td>
+                            <td
+                              className="name-column"
+                              onClick={() => viewInfo(index, region)}
+                            >
+                              {region.name}
+                            </td>
+                            <td
+                              className="des-column"
+                              onClick={() => viewInfo(index, region)}
+                            >
+                              {region.textDes}
+                            </td>
+                            <td className="status-column">
+                              {handleShowIcon(region.permission, region.id)}
+                            </td>
+                          </tr>
+                        );
+                      }
                     }
                   })}
                 </tbody>

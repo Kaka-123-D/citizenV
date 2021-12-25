@@ -5,12 +5,18 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import LogoutBtn from "../Logout.Button/connectStore";
+import {
+  checkFeaturesSetTimeDeClare,
+  checkFeaturesDeclare,
+  checkFeaturesAnalysis,
+  checkFeaturesInputPerson,
+} from "../../validation";
 
 import { Link } from "react-router-dom";
 
 import "./style.scss";
 
-export default function NavBar({ clickChangePass }) {
+export default function NavBar({ clickChangePass, executor, permission }) {
   const location = useLocation();
   return (
     <div className="nav-bar-wrap">
@@ -26,37 +32,49 @@ export default function NavBar({ clickChangePass }) {
               style={{ maxHeight: "100px" }}
               navbarScroll
             >
-              <Nav.Link as={Link} to="/declare" className="nav-item">
-                Khai báo mã khu vực
-              </Nav.Link>
+              {checkFeaturesDeclare(executor, permission) ? (
+                <Nav.Link as={Link} to="/declare" className="nav-item">
+                  Khai báo mã khu vực
+                </Nav.Link>
+              ) : null}
 
-              <Nav.Link as={Link} to="/setTimeDeclare" className="nav-item">
-                Mở quyền khai báo
-              </Nav.Link>
-              <Nav.Link as={Link} to="/input" className="nav-item">
-                Nhập liệu
-              </Nav.Link>
-              <NavDropdown
-                title="Quản lý"
-                id="navbarScrollingDropdown"
-                className="nav-item"
-              >
-                <NavDropdown.Item
-                  as={Link}
-                  to="/analysis"
-                  className="nav-item-drop"
+              {checkFeaturesSetTimeDeClare(executor, permission) ? (
+                <Nav.Link as={Link} to="/setTimeDeclare" className="nav-item">
+                  Mở quyền khai báo
+                </Nav.Link>
+              ) : null}
+              {checkFeaturesInputPerson(executor, permission) ? (
+                <Nav.Link as={Link} to="/input" className="nav-item">
+                  Nhập liệu 
+                </Nav.Link>
+              ) : null}
+              {checkFeaturesAnalysis(executor, permission) ? (
+                <NavDropdown
+                  title="Quản lý"
+                  id="navbarScrollingDropdown"
+                  className="nav-item"
                 >
-                  Phân tích số liệu dân số
-                </NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item
-                  as={Link}
-                  to="/person"
-                  className="nav-item-drop"
-                >
+                  <NavDropdown.Item
+                    as={Link}
+                    to="/analysis"
+                    className="nav-item-drop"
+                  >
+                    Phân tích số liệu dân số
+                  </NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item
+                    as={Link}
+                    to="/person"
+                    className="nav-item-drop"
+                  >
+                    Danh sách dân số
+                  </NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <Nav.Link as={Link} className="nav-item" to="/person">
                   Danh sách dân số
-                </NavDropdown.Item>
-              </NavDropdown>
+                </Nav.Link>
+              )}
               <Nav.Link
                 as={Link}
                 className="nav-item"

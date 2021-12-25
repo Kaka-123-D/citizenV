@@ -199,7 +199,6 @@ export const updatePerson =
   };
 
 export const deletePerson = (executor, stt) => async (dispatch) => {
-  console.log("helo");
   const URL = "http://localhost:8080/" + executor + "/person";
   fetch(URL, {
     method: "DELETE",

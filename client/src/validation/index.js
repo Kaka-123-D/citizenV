@@ -48,7 +48,7 @@ export const validationPassword = (str) => {
   return true;
 };
 
-// input: y/m/dTh:m:s.000Z 
+// input: y/m/dTh:m:s.000Z
 export const formatTimeClock = (time) => {
   let date = new Date(time);
 
@@ -62,14 +62,15 @@ export const formatTimeClock = (time) => {
   if (minute.length === 1) minute = "0" + minute;
   if (day.length === 1) day = "0" + day;
   if (month.length === 1) month = "0" + month;
-  
-   let tag = "AM";
-   if (hour >= "12") tag = "PM"; 
 
-  let clock = hour + ":" + minute + " " + tag + " - " + day + "/" + month + "/" + year;
+  let tag = "AM";
+  if (hour >= "12") tag = "PM";
+
+  let clock =
+    hour + ":" + minute + " " + tag + " - " + day + "/" + month + "/" + year;
 
   return clock;
-}
+};
 
 export const formatCountDownClock = (time) => {
   let date = new Date(time);
@@ -79,16 +80,60 @@ export const formatCountDownClock = (time) => {
   let second = date.getSeconds();
   let day = date.getDate();
 
-   if (hour.length === 1) hour = "0" + hour;
-   if (minute.length === 1) minute = "0" + minute;
-   if (second.length === 1) second = "0" + second;
-   if (day.length === 1) day = "0" + day;
+  if (hour.length === 1) hour = "0" + hour;
+  if (minute.length === 1) minute = "0" + minute;
+  if (second.length === 1) second = "0" + second;
+  if (day.length === 1) day = "0" + day;
 
-   let clock = day + " Ngày : " + hour + " Giờ : " + minute + " Phút : " + second + " Giây";
+  let clock =
+    day +
+    " Ngày : " +
+    hour +
+    " Giờ : " +
+    minute +
+    " Phút : " +
+    second +
+    " Giây";
 
-   return clock;
-}
+  return clock;
+};
 
 export const checkTimePassed = (time) => {
   return new Date(time) <= new Date(Date.now());
-}
+};
+
+export const checkFeaturesDeclare = (executor, permission) => {
+  if (executor === "b2") return false;
+  return true;
+};
+
+export const checkFeaturesSetTimeDeClare = (executor, permission) => {
+  if (executor === "a1") return true;
+  if (executor === "b2") return false;
+  else if (
+    permission &&
+    checkTimePassed(permission.timeStart) &&
+    !checkTimePassed(permission.timeEnd) &&
+    !permission.isFinish
+  ) {
+    return true;
+  }
+  return false;
+};
+
+export const checkFeaturesInputPerson = (executor, permission) => {
+  if (
+    (executor === "b1" || executor === "b2") &&
+    permission &&
+    checkTimePassed(permission.timeStart) &&
+    !checkTimePassed(permission.timeEnd) &&
+    !permission.isFinish
+  )
+    return true;
+  return false;
+};
+
+export const checkFeaturesAnalysis = (executor, permission) => {
+  if (executor === "b2") return false;
+  return true;
+};

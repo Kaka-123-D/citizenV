@@ -9,14 +9,13 @@ export default function Login({ login, message, listLogged, setAlertError }) {
   const [filledUsername, setFilledUsername] = useState(true);
   const [filledPassword, setFilledPassword] = useState(true);
   const [remember, setRemember] = useState(true);
-  const navigate = useNavigate();
 
   function handleSubmit(event) {
     event.preventDefault();
     if (!username) setFilledUsername(false);
     if (!password) setFilledPassword(false);
     if (username && password) {
-      login(username.trim(), password, remember, navigate);
+      login(username.trim(), password, remember);
     }
   }
 

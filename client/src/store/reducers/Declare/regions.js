@@ -4,14 +4,10 @@ import { setMessageError } from "../Message";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-// khởi tạo state gồm 2 token
-// accessToken dùng để duy trì đăng nhập
-// refreshToken dùng để
 const initialState = {
   regions: [],
 };
 
-// tạo slice auth chứa actions và reducer cho admin
 const region = createSlice({
   name: "region",
   initialState,

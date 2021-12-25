@@ -4,6 +4,7 @@ import { setMessageError } from "../Message";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import storage from "redux-persist/lib/storage";
+import { delay } from "lodash";
 
 const initialState = {
   group: null,
@@ -33,6 +34,7 @@ const auth = createSlice({
       state.status = 0;
       state.group = null;
       state.skip = false;
+      state.permission = null;
     },
     logoutFailure(state, action) {
       alert("Logout failed");
@@ -72,7 +74,7 @@ export const clickChangePass = () => (dispatch) => {
 // nếu status của res trả về là 1 thì gọi hàm loginSuccess.
 // ngược lại gọi hàm loginFailure
 export const login =
-  (username, password, keepLogin, navigate) => async (dispatch) => {
+  (username, password, keepLogin) => async (dispatch) => {
     const res = await axios.post(
       "http://localhost:8080/login",
       {
@@ -91,7 +93,6 @@ export const login =
           permission: res.data.permission,
         })
       );
-      navigate("/" + res.data.group);
       toast.success("Hello " + res.data.group + ". Chúc 1 ngày vui vẻ");
     } else {
       if (

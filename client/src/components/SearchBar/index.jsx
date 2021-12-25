@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
-import "./searchBar.scss";
+import "./style.scss";
 
-export default function index({ regions, setRegionListToState, executor }) {
+export default function index({ regions, setRegionToShowListPerson }) {
   const [input, setInput] = useState("");
-
-  useEffect(() => {
-    setRegionListToState(executor);
-  }, []);
 
   return (
     <div className="searchBar">

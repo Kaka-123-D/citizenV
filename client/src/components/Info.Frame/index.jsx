@@ -1,17 +1,25 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.scss";
 import ProgressBar from "react-bootstrap/ProgressBar";
-import {formatTimeClock} from "../../validation"
+import { formatTimeClock } from "../../validation";
 
 // props setClose = false -> ẩn frame
-export default function FrameInfo({ tag, data, setClose }) {
+export default function FrameInfo({ tag, data, setClose, executor }) {
+  let progress = 0;
+
+  function handleComplete(event) {
+    event.preventDefault();
+    progress = 100;
+    console.log("handle");
+  }
+
   const handleShowByTag = () => {
     switch (tag) {
       case "REGION": {
-        let progress = 0;
         if (data.progress > 0) {
           progress = data.progress;
         }
+
         return (
           <div className="frame-info">
             <button className="back-btn" onClick={() => setClose(false)}>
@@ -20,8 +28,10 @@ export default function FrameInfo({ tag, data, setClose }) {
             <div className="info-region">
               <p>Mã khu vực:</p> {data.id} <br />
               <p>Tên khu vực:</p> {data.name} <br />
-              <p>Trạng thái:</p> 
-              {progress !== 100 ? " Đang điều tra dân cư" : " Đã hoàn thành điều tra dân cư"}
+              <p>Trạng thái:</p>
+              {progress !== 100
+                ? " Đang điều tra dân cư"
+                : " Đã hoàn thành điều tra dân cư"}
             </div>
             <div className="time">
               <label htmlFor="time-start">Thời gian bắt đầu:</label>
@@ -39,6 +49,12 @@ export default function FrameInfo({ tag, data, setClose }) {
               now={progress}
               className="progress-bar-custom"
             />
+            {executor === "b1" ? <button
+              className="confirm-complete-btn"
+              onClick={(e) => handleComplete(e)}
+            >
+              Xác nhận hoàn thành điều tra
+            </button> : null }
           </div>
         );
       }
