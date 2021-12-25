@@ -1387,7 +1387,12 @@ class UserController {
         if (!data) {
           return res.json({ status: 0, error: "PROVINCE_ID_ERROR!" });
         } else {
-          districts.push(...await data.province.getDistricts());
+          districts.push(...(await data.province.getDistricts()).map(district => {
+            return {
+              id: district.districtId,
+              name: district.districtName,
+            }
+          }));
         }
       }
       return res.json({ status: 1, districts });
@@ -1408,7 +1413,12 @@ class UserController {
         if (!data) {
           return res.json({ status: 0, error: "DISTRICT_ID_ERROR!" });
         } else {
-          wards.push(...await data.district.getWards());
+          wards.push(...(await data.district.getWards()).map(ward => {
+            return {
+              id: ward.wardId,
+              name: ward.wardName
+            }
+          }));
         }
       }
       return res.json({ status: 1, wards });
@@ -1429,7 +1439,12 @@ class UserController {
         if (!data) {
           return res.json({ status: 0, error: "WARD_ID_ERROR!" });
         } else {
-          villages.push(...await data.ward.getVillages());
+          villages.push(...(await data.ward.getVillages()).map(village => {
+            return {
+              id: village.villageId,
+              name: village.villageName
+            }
+          }));
         }
       }
       return res.json({ status: 1, villages });
