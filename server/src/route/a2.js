@@ -14,8 +14,8 @@ router.get("/personAll", a2Controller.getPersonProvinceAll);
 router.get("/personByDistrict", userController.getPersonByDistrict);
 router.get("/personByWard", userController.getPersonByWard);
 router.get("/personByPersonId", userController.getPersonByPersonId);
-router.get("/wards", userController.getWards);
-router.get("/villages", userController.getVillages);
+router.post("/wards", userController.getWards);
+router.post("/villages", userController.getVillages);
 
 router.post("/person", userMiddleware.roleCUD, userController.addPerson);
 router.put("/person", userMiddleware.roleCUD, userController.updatePerson);

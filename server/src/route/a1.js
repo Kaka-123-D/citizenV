@@ -8,9 +8,9 @@ router.post('/register', a1Controller.register);
 router.post('/getNewPassword', userController.getNewPassword);
 router.post('/declare', a1Controller.declare);
 router.get('/regions', a1Controller.getRegions);
-router.get("/districts", userController.getDistricts);
-router.get("/wards", userController.getWards);
-router.get("/villages", userController.getVillages);
+router.post("/districts", userController.getDistricts);
+router.post("/wards", userController.getWards);
+router.post("/villages", userController.getVillages);
 
 router.get('/personAll', a1Controller.getPersonAll);
 router.get('/personByProvince', a1Controller.getPersonByProvince);
