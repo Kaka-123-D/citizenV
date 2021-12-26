@@ -75,7 +75,7 @@ export default function RegionSelect({
          })
        );
         setCheckShow2(false);
-   
+         
     }
     
   };
@@ -153,7 +153,7 @@ export default function RegionSelect({
                   options={wards.map((region) => {
                     return { value: region.id, label: region.name };
                   })}
-                  onChange={handleSelect3}
+                  onChange={handleSelect2}
                   className="select-bar select2"
                 />
               ) : null}

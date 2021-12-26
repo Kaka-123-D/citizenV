@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./style.scss";
 import SelectRegion from "../Region.Select/connectStore";
 import FrameInfo from "../Info.Frame";
+import { formatBirthday } from "../../validation";
+import Table from "../React.Table";
 
 export default function PersonList({
   personList,
@@ -12,10 +14,54 @@ export default function PersonList({
   getListAllPersonInRegion,
 }) {
   const [ids, setIds] = useState([]);
-  const [clickedRow, setClickedRow] = useState(false);
-  const [data, setData] = useState({});
-  const [tag, setTag] = useState("");
 
+  const data = (persons) => {
+    let personsArr = persons.map((person, index) => {
+      let personObj = {
+        stt: index + 1,
+        name: person.fullName,
+        gender: person.sex ? "Nam" : "Nữ",
+        permanentAddress: person.thuongTru,
+        sttOnServer: person.stt,
+      };
+      return personObj;
+    });
+    return personsArr;
+  };
+  const columns = React.useMemo(
+    () => [
+      {
+        // Make an expander cell
+        Header: () => null, // No header
+        id: "expander", // It needs an ID
+        Cell: ({ row }) => (
+          // Use Cell to render an expander for each row.
+          // We can use the getToggleRowExpandedProps prop-getter
+          // to build the expander.
+          <span {...row.getToggleRowExpandedProps()}>
+            {row.isExpanded ? "👇" : "👉"}
+          </span>
+        ),
+      },
+      {
+        Header: "STT",
+        accessor: "stt",
+      },
+      {
+        Header: "Họ tên",
+        accessor: "name",
+      },
+      {
+        Header: "Giới tính",
+        accessor: "gender",
+      },
+      {
+        Header: "Địa chỉ thường trú",
+        accessor: "permanentAddress",
+      },
+    ],
+    []
+  );
   useEffect(() => {
     getListAllPersonInRegion(executor);
   }, []);
@@ -27,42 +73,42 @@ export default function PersonList({
     } else getPersonList(executor, ids);
   }
 
-  function handleViewInfo(index, person) {
-
-
-
-    setClickedRow(true);
-    setData(data);
-    setTag("PERSON");
+  function renderRowSubComponent() {
+    return <button>Hello</button>;
   }
 
   return (
     <div className="person-wrap">
-      {console.log(ids)}
-      {clickedRow ? (
-        <FrameInfo tag={tag} data={data} setClose={setClickedRow} />
-      ) : null}
-      <div className="select-group"></div>
       <h2>Danh sách dân số: </h2>
+      <div className="select-bar-group">
+        {executor !== "b2" ? (
+          <>
+            <SelectRegion setIds={setIds} ids={ids} />
 
-      {executor !== "b2" ? (
-        <>
-          <SelectRegion setIds={setIds} ids={ids} />
+            <button
+              className="view-btn"
+              onClick={(e) => {
+                handleClickViewList(e);
+              }}
+            >
+              Xem danh sách
+            </button>
+          </>
+        ) : null}
+      </div>
 
-          <button
-          className="view-btn"
-            onClick={(e) => {
-              handleClickViewList(e);
-            }}
-          >
-            Xem danh sách
-          </button>
-        </>
-      ) : null}
+      <Table
+      executor={executor}
+        columns={columns}
+        data={data(personList)}
+        renderRowSubComponent={renderRowSubComponent}
+        handleDelete={deletePerson}
+      />
 
-      <table className="table-person">
+      {/* <table className="table-person">
         <thead>
           <tr>
+            <th>STT</th>
             <th>Họ tên</th>
             <th>Ngày sinh</th>
             <th>Giới tính</th>
@@ -81,10 +127,13 @@ export default function PersonList({
                 return (
                   <tr key={person.personId} className="person-row">
                     <td onClick={() => handleViewInfo(index, person)}>
+                      {index + 1}
+                    </td>
+                    <td onClick={() => handleViewInfo(index, person)}>
                       {person.fullName}
                     </td>
                     <td onClick={() => handleViewInfo(index, person)}>
-                      {person.birthday}
+                      {formatBirthday(person.birthday)}
                     </td>
                     <td onClick={() => handleViewInfo(index, person)}>
                       {person.sex ? "Nam" : "Nữ"}
@@ -118,7 +167,7 @@ export default function PersonList({
                 );
               })}
         </tbody>
-      </table>
+      </table> */}
     </div>
   );
 }

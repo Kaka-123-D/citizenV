@@ -72,15 +72,19 @@ export default function Analysis({
   return (
     <div className="analysis-wrap">
       {console.log(ids)}
-      <SelectRegion setIds={setIds} ids={ids} />
+      <div className="select-bar-group">
+        <SelectRegion setIds={setIds} ids={ids} />
 
-      <button
-        onClick={(e) => {
-          handleAnalysis(e);
-        }}
-      >
-        Phân tích dữ liệu
-      </button>
+        <button
+          className="view-btn"
+          onClick={(e) => {
+            handleAnalysis(e);
+          }}
+        >
+          xem dữ liệu
+        </button>
+      </div>
+
       <h1>Tổng số dân: {amountPerson}</h1>
       {amountPerson !== 0 ? (
         <>

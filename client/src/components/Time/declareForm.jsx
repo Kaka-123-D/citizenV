@@ -138,8 +138,8 @@ export default function Declare({
   // Hàm check trạng thái quyền khai báo
   function handleCheckStatus(permissionValue) {
     if (!permissionValue) return 0;
-    if (executor !== "a1" && permissionValue.timeStart < permission.timeStart)
-      return 0;
+    // if (executor !== "a1" && permissionValue.timeStart < permission.timeStart)
+    //   return 0;
     if (permissionValue.isFinish) return 0;
     if (permissionValue.isComplete) return 2;
     return 1;

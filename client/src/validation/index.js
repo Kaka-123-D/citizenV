@@ -98,6 +98,18 @@ export const formatCountDownClock = (time) => {
   return clock;
 };
 
+export const formatBirthday = (time) =>{
+  let data = new Date(time);
+
+  let day = data.getDate();
+  let month = data.getMonth();
+  let year = data.getFullYear();
+
+  let birthday = day + "/" + month + "/" + year;
+
+  return birthday;
+}
+
 export const checkTimePassed = (time) => {
   return new Date(time) <= new Date(Date.now());
 };
