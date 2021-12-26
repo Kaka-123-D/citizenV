@@ -137,27 +137,38 @@ export default function Declare({
 
   // Hàm check trạng thái quyền khai báo
   function handleCheckStatus(permissionValue) {
-    if (!permissionValue) return 0;
-    // if (executor !== "a1" && permissionValue.timeStart < permission.timeStart)
-    //   return 0;
-    if (permissionValue.isFinish) return 0;
-    if (permissionValue.isComplete) return 2;
-    return 1;
+    if (!permissionValue) return 0; //"chưa bắt đầu && thêm mới" ; //0
+    if (permissionValue.isFinish) {
+      if (permissionValue.isComplete) {
+        return 1; // "thành công và thêm mới"; // 1
+      }
+      if (!permissionValue.isComplete) {
+        return 2; //"chưa thành công và thêm mới"; // 2
+      }
+    }
+    if (!permissionValue.isFinish) {
+      if (permissionValue.isComplete) {
+        return 3; //"thành công và hủy"; // 3
+      }
+      if (!permissionValue.isComplete) {
+        return 4; //"chưa thành công và hủy"; // 4
+      }
+    } 
   }
 
   const handleShowStatus = (region) => {
     let status = handleCheckStatus(region.permission);
     if (status === 0) return <span>Chưa bắt đầu</span>;
-    if (status === 2)
+    if (status === 1 || status === 3)
       return (
-        <span className="complete tdStatus">
+        <span className="complete">
           <i className="fas fa-check-circle"></i>{" "}
         </span>
       );
-    if (status === 1)
+    if (status === 2 || status === 4)
       return (
         <span>
-          <span className="tdStatus incomplete">
+          <span className="incomplete">
             <i class="fas fa-hourglass-half"></i>
           </span>
         </span>
@@ -166,7 +177,7 @@ export default function Declare({
 
   const handleShowIcon = (permission, id) => {
     const status = handleCheckStatus(permission);
-    if (status === 0)
+    if (status === 0 || status === 1 || status === 2) 
       return (
         <input
           type="checkbox"
@@ -190,7 +201,7 @@ export default function Declare({
     let countSuccess = 0;
     for (let i = 0; i < regions.length; i++) {
       const status = handleCheckStatus(regions[i].permission);
-      if (status === 0 || status === 1) {
+      if (status === 0 || status === 2 || status === 4) {
         showButton = false;
       } else countSuccess++;
     }
@@ -231,7 +242,7 @@ export default function Declare({
   function viewInfo(index, region) {
     let tdStatus = document.getElementsByClassName("tdStatus");
     let status = handleCheckStatus(region.permission);
-    if (status === 0) {
+    if (status === 0 || status === 1 || status === 2) { 
       // xóa id ở trong ids + bỏ tích ở box + bỏ tíck All nếu đang tick All nếu đang chọn
       // và ngược lại nếu chưa chọn
       handleAddArrayId(region.id);

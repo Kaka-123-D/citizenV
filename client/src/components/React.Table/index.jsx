@@ -1,5 +1,6 @@
 import React from "react";
 import { useTable, usePagination, useExpanded } from "react-table";
+import "./style.scss";
 
 export default function Table({
   columns,
@@ -41,32 +42,33 @@ export default function Table({
   // Render the UI for your table
   return (
     <>
-      <table {...getTableProps()}>
-        <thead>
+      <table {...getTableProps()} className="person-table">
+        <thead className="header">
           {headerGroups.map((headerGroup) => (
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps()}>{column.render("Header")}</th>
               ))}
+              <th>Xóa</th>
             </tr>
           ))}
         </thead>
-        <tbody {...getTableBodyProps()}>
+        <tbody {...getTableBodyProps()} className="body">
           {page.map((row, i) => {
             prepareRow(row);
             return (
               <>
-                <tr {...row.getRowProps()}>
+                <tr {...row.getRowProps()} className="info-base-row">
                   {row.cells.map((cell) => {
                     return (
-                      <td {...cell.getCellProps()}>{cell.render("Cell")}</td>
+                      <td {...cell.getCellProps()} className="cell-info">{cell.render("Cell")}</td>
                     );
                   })}
-                  <td>
+                  <td className="dlt-btn">
                     <button
                       onClick={() => handleDelete(executor, row.original.sttOnServer)}
                     >
-                      Delete{" "}
+                      Delete
                     </button>
                   </td>
                 </tr>
@@ -75,7 +77,7 @@ export default function Table({
                     column that fills the entire length of the table.
                   */}
                 {row.isExpanded ? (
-                  <tr>
+                  <tr className="all-info">
                     <td colSpan={visibleColumns.length}>
                       {/*
                           Inside it, call our renderRowSubComponent function. In reality,

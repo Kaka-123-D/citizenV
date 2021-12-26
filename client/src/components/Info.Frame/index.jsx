@@ -24,7 +24,7 @@ export default function FrameInfo({ tag, data, setClose }) {
               <p>Tên khu vực:</p> {data.name} <br />
               <p>Trạng thái:</p>
               {progress !== 100
-                ? " Đang điều tra dân cư"
+                ? " Chưa hoàn thành điều tra dân cư"
                 : " Đã hoàn thành điều tra dân cư"}
             </div>
             <div className="time">
