@@ -169,7 +169,7 @@ export default function Declare({
       return (
         <span>
           <span className="incomplete">
-            <i class="fas fa-hourglass-half"></i>
+            <i className="fas fa-hourglass-half"></i>
           </span>
         </span>
       );
@@ -345,7 +345,7 @@ export default function Declare({
             ) : (
               <table className="table-regions">
                 <thead>
-                  <tr>
+                  <tr className="header">
                     <th className="field">Mã</th>
                     <th className="field">Tên</th>
                     <th className="field">Mô tả</th>

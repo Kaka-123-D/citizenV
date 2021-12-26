@@ -25,7 +25,7 @@ export default function regionsTable({
       ) : (
         <table className="table-regions">
           <thead>
-            <tr>
+            <tr className="header">
               <th className="field">Mã</th>
               <th className="field">Tên</th>
               <th className="field">Mô tả</th>

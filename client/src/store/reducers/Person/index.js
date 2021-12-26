@@ -32,10 +32,16 @@ const person = createSlice({
       console.log("add person error");
     },
     updateSuccess(state, action) {
-      console.log("update person success");
+      for (let i = 0; i < state.personList.length; i++) {
+        if (state.personList[i].stt === action.payload.stt) {
+          state.personList[i] = action.payload;
+          console.log("success");
+          return;
+        }
+      }
     },
     updateError(state, action) {
-      console.log("update person error");
+      console.log("error");
     },
     deletePersonInState(state, action) {
       state.personList = state.personList.filter(
@@ -69,17 +75,13 @@ export const getListAllPersonInRegion = (executor) => async (dispatch) => {
 
 export const getPersonList = (executor, ids) => async (dispatch) => {
   let place = "";
-  if (ids.length <= 0) dispatch(getListSuccess([])); 
+  if (ids.length <= 0) dispatch(getListSuccess([]));
   else if (ids[0].length === 2) place = "Province";
   else if (ids[0].length === 4) place = "District";
   else if (ids[0].length === 6) place = "Ward";
   else if (ids[0].length === 8) place = "Village";
   const URL = "http://localhost:8080/" + executor + "/personBy" + place;
-  const res = await axios.post(
-    URL,
-    { ids },
-    { withCredentials: true }
-  );
+  const res = await axios.post(URL, { ids }, { withCredentials: true });
 
   if (res.data.status === 1) {
     dispatch(getListSuccess(res.data));
@@ -194,7 +196,20 @@ export const updatePerson =
     );
 
     if (res.data.status === 1) {
-      dispatch(updateSuccess(res.data));
+      const newPerson = {
+        stt,
+        personId,
+        fullName,
+        birthday,
+        sex,
+        village,
+        thuongTru,
+        tamTru,
+        religion,
+        educationLevel,
+        job,
+      };
+      dispatch(updateSuccess(newPerson));
       toast.success("Cập nhật thành công");
     } else {
       dispatch(updateError(res.data));

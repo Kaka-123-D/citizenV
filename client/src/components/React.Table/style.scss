@@ -1,23 +1,93 @@
 .person-table {
+  width: 100%;
+  margin-top: 50px;
   .header {
     background-color: #92ace6;
     border: 1px solid black;
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
     th {
       border: 1px solid black;
       padding: 5px 30px;
-       border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    }
+    .dlt-column {
+      padding: 5px 5px;
     }
   }
   .body {
+    background-color: #afdada;
+    .info-base-row {
+      &:hover {
+        background-color: #69d3d3;
+        cursor: pointer;
+      }
+      .cell-info {
+        border: 1px solid black;
+        padding: 10px 20px;
+      }
+      .dlt-btn {
+        cursor: pointer;
+        text-align: center;
+        padding: 10px 5px;
+      }
+    }
 
+    .all-info {
+      border: 1px solid black;
+      background-color: #d3bf93;
+      text-align: center;
+
+      button.update-btn {
+        // margin: 10px auto;
+        margin-bottom:20px;
+        // background-color: #c2fbd7;
+        border-radius: 100px;
+        box-shadow: rgba(44, 187, 99, 0.2) 0 -25px 18px -14px inset,
+          rgba(44, 187, 99, 0.15) 0 1px 2px, rgba(44, 187, 99, 0.15) 0 2px 4px,
+          rgba(44, 187, 99, 0.15) 0 4px 8px, rgba(44, 187, 99, 0.15) 0 8px 16px,
+          rgba(44, 187, 99, 0.15) 0 16px 32px;
+        color: green;
+        cursor: pointer;
+        display: inline-block;
+        font-family: CerebriSans-Regular, -apple-system, system-ui, Roboto,
+          sans-serif;
+        padding: 7px 20px;
+        text-align: center;
+        text-decoration: none;
+        transition: all 250ms;
+        border: 0;
+        font-size: 16px;
+        user-select: none;
+        -webkit-user-select: none;
+        touch-action: manipulation;
+        &:hover {
+          box-shadow: rgba(44, 187, 99, 0.35) 0 -25px 18px -14px inset,
+            rgba(44, 187, 99, 0.25) 0 1px 2px, rgba(44, 187, 99, 0.25) 0 2px 4px,
+            rgba(44, 187, 99, 0.25) 0 4px 8px,
+            rgba(44, 187, 99, 0.25) 0 8px 16px,
+            rgba(44, 187, 99, 0.25) 0 16px 32px;
+          transform: scale(1.05) rotate(-1deg);
+        }
+      }
+    }
   }
-  .pagination {
+}
+.pagination {
   padding: 0.5rem;
+  margin-top: 20px;
+  .pagination-btn {
+    margin-right: 5px;
+  }
+  .page-now {
+    margin-left: 20px;
+    // margin-right: 20px;
+    font-size: 18px;
+  }
+  .go-to-page {
+    margin-left: 20px;
+    border-radius: 10px;
+    padding-left: 15px;
+  }
+  .select-amount {
+    margin-left: 20px;
+    border-radius: 10px;
+  }
 }
-}
-
-
-

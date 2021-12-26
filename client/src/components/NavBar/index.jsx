@@ -37,6 +37,11 @@ export default function NavBar({ clickChangePass, executor, permission }) {
                   Khai báo mã khu vực
                 </Nav.Link>
               ) : null}
+              {executor === "admin" ? (
+                <Nav.Link as={Link} to="/admin" className="nav-item">
+                  Cấp tài khoản
+                </Nav.Link>
+              ) : null}
 
               {checkFeaturesSetTimeDeClare(executor, permission) ? (
                 <Nav.Link as={Link} to="/setTimeDeclare" className="nav-item">
@@ -45,7 +50,7 @@ export default function NavBar({ clickChangePass, executor, permission }) {
               ) : null}
               {checkFeaturesInputPerson(executor, permission) ? (
                 <Nav.Link as={Link} to="/input" className="nav-item">
-                  Nhập liệu 
+                  Nhập liệu
                 </Nav.Link>
               ) : null}
               {checkFeaturesAnalysis(executor, permission) ? (
@@ -71,9 +76,13 @@ export default function NavBar({ clickChangePass, executor, permission }) {
                   </NavDropdown.Item>
                 </NavDropdown>
               ) : (
-                <Nav.Link as={Link} className="nav-item" to="/person">
-                  Danh sách dân số
-                </Nav.Link>
+                <>
+                  {executor === "admin" ? null : (
+                    <Nav.Link as={Link} className="nav-item" to="/person">
+                      Danh sách dân số
+                    </Nav.Link>
+                  )}
+                </>
               )}
               <Nav.Link
                 as={Link}

@@ -1,56 +1,62 @@
-.form-provide {
-  background-color: #845455;
-  width: 100vw;
-  height: 100vh;
+.nhap-lieu-wrap {
+  position: relative;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
   display: flex;
   flex-direction: column;
-  justify-self: center;
-  text-align: center;
-  padding-top: 110px;
-  top: 0px;
-  position: fixed;
+  background-color: #d3c086;
 
-  div.input {
-    label {
-      color: white;
-      font-size: 20px;
-      font-weight: bold;
-      display: inline-block;
-      width: 170px;
-      text-align: left;
+  .confirm-complete-btn {
+    top: 80px;
+    left: 40px;
+    position: fixed;
+    align-items: center;
+    background-clip: padding-box;
+    background-color: #4cce82;
+    max-width: 200px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    font-family: system-ui, -apple-system, system-ui, "Helvetica Neue",
+      Helvetica, Arial, sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    justify-content: center;
+    line-height: 1.25;
+    min-height: 3rem;
+    padding: calc(0.875rem - 1px) calc(1.5rem - 1px);
+    text-decoration: none;
+    transition: all 250ms;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: baseline;
+    width: auto;
+
+    &:hover,
+    &:focus {
+      background-color: #fb8332;
+      box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
     }
-    .input-info {
-      margin-top: 20px;
-      width: 50%;
-      border-radius: 8px;
-      padding: 10px;
-      outline: none;
-      border: none;
-      border-bottom: 4px solid #106dacc5;
-      &:focus {
-        border: 2px solid #030920;
-        background-color: #dad8c5;
-      }
+
+    &:hover {
+      transform: translateY(-1px);
     }
-    .select-info {
-      margin-top: 20px;
-      padding: 10px;
-      outline: none;
-      border: none;
-      border-bottom: 4px solid #106dacc5;
-      border-radius: 8px;
-      width: 50%;
-      &:focus {
-        border: 2px solid #030920;
-      }
+
+    &:active {
+      background-color: #c85000;
+      box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+      transform: translateY(0);
     }
   }
 
-  .sm-btn {
-    margin-left: 31vw;
-    margin-bottom: 30px;
-    margin-top: 30px;
-    width: 20%;
+  .add-btn {
+    margin: 0 auto;
+    margin-bottom: 20px;
     align-items: center;
     appearance: none;
     background-image: radial-gradient(

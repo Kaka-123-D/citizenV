@@ -2,6 +2,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const xoa_dau = (str) => {
+  if (!str) return "";
   str = str.replace(/à|á|ạ|ả|ã|â|ầ|ấ|ậ|ẩ|ẫ|ă|ằ|ắ|ặ|ẳ|ẵ/g, "a");
   str = str.replace(/è|é|ẹ|ẻ|ẽ|ê|ề|ế|ệ|ể|ễ/g, "e");
   str = str.replace(/ì|í|ị|ỉ|ĩ/g, "i");
@@ -102,7 +103,7 @@ export const formatBirthday = (time) =>{
   let data = new Date(time);
 
   let day = data.getDate();
-  let month = data.getMonth();
+  let month = data.getMonth() + 1;
   let year = data.getFullYear();
 
   let birthday = day + "/" + month + "/" + year;
@@ -115,13 +116,13 @@ export const checkTimePassed = (time) => {
 };
 
 export const checkFeaturesDeclare = (executor, permission) => {
-  if (executor === "b2") return false;
+  if (executor === "b2" || executor==="admin") return false;
   return true;
 };
 
 export const checkFeaturesSetTimeDeClare = (executor, permission) => {
   if (executor === "a1") return true;
-  if (executor === "b2") return false;
+  if (executor === "b2" || executor === "admin") return false;
   else if (
     permission &&
     checkTimePassed(permission.timeStart) &&
@@ -146,6 +147,6 @@ export const checkFeaturesInputPerson = (executor, permission) => {
 };
 
 export const checkFeaturesAnalysis = (executor, permission) => {
-  if (executor === "b2") return false;
+  if (executor === "b2" || executor === "admin") return false;
   return true;
 };

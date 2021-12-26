@@ -16,13 +16,13 @@ export default function DeclareForm({ declareRegion, executor, message }) {
   function setTypeDefault() {
     switch (executor) {
       case "a1":
-        return "tỉnh";
+        return "Tỉnh";
       case "a2":
-        return "huyện";
+        return "Huyện";
       case "a3":
-        return "xã";
+        return "Xã";
       case "b1":
-        return "thôn";
+        return "Thôn";
       default:
         return "--";
     }
@@ -96,7 +96,7 @@ export default function DeclareForm({ declareRegion, executor, message }) {
             <select id="type-region" onChange={(e) => setType(e.target.value)}>
               {renderSwitch().map((item) => {
                 return (
-                  <option key={item} value={item.toLocaleLowerCase()}>
+                  <option key={item} value={item}>
                     {item}
                   </option>
                 );

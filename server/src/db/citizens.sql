@@ -564,8 +564,8 @@ DELIMITER ;
 -- CALL getPercentEducationFemale();
 
 -- ------------------------------- Hàm tính % theo giới tính và nơi ở -------------------------
-CREATE INDEX sex ON citizens.persons(sex);
-CREATE INDEX thuongTru ON citizens.persons(thuongTru);
+-- CREATE INDEX sex ON citizens.persons(sex);
+-- CREATE INDEX thuongTru ON citizens.persons(thuongTru);
 DELIMITER $$
 CREATE FUNCTION getPercentGenderDetails(address VARCHAR(255), sex BOOLEAN, totalPerson INTEGER) 
 RETURNS FLOAT

@@ -6,7 +6,7 @@ import HomeUser from "../features/Home";
 import Declare from "../features/Declare";
 import SetTimeDeclare from "../features/SetTimeDeclare";
 import Person from "../features/Person";
-import InputPerson from "../features/InputPerson/connectStore";
+import InputPerson from "../features/NhapLieu/";
 import { ToastContainer } from "react-toastify";
 import Analysis from "../features/AnalysisData/connectStore";
 import ChangePassword from "../../components/ChangePass.Form/connectStore";
@@ -36,6 +36,8 @@ export default function routes({
   skip,
   clickChangePass,
   permission,
+  confirmDeclareComplete,
+  addPerson,
 }) {
   const classes = useStyles({ isFirstLogin, skip, clickChangePass });
   const location = useLocation();
@@ -70,12 +72,7 @@ export default function routes({
                     executor === "admin" ? (
                       <Admin />
                     ) : (
-                      <HomeUser
-                        executor={executor}
-                        isFirstLogin={isFirstLogin}
-                        skipChangePass={skipChangePass}
-                        skip={skip}
-                      />
+                      <>{executor === "b2" ? <Person /> : <Declare />}</>
                     )
                   ) : (
                     <Navigate replace to="/login" />
@@ -88,7 +85,7 @@ export default function routes({
                   checkFeaturesDeclare(executor, permission) ? (
                     <Declare />
                   ) : (
-                    <Navigate replace to="/" />
+                    <Navigate replace to="/person" />
                   )
                 }
               />
@@ -98,7 +95,7 @@ export default function routes({
                   checkFeaturesSetTimeDeClare(executor, permission) ? (
                     <SetTimeDeclare />
                   ) : (
-                    <Navigate replace to="/" />
+                    <Navigate replace to="/person" />
                   )
                 }
               />
@@ -106,9 +103,13 @@ export default function routes({
                 path="/input"
                 element={
                   checkFeaturesInputPerson(executor, permission) ? (
-                    <InputPerson />
+                    <InputPerson
+                      executor={executor}
+                      confirmDeclareComplete={confirmDeclareComplete}
+                      addPerson={addPerson}
+                    />
                   ) : (
-                    <Navigate replace to="/" />
+                    <Navigate replace to="/person" />
                   )
                 }
               />
@@ -118,13 +119,13 @@ export default function routes({
                   checkFeaturesAnalysis(executor, permission) ? (
                     <Analysis />
                   ) : (
-                    <Navigate replace to="/" />
+                    <Navigate replace to="/person" />
                   )
                 }
               />
               <Route path="/person" element={<Person />} />
 
-              <Route path="*" element={<Navigate replace to="/" />} />
+              <Route path="*" element={<Navigate replace to="/person" />} />
             </Routes>
           </div>
 

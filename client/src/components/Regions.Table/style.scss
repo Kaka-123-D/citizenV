@@ -1,15 +1,20 @@
 .something {
+  padding-right: 30px;
   .table-regions {
     margin: 10px auto;
     border: 1px solid black;
     border-collapse: collapse;
     font-size: 16px;
-    background-color: #5eb35e;
-    border-radius: 15px;
+    background-color: #7cda7c;
 
     .field {
       text-align: center;
     }
+
+    .header {
+      background-color: #17bb69;
+      font-size: 18px;
+    } 
 
     td,
     th {
@@ -21,12 +26,11 @@
     .region-row {
       &:hover {
         cursor: pointer;
-        background-color: #77e268;
+        background-color: #daa67c;
       }
       .id-column {
       width: 10vw;
       padding: 5px;
-      color: #3c4fe0;
       text-align: center;
     }
     .name-column {

@@ -21,8 +21,10 @@ export default function PersonList({
         stt: index + 1,
         name: person.fullName,
         gender: person.sex ? "Nam" : "Nữ",
+        birthday: formatBirthday(person.birthday),
         permanentAddress: person.thuongTru,
         sttOnServer: person.stt,
+        person: person,
       };
       return personObj;
     });
@@ -38,9 +40,7 @@ export default function PersonList({
           // Use Cell to render an expander for each row.
           // We can use the getToggleRowExpandedProps prop-getter
           // to build the expander.
-          <span {...row.getToggleRowExpandedProps()}>
-            {row.isExpanded ? "👇" : "👉"}
-          </span>
+          <span>{row.isExpanded ? "👇" : "👉"}</span>
         ),
       },
       {
@@ -54,6 +54,10 @@ export default function PersonList({
       {
         Header: "Giới tính",
         accessor: "gender",
+      },
+      {
+        Header: "Ngày sinh",
+        accessor: "birthday",
       },
       {
         Header: "Địa chỉ thường trú",
@@ -71,10 +75,6 @@ export default function PersonList({
     if (ids.length === 0) {
       getListAllPersonInRegion(executor);
     } else getPersonList(executor, ids);
-  }
-
-  function renderRowSubComponent() {
-    return <button>Hello</button>;
   }
 
   return (
@@ -98,11 +98,11 @@ export default function PersonList({
       </div>
 
       <Table
-      executor={executor}
+        executor={executor}
         columns={columns}
         data={data(personList)}
-        renderRowSubComponent={renderRowSubComponent}
         handleDelete={deletePerson}
+        updatePerson={updatePerson}
       />
 
       {/* <table className="table-person">

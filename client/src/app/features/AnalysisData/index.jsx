@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import "./style.scss";
 import { optionsMigration, optionsEducation, optionsTowerAge } from "./options";
 import SelectRegion from "../../../components/Region.Select/connectStore";
+import Chart from "../../../components/HighChartsMap/connectStore";
+
 
 import {
   Chart as ChartJS,
@@ -39,6 +41,14 @@ export default function Analysis({
   amountPerson,
 }) {
   const [ids, setIds] = useState([]);
+  const [mapData, setMapData] = useState({});
+  useEffect(() => {
+    import(`../../../assets/json/RegionFile.json`)
+      .then((res) => {
+        setMapData(res);
+      })
+      .catch((err) => console.log({ err }));
+  }, []);
 
   useEffect(() => {
     getDataByTag(executor, "Gender", []); // All
@@ -71,7 +81,14 @@ export default function Analysis({
 
   return (
     <div className="analysis-wrap">
-      {console.log(ids)}
+      <div className="map-vn">
+        {executor === "a1" ? (
+          <>
+            <h2> Bản đồ phân bố dân cư VN</h2>
+            <Chart mapData={mapData} />
+          </>
+        ) : null}
+      </div>
       <div className="select-bar-group">
         <SelectRegion setIds={setIds} ids={ids} />
 

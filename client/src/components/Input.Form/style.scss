@@ -1,0 +1,41 @@
+.form-info {
+  padding-top: 30px;
+  text-align: left;
+  width: 800px;
+  margin: 0 auto;
+//   background-color: #daaa1a;
+  padding-left: 10vw;
+  padding-right: 10vw;
+  margin-bottom: 20px;
+
+  label {
+    display: block;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .input-info {
+    width: 100%;
+    border-radius: 8px;
+    padding: 10px;
+    outline: none;
+    border: none;
+    border-bottom: 4px solid #106dacc5;
+    &:focus {
+        border: 2px solid #030920;
+        background-color: #dad8c5;
+    }
+  }
+  #birthday,
+  #gender,
+  #eduLevel {
+    padding: 10px;
+    outline: none;
+    border: none;
+    border-bottom: 4px solid #106dacc5;
+    border-radius: 8px;
+    &:focus {
+        border: 2px solid #030920;
+    }
+  }
+}

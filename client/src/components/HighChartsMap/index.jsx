@@ -3,6 +3,7 @@ import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import highchartsMap from "highcharts/modules/map";
 import { cloneDeep } from "lodash";
+import { xoa_dau } from "../../validation";
 
 // Load Highcharts modules
 highchartsMap(Highcharts);
@@ -40,25 +41,28 @@ const initOptions = {
   ],
 };
 
-const HighMaps = ({ mapData, regions, setRegionListToState, executor}) => {
+const HighMaps = ({ mapData, regions, setRegionListToState, executor }) => {
   const [options, setOptions] = useState({});
   const [mapLoaded, setMapLoaded] = useState(false);
   const chartRef = useRef(null);
 
   useEffect(() => {
     setRegionListToState(executor);
-  }, []); 
+  }, []);
 
   useEffect(() => {
     if (mapData && regions && Object.keys(mapData).length) {
       const dataMap = [];
       for (const f of mapData.features) {
         for (const r of regions) {
-          if (r.name === f.properties.name) {
+          if (
+            xoa_dau(r.name).toLocaleLowerCase() ===
+            xoa_dau(f.properties.name).toLocaleLowerCase()
+          ) {
             dataMap.push({
               key: f.properties["hc-key"],
               value: r.amountPerson,
-            })
+            });
           }
         }
       }
@@ -73,9 +77,7 @@ const HighMaps = ({ mapData, regions, setRegionListToState, executor}) => {
         title: {
           text: mapData.title,
         },
-        series: [
-          { ...initOptions.series[0], mapData: mapData, data: dataMap },
-        ],
+        series: [{ ...initOptions.series[0], mapData: mapData, data: dataMap }],
       }));
 
       if (!mapLoaded) setMapLoaded(true);
