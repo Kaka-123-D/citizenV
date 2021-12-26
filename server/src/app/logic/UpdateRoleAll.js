@@ -11,32 +11,56 @@ async function UpdateRoleAll(username, tag) {
       },
     });
     if (user) {
-      if (user.role == "view") {
-        return true;
+      const permission = await Permission.findOne({
+        where: {
+          userId: user.userId
+        }
+      });
+      if (!permission) return;
+      if (!permission.isFinish) {
+        if (user.role == "view") {
+          await Permission.update(
+            { isFinish: true },
+            {
+              where: {
+                userId: user.userId,
+                isFinish: false,
+              },
+            }
+          );
+          schedule.cancelJob(`end_${user.userId}`);
+          console.log(`CANCEL_DECLARE_SUCCESS! - id:${user.username}`);
+          return;
+        }
+        if (user.role == "edit") {
+          await User.update(
+            {
+              role: "view",
+            },
+            {
+              where: {
+                username: username,
+              },
+            }
+          );
+          await Permission.update(
+            { isFinish: true },
+            {
+              where: {
+                userId: user.userId,
+                isFinish: false,
+              },
+            }
+          );
+          if (tag == 'cancel') {
+            schedule.cancelJob(`end_${user.userId}`);
+            console.log(`CANCEL_DECLARE_SUCCESS! - id:${user.username}`);
+          } else {
+            console.log(`GRANT_DECLARE_END! - id:${user.username}`);
+          }
+        }
       } else {
-        await User.update(
-          {
-            role: "view",
-          },
-          {
-            where: {
-              username: username,
-            },
-          }
-        );
-        if (tag == "cancel") {
-          schedule.cancelJob(`end_${username}`);
-        } 
-        await Permission.update(
-          { isFinish: true },
-          {
-            where: {
-              userId: user.userId,
-              isFinish: false,
-            },
-          }
-        );
-        console.log("GRANT_DECLARE_END!");
+        return;
       }
     }
     const users = await user.getUsers();

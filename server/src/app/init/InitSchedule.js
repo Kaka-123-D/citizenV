@@ -21,7 +21,7 @@ class InitSchedule {
         if (permission.timeEnd > new Date()) {
           if (permission.timeStart > new Date()) {
             schedule.scheduleJob(`start_${user.username}`, permission.timeStart, async function () {
-              console.log("GRANT_DECLARE_START!");
+              console.log(`GRANT_DECLARE_START! - id:${user.username}`);
               await User.update(
                 { role: "edit" },
                 {
@@ -32,7 +32,7 @@ class InitSchedule {
               );
             });
           } else {
-            console.log("GRANT_DECLARE_START!");
+            console.log(`GRANT_DECLARE_START! - id:${user.username}`);
             await User.update(
               { role: "edit" },
               {
@@ -43,29 +43,11 @@ class InitSchedule {
             );
           }
           schedule.scheduleJob(`end_${user.username}`, permission.timeEnd, async function () {
-              await Permission.update(
-                { isFinish: true },
-                {
-                  where: {
-                    permissionId: permission.permissionId,
-                  },
-                }
-              );
-              console.log("GRANT_DECLARE_END!");
-              await UpdateRoleAll(user.username);
+              await UpdateRoleAll(user.username, "expired");
             }
           );
         } else {
-          await Permission.update(
-            { isFinish: true },
-            {
-              where: {
-                permissionId: permission.permissionId,
-              },
-            }
-          );
-          console.log("GRANT_DECLARE_END!");
-          await UpdateRoleAll(user.username);
+          await UpdateRoleAll(user.username, "cancel");
         }
       }
       return true;
