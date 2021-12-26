@@ -556,8 +556,16 @@ class UserController {
   }
 
   async getPercentAge(req, res) {
-    const percentAgeFemale = await Person.getPercentAgeFemale(req.address);
-    const percentAgeMale = await Person.getPercentAgeMale(req.address);
+    console.time("percentAgeTime");
+    const percentAgeFemale = await Person.getPercentAgeFemale(
+      req.address,
+      req.amountPerson
+    );
+    const percentAgeMale = await Person.getPercentAgeMale(
+      req.address,
+      req.amountPerson
+    );
+    console.timeEnd("percentAgeTime");
     return res.json({
       status: 1,
       male: percentAgeMale,
@@ -567,8 +575,13 @@ class UserController {
 
   async getPercentRegion(req, res) {
     const { tag } = req.body;
+    console.time("percentRegion");
     if (tag == "province" || tag == "") {
-      const percentCity = await Person.getPercentRegionCity(req.address);
+      const percentCity = await Person.getPercentRegionCity(
+        req.address,
+        req.amountPerson
+      );
+      console.timeEnd("percentRegion");
       return res.json({ status: 1, city: percentCity, country: 1 - percentCity });
     } else {
       return res.json({ status: 0, error: "GET_PERCENT_REGION_ERROR!" });
@@ -577,8 +590,10 @@ class UserController {
 
   async getPercentMigrate(req, res) {
     const {tag} = req.body;
+    console.time("percentMigrate");
     if (tag == "") {
-      const percentMigrate = await Person.getPercentMigrate();
+      const percentMigrate = await Person.getPercentMigrate(req.amountPerson);
+      console.timeEnd("percentMigrate");
       return res.json({ status: 1, migrate: percentMigrate });
     } else {
       return res.json({ status: 0, error: "GET_PERCENT_MIGRATE_ERROR!" });
@@ -586,17 +601,28 @@ class UserController {
   }
 
   async getPercentGroupAge(req, res) {
-    const percentGroupAge = await Person.getPercentGroupAge(req.address);
+    console.time("percentGroupAge");
+    const percentGroupAge = await Person.getPercentGroupAge(
+      req.address,
+      req.amountPerson
+    );
+    console.timeEnd("percentGroupAge");
     return res.json({ status: 1, groupAge: percentGroupAge });
   }
 
-  async getPercentReligion(req, res) {    
-    const percentReligion = await Person.getPercentReligion(req.address);
+  async getPercentReligion(req, res) { 
+    console.time("percentReligion");   
+    const percentReligion = await Person.getPercentReligion(
+      req.address,
+      req.amountPerson
+    );
+    console.timeEnd("percentReligion"); 
     return res.json({ status: 1, religion: percentReligion });
   }
 
   async getPercentEducation(req, res) {
     const { tag } = req.body;
+    console.time("percentEducation"); 
     if (tag == "province" || tag == "") {
       const percentEducationFemale = 
         await Person.getPercentEducationFemale(
@@ -605,6 +631,7 @@ class UserController {
       const percentEducationMale = await Person.getPercentEducationMale(
         req.address
       );
+      console.timeEnd("percentEducation"); 
       return res.json({
         status: 1,
         male: percentEducationMale,
@@ -616,7 +643,12 @@ class UserController {
   }
 
   async getPercentGender(req, res) {
-    const percentGender = await Person.getPercentGender(req.address);
+    console.time("percentGender"); 
+    const percentGender = await Person.getPercentGender(
+      req.address,
+      req.amountPerson
+    );
+    console.timeEnd("percentGender");
     return res.json({ 
       status: 1, 
       percentGender,
@@ -625,7 +657,12 @@ class UserController {
   }
 
   async getPercentUnemployment(req, res) {
-    const percentUnemployment = await Person.getPercentUnemployment(req.address);
+    console.time("percentUnemployment");
+    const percentUnemployment = await Person.getPercentUnemployment(
+      req.address,
+      req.amountPerson
+    );
+    console.timeEnd("percentUnemployment");
     return res.json({
       status: 1,
       percentUnemployment,

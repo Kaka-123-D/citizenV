@@ -122,22 +122,24 @@ CREATE TABLE `villages` (
   CONSTRAINT `villages_ibfk_1` FOREIGN KEY (`wardId`) REFERENCES `wards` (`wardId`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Bảng lưu số lượng bản ghi đã xóa
+CREATE TABLE record_deletes (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    amount INT NOT NULL DEFAULT 0
+);
+-- INSERT INTO record_deletes(amount) VALUES (0);
+-- DROP TABLE amountRecordDelete;
+
 -- ============================> Store Procedure and Function <================================
 
 -- ------------------------------ Lấy %Person theo tuổi, giới tính, nơi ở  --------------------------
 DELIMITER $$
-CREATE FUNCTION calRatioPopulationWithAge(minAge INTEGER, maxAge INTEGER, sex INTEGER, address VARCHAR(255))
+CREATE FUNCTION calRatioPopulationWithAge(minAge INTEGER, maxAge INTEGER, sex INTEGER, address VARCHAR(255), totalPerson INTEGER)
 RETURNS FLOAT
 NO SQL 
 BEGIN
 DECLARE ratio FLOAT DEFAULT 0;
-DECLARE totalPerson INT DEFAULT -1;
 IF (address = "nationwide") THEN
-	SELECT COUNT(*) INTO totalPerson
-	FROM citizens.persons;
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
 	IF (sex = 1) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
@@ -152,12 +154,6 @@ IF (address = "nationwide") THEN
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge;
 	END IF;
 ELSE 
-	SELECT COUNT(*) INTO totalPerson
-	FROM citizens.persons p
-    WHERE p.thuongTru REGEXP address;
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
 	IF (sex = 1) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
@@ -185,70 +181,79 @@ END $$
 DELIMITER ;
 
 -- DROP FUNCTION calRatioPopulationWithAge;
+-- EXPLAIN SELECT calRatioPopulationWithAge(0, 4, 1, "nationwide", 50000);
 
 -- ----------------------------------------- Lấy %Nam các tuổi -----------------------------
 DELIMITER $$
-CREATE PROCEDURE getPercentAgeMale(IN address VARCHAR(255)) 
+CREATE PROCEDURE getPercentAgeMale(IN address VARCHAR(255), IN totalPerson INTEGER) 
 BEGIN
-SELECT calRatioPopulationWithAge(0, 4, 1, address) age_0;
-SELECT calRatioPopulationWithAge(5, 9, 1, address) age_5;
-SELECT calRatioPopulationWithAge(10, 14, 1, address) age_10;
-SELECT calRatioPopulationWithAge(15, 19, 1, address) age_15;
-SELECT calRatioPopulationWithAge(20, 24, 1, address) age_20;
-SELECT calRatioPopulationWithAge(25, 29, 1, address) age_25;
-SELECT calRatioPopulationWithAge(30, 34, 1, address) age_30;
-SELECT calRatioPopulationWithAge(35, 39, 1, address) age_35;
-SELECT calRatioPopulationWithAge(40, 44, 1, address) age_40;
-SELECT calRatioPopulationWithAge(45, 49, 1, address) age_45;
-SELECT calRatioPopulationWithAge(50, 54, 1, address) age_50;
-SELECT calRatioPopulationWithAge(55, 59, 1, address) age_55;
-SELECT calRatioPopulationWithAge(60, 64, 1, address) age_60;
-SELECT calRatioPopulationWithAge(65, 69, 1, address) age_65;
-SELECT calRatioPopulationWithAge(70, 74, 1, address) age_70;
-SELECT calRatioPopulationWithAge(75, 79, 1, address) age_75;
-SELECT calRatioPopulationWithAge(80, 130, 1, address) age_80;
+SELECT calRatioPopulationWithAge(0, 4, 1, address, totalPerson) age_0;
+SELECT calRatioPopulationWithAge(5, 9, 1, address, totalPerson) age_5;
+SELECT calRatioPopulationWithAge(10, 14, 1, address, totalPerson) age_10;
+SELECT calRatioPopulationWithAge(15, 19, 1, address, totalPerson) age_15;
+SELECT calRatioPopulationWithAge(20, 24, 1, address, totalPerson) age_20;
+SELECT calRatioPopulationWithAge(25, 29, 1, address, totalPerson) age_25;
+SELECT calRatioPopulationWithAge(30, 34, 1, address, totalPerson) age_30;
+SELECT calRatioPopulationWithAge(35, 39, 1, address, totalPerson) age_35;
+SELECT calRatioPopulationWithAge(40, 44, 1, address, totalPerson) age_40;
+SELECT calRatioPopulationWithAge(45, 49, 1, address, totalPerson) age_45;
+SELECT calRatioPopulationWithAge(50, 54, 1, address, totalPerson) age_50;
+SELECT calRatioPopulationWithAge(55, 59, 1, address, totalPerson) age_55;
+SELECT calRatioPopulationWithAge(60, 64, 1, address, totalPerson) age_60;
+SELECT calRatioPopulationWithAge(65, 69, 1, address, totalPerson) age_65;
+SELECT calRatioPopulationWithAge(70, 74, 1, address, totalPerson) age_70;
+SELECT calRatioPopulationWithAge(75, 79, 1, address, totalPerson) age_75;
+SELECT calRatioPopulationWithAge(80, 130, 1, address, totalPerson) age_80;
 END $$
 DELIMITER ;
 
 -- DROP PROCEDURE getPercentAgeMale;
+-- CALL getPercentAgeMale("nationwide", 50000);
 
 -- ------------------------------------- Lấy %Nữ các tuổi -----------------------------
 DELIMITER $$
-CREATE PROCEDURE getPercentAgeFemale(IN address VARCHAR(255)) 
+CREATE PROCEDURE getPercentAgeFemale(IN address VARCHAR(255), IN totalPerson INTEGER) 
 BEGIN
-SELECT calRatioPopulationWithAge(0, 4, 0, address) age_0;
-SELECT calRatioPopulationWithAge(5, 9, 0, address) age_5;
-SELECT calRatioPopulationWithAge(10, 14, 0, address) age_10;
-SELECT calRatioPopulationWithAge(15, 19, 0, address) age_15;
-SELECT calRatioPopulationWithAge(20, 24, 0, address) age_20;
-SELECT calRatioPopulationWithAge(25, 29, 0, address) age_25;
-SELECT calRatioPopulationWithAge(30, 34, 0, address) age_30;
-SELECT calRatioPopulationWithAge(35, 39, 0, address) age_35;
-SELECT calRatioPopulationWithAge(40, 44, 0, address) age_40;
-SELECT calRatioPopulationWithAge(45, 49, 0, address) age_45;
-SELECT calRatioPopulationWithAge(50, 54, 0, address) age_50;
-SELECT calRatioPopulationWithAge(55, 59, 0, address) age_55;
-SELECT calRatioPopulationWithAge(60, 64, 0, address) age_60;
-SELECT calRatioPopulationWithAge(65, 69, 0, address) age_65;
-SELECT calRatioPopulationWithAge(70, 74, 0, address) age_70;
-SELECT calRatioPopulationWithAge(75, 79, 0, address) age_75;
-SELECT calRatioPopulationWithAge(80, 130, 0, address) age_80;
+SELECT calRatioPopulationWithAge(0, 4, 0, address, totalPerson) age_0;
+SELECT calRatioPopulationWithAge(5, 9, 0, address, totalPerson) age_5;
+SELECT calRatioPopulationWithAge(10, 14, 0, address, totalPerson) age_10;
+SELECT calRatioPopulationWithAge(15, 19, 0, address, totalPerson) age_15;
+SELECT calRatioPopulationWithAge(20, 24, 0, address, totalPerson) age_20;
+SELECT calRatioPopulationWithAge(25, 29, 0, address, totalPerson) age_25;
+SELECT calRatioPopulationWithAge(30, 34, 0, address, totalPerson) age_30;
+SELECT calRatioPopulationWithAge(35, 39, 0, address, totalPerson) age_35;
+SELECT calRatioPopulationWithAge(40, 44, 0, address, totalPerson) age_40;
+SELECT calRatioPopulationWithAge(45, 49, 0, address, totalPerson) age_45;
+SELECT calRatioPopulationWithAge(50, 54, 0, address, totalPerson) age_50;
+SELECT calRatioPopulationWithAge(55, 59, 0, address, totalPerson) age_55;
+SELECT calRatioPopulationWithAge(60, 64, 0, address, totalPerson) age_60;
+SELECT calRatioPopulationWithAge(65, 69, 0, address, totalPerson) age_65;
+SELECT calRatioPopulationWithAge(70, 74, 0, address, totalPerson) age_70;
+SELECT calRatioPopulationWithAge(75, 79, 0, address, totalPerson) age_75;
+SELECT calRatioPopulationWithAge(80, 130, 0, address, totalPerson) age_80;
 END $$
 DELIMITER ;
 
 -- DROP PROCEDURE getPercentAgeFemale;
+-- CALL getPercentAgeFemale("nationwide");
 
 -- ------------------------------ Lấy số lượng người dân ---------------------------------
 DELIMITER $$
 CREATE FUNCTION getAmountPerson(address VARCHAR(255)) 
 RETURNS INTEGER
-NO SQL 
+NO SQL
 BEGIN
-
 DECLARE amountPerson INTEGER DEFAULT 0;
+DECLARE maxSttPerson INTEGER DEFAULT 0;
+DECLARE minSttPerson INTEGER DEFAULT 0;
+DECLARE amountRecordDelete INTEGER DEFAULT 0;
 IF (address = "nationwide") THEN 
-	SELECT COUNT(*) INTO amountPerson
-	FROM citizens.persons;
+	SELECT stt INTO minSttPerson FROM citizens.persons ORDER BY stt LIMIT 1;
+    SELECT stt INTO maxSttPerson FROM citizens.persons ORDER BY stt DESC LIMIT 1;
+	-- SELECT COUNT(*) INTO amountPerson
+	-- 	FROM citizens.persons;
+    SELECT amount INTO amountRecordDelete FROM citizens.record_deletes WHERE id = 1;
+	SET amountPerson =  maxSttPerson - minSttPerson + 1 - amountRecordDelete;
 ELSE 
 	SELECT COUNT(*) INTO amountPerson
 	FROM citizens.persons p
@@ -259,39 +264,37 @@ RETURN amountPerson;
 END $$
 DELIMITER ;
 
--- SELECT getAmountPerson("nationwide");
+-- DROP FUNCTION getAmountPerson;
+
+DELIMITER $$
+
+CREATE TRIGGER afterPersonDelete
+    AFTER DELETE
+    ON citizens.persons FOR EACH ROW
+BEGIN
+    DECLARE amountRecordDelete INTEGER DEFAULT 0;
+    SELECT amount INTO amountRecordDelete FROM record_deletes WHERE id = 1;
+    UPDATE record_deletes SET amount = amountRecordDelete + 1 WHERE id = 1;
+END$$    
+
+DELIMITER ;
 
 
 -- ------------------------------------ Lấy % thành thị ---------------------------------
 
 DELIMITER $$
-CREATE FUNCTION getPercentRegionCity(address VARCHAR(255)) 
+CREATE FUNCTION getPercentRegionCity(address VARCHAR(255), totalPerson INTEGER) 
 RETURNS FLOAT
 NO SQL 
 BEGIN
-DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
 IF (address = "nationwide") THEN
-	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
-    
-	SELECT COUNT(*) INTO ts FROM citizens.persons p WHERE p.thuongTru like '%thành phố%';
-    
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
+	SELECT COUNT(*) INTO ts FROM citizens.persons p WHERE p.thuongTru like '%Thành Phố%';
 ELSE
-	SELECT COUNT(*) INTO totalPerson 
-    FROM citizens.persons p
-    WHERE p.thuongTru REGEXP address;
-    
 	SELECT COUNT(*) INTO ts 
     FROM citizens.persons p 
-    WHERE p.thuongTru like '%thành phố%'
+    WHERE p.thuongTru like '%Thành Phố%'
     AND p.thuongTru REGEXP address;
-    
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
 END IF;
 RETURN ts / totalPerson;
 END $$
@@ -302,42 +305,38 @@ DELIMITER ;
 
 -- ----------------------------------- Hàm lấy % luồng di cư theo start và end -------------------------------
 DELIMITER $$
-CREATE FUNCTION getPercentMigrateDetail(s INTEGER, f INTEGER) 
+CREATE FUNCTION getPercentMigrateDetail(s INTEGER, f INTEGER, totalPerson INTEGER) 
 RETURNS FLOAT
 NO SQL 
 BEGIN
-DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
-SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
-IF (totalPerson = 0) THEN 
-	SET totalPerson = -1;
-END IF;
-
 IF (s = 1 and f = 0) THEN
 	SELECT COUNT(*) INTO ts FROM citizens.persons p 
-    WHERE p.village like '%thành phố%' AND p.thuongTru not like '%thành phố%';
+    WHERE p.village like '%Thành Phố%' AND p.thuongTru not like '%Thành Phố%';
 ELSEIF (s = 0 and f = 1) THEN
 	SELECT COUNT(*) INTO ts FROM citizens.persons p 
-    WHERE p.village not like '%thành phố%' AND p.thuongTru like '%thành phố%';
+    WHERE p.village not like '%Thành Phố%' AND p.thuongTru like '%Thành Phố%';
 ELSEIF (s = 1 and f = 1) THEN
 	SELECT COUNT(*) INTO ts FROM citizens.persons p 
-    WHERE p.village like '%thành phố%' AND p.thuongTru like '%thành phố%' AND p.village != p.thuongTru;
+    WHERE p.village like '%Thành Phố%' AND p.thuongTru like '%Thành Phố%' AND p.village != p.thuongTru;
 ELSEIF (s = 0 and f = 0) THEN
 	SELECT COUNT(*) INTO ts FROM citizens.persons p 
-    WHERE p.village not like '%thành phố%' AND p.thuongTru not like '%thành phố%' AND p.village != p.thuongTru;
+    WHERE p.village not like '%Thành Phố%' AND p.thuongTru not like '%Thành Phố%' AND p.village != p.thuongTru;
 END IF;
 RETURN ts / totalPerson;
 END $$
 DELIMITER ;
 
+-- DROP FUNCTION getPercentMigrateDetail;
+
 -- ------------------------------------- Chương trình lấy % luồng di cư -----------------------------------
 DELIMITER $$
-CREATE PROCEDURE getPercentMigrate() 
+CREATE PROCEDURE getPercentMigrate(IN totalPerson INTEGER) 
 BEGIN
-SELECT getPercentMigrateDetail(1, 0) row_1;
-SELECT getPercentMigrateDetail(0, 1) row_2;
-SELECT getPercentMigrateDetail(1, 1) row_3;
-SELECT getPercentMigrateDetail(0, 0) row_4;
+SELECT getPercentMigrateDetail(1, 0, totalPerson) row_1;
+SELECT getPercentMigrateDetail(0, 1, totalPerson) row_2;
+SELECT getPercentMigrateDetail(1, 1, totalPerson) row_3;
+SELECT getPercentMigrateDetail(0, 0, totalPerson) row_4;
 END $$
 DELIMITER ;
 
@@ -346,11 +345,11 @@ DELIMITER ;
 
 -- ------------------------------------- Chương trình lấy cơ cấu nhóm tuổi -------------------------------
 DELIMITER $$
-CREATE PROCEDURE getPercentGroupAge(IN address VARCHAR(255)) 
+CREATE PROCEDURE getPercentGroupAge(IN address VARCHAR(255), IN totalPerson INTEGER) 
 BEGIN
-SELECT calRatioPopulationWithAge(0, 14, -1, address) age_0;
-SELECT (calRatioPopulationWithAge(15, 61, 1, address) + calRatioPopulationWithAge(15, 59, 0, address)) age_1;
-SELECT (calRatioPopulationWithAge(62, 130, 1, address) + calRatioPopulationWithAge(60, 130, 0, address)) age_2;
+SELECT calRatioPopulationWithAge(0, 14, -1, address, totalPerson) age_0;
+SELECT (calRatioPopulationWithAge(15, 61, 1, address, totalPerson) + calRatioPopulationWithAge(15, 59, 0, address, totalPerson)) age_1;
+SELECT (calRatioPopulationWithAge(62, 130, 1, address, totalPerson) + calRatioPopulationWithAge(60, 130, 0, address, totalPerson)) age_2;
 END $$
 DELIMITER ;
 
@@ -359,28 +358,15 @@ DELIMITER ;
 
 -- -------------------------- Hàm tính % theo tôn giáo ---------------------------------
 DELIMITER $$
-CREATE FUNCTION getPercentReligionDetails(religion VARCHAR(255), address VARCHAR(255)) 
+CREATE FUNCTION getPercentReligionDetails(religion VARCHAR(255), address VARCHAR(255), totalPerson INTEGER) 
 RETURNS FLOAT
 NO SQL 
 BEGIN
-DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
 IF (address = "nationwide") THEN
-	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
 	SELECT COUNT(*) INTO ts FROM citizens.persons p 
 	WHERE p.religion = religion;
 ELSE
-    SELECT COUNT(*) INTO totalPerson 
-    FROM citizens.persons p
-    WHERE p.thuongTru REGEXP address;
-    
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
-    
 	SELECT COUNT(*) INTO ts 
     FROM citizens.persons p 
 	WHERE p.religion = religion
@@ -395,15 +381,15 @@ DELIMITER ;
 
 -- ----------------------------------- Chương trình lấy cơ cấu tôn giáo -------------------------------------
 DELIMITER $$
-CREATE PROCEDURE getPercentReligion(IN address VARCHAR(255)) 
+CREATE PROCEDURE getPercentReligion(IN address VARCHAR(255), IN totalPerson INTEGER) 
 BEGIN
-SELECT getPercentReligionDetails("Kitô Giáo", address) r_1;
-SELECT getPercentReligionDetails("Phật Giáo", address) r_2;
-SELECT getPercentReligionDetails("Đạo Tin Lành", address) r_3;
-SELECT getPercentReligionDetails("Phật Giáo Hòa Hảo", address) r_4;
-SELECT getPercentReligionDetails("Đạo Cao Đài", address) r_5;
-SELECT getPercentReligionDetails("Không", address) r_6;
-SELECT getPercentReligionDetails("Khác", address) r_7;
+SELECT getPercentReligionDetails("Kitô Giáo", address, totalPerson) r_1;
+SELECT getPercentReligionDetails("Phật Giáo", address, totalPerson) r_2;
+SELECT getPercentReligionDetails("Đạo Tin Lành", address, totalPerson) r_3;
+SELECT getPercentReligionDetails("Phật Giáo Hòa Hảo", address, totalPerson) r_4;
+SELECT getPercentReligionDetails("Đạo Cao Đài", address, totalPerson) r_5;
+SELECT getPercentReligionDetails("Không", address, totalPerson) r_6;
+SELECT getPercentReligionDetails("Khác", address, totalPerson) r_7;
 END $$
 DELIMITER ;
 
@@ -420,25 +406,28 @@ DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
 IF (region = "thành thị") THEN 
 	IF (address = "nationwide") THEN 
-		SELECT COUNT(*) INTO totalPerson FROM citizens.persons p WHERE p.thuongTru like '%thành phố%';
+		SELECT COUNT(*) INTO totalPerson 
+        FROM citizens.persons p 
+        WHERE p.thuongTru like '%Thành Phố%';
+        
 		IF (totalPerson = 0) THEN 
 			SET totalPerson = -1;
 		END IF;
+        
 		SELECT COUNT(*) INTO ts FROM citizens.persons p 
-		WHERE p.thuongTru like '%thành phố%' 
+		WHERE p.thuongTru like '%Thành Phố%' 
 		AND ((DATEDIFF(NOW(), p.birthday))/365) >= 15
 		AND ((DATEDIFF(NOW(), p.birthday))/365) <= 17
-		AND p.educationLevel != "trung học phổ thông"
-		AND p.educationLevel != "đại học"
-		AND p.educationLevel != "cao đẳng"
-		AND p.educationLevel != "giáo sư"
-		AND p.educationLevel != "tiến sĩ"
-		AND p.educationLevel != "cử nhân"
+		AND p.educationLevel != "Trung Học Phổ Thông"
+        AND p.educationLevel != "Trung Cấp"
+		AND p.educationLevel != "Đại Học"
+		AND p.educationLevel != "Cao Đẳng"
+		AND p.educationLevel != "Bậc Sau Đại Học"
 		AND p.sex = sex;
 	ELSE         
 		SELECT COUNT(*) INTO totalPerson 
         FROM citizens.persons p 
-        WHERE p.thuongTru like '%thành phố%'
+        WHERE p.thuongTru like '%Thành Phố%'
         AND p.thuongTru REGEXP address;
         
 		IF (totalPerson = 0) THEN 
@@ -446,43 +435,41 @@ IF (region = "thành thị") THEN
 		END IF;
         
 		SELECT COUNT(*) INTO ts FROM citizens.persons p 
-		WHERE p.thuongTru like '%thành phố%' 
+		WHERE p.thuongTru like '%Thành Phố%' 
         AND p.thuongTru REGEXP address
 		AND ((DATEDIFF(NOW(), p.birthday))/365) >= 15
 		AND ((DATEDIFF(NOW(), p.birthday))/365) <= 17
-		AND p.educationLevel != "trung học phổ thông"
-		AND p.educationLevel != "đại học"
-		AND p.educationLevel != "cao đẳng"
-		AND p.educationLevel != "giáo sư"
-		AND p.educationLevel != "tiến sĩ"
-		AND p.educationLevel != "cử nhân"
+		AND p.educationLevel != "Trung Học Phổ Thông"
+        AND p.educationLevel != "Trung Cấp"
+		AND p.educationLevel != "Đại Học"
+		AND p.educationLevel != "Cao Đẳng"
+		AND p.educationLevel != "Bậc Sau Đại Học"
 		AND p.sex = sex;
     END IF;
 ELSEIF (region = "nông thôn") THEN 
 	IF (address = "nationwide") THEN 
 		SELECT COUNT(*) INTO totalPerson 
         FROM citizens.persons p 
-        WHERE p.thuongTru not like '%thành phố%';
+        WHERE p.thuongTru not like '%Thành Phố%';
         
 		IF (totalPerson = 0) THEN 
 			SET totalPerson = -1;
 		END IF;
         
 		SELECT COUNT(*) INTO ts FROM citizens.persons p 
-		WHERE p.thuongTru not like '%thành phố%' 
+		WHERE p.thuongTru not like '%Thành Phố%' 
 		AND ((DATEDIFF(NOW(), p.birthday))/365) >= 15
 		AND ((DATEDIFF(NOW(), p.birthday))/365) <= 17
-		AND p.educationLevel != "trung học phổ thông"
-		AND p.educationLevel != "đại học"
-		AND p.educationLevel != "cao đẳng"
-		AND p.educationLevel != "giáo sư"
-		AND p.educationLevel != "tiến sĩ"
-		AND p.educationLevel != "cử nhân"
+		AND p.educationLevel != "Trung Học Phổ Thông"
+        AND p.educationLevel != "Trung Cấp"
+		AND p.educationLevel != "Đại Học"
+		AND p.educationLevel != "Cao Đẳng"
+		AND p.educationLevel != "Bậc Sau Đại Học"
 		AND p.sex = sex;
 	ELSE 
 		SELECT COUNT(*) INTO totalPerson 
         FROM citizens.persons p 
-        WHERE p.thuongTru not like '%thành phố%'
+        WHERE p.thuongTru not like '%Thành Phố%'
         AND p.thuongTru REGEXP address;
         
 		IF (totalPerson = 0) THEN 
@@ -490,16 +477,15 @@ ELSEIF (region = "nông thôn") THEN
 		END IF;
         
 		SELECT COUNT(*) INTO ts FROM citizens.persons p 
-		WHERE p.thuongTru not like '%thành phố%' 
+		WHERE p.thuongTru not like '%Thành Phố%' 
         AND p.thuongTru REGEXP address
 		AND ((DATEDIFF(NOW(), p.birthday))/365) >= 15
 		AND ((DATEDIFF(NOW(), p.birthday))/365) <= 17
-		AND p.educationLevel != "trung học phổ thông"
-		AND p.educationLevel != "đại học"
-		AND p.educationLevel != "cao đẳng"
-		AND p.educationLevel != "giáo sư"
-		AND p.educationLevel != "tiến sĩ"
-		AND p.educationLevel != "cử nhân"
+		AND p.educationLevel != "Trung Học Phổ Thông"
+        AND p.educationLevel != "Trung Cấp"
+		AND p.educationLevel != "Đại Học"
+		AND p.educationLevel != "Cao Đẳng"
+		AND p.educationLevel != "Bậc Sau Đại Học"
 		AND p.sex = sex;
 	END IF;
 ELSEIF (region = "toàn phạm vi") THEN 
@@ -513,12 +499,11 @@ ELSEIF (region = "toàn phạm vi") THEN
 		SELECT COUNT(*) INTO ts FROM citizens.persons p 
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= 15
 		AND ((DATEDIFF(NOW(), p.birthday))/365) <= 17
-		AND p.educationLevel != "trung học phổ thông"
-		AND p.educationLevel != "đại học"
-		AND p.educationLevel != "cao đẳng"
-		AND p.educationLevel != "giáo sư"
-		AND p.educationLevel != "tiến sĩ"
-		AND p.educationLevel != "cử nhân"
+		AND p.educationLevel != "Trung Học Phổ Thông"
+        AND p.educationLevel != "Trung Cấp"
+		AND p.educationLevel != "Đại Học"
+		AND p.educationLevel != "Cao Đẳng"
+		AND p.educationLevel != "Bậc Sau Đại Học"
 		AND p.sex = sex;
 	ELSE 
 		SELECT COUNT(*) INTO totalPerson 
@@ -533,12 +518,11 @@ ELSEIF (region = "toàn phạm vi") THEN
 		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= 15
 		AND ((DATEDIFF(NOW(), p.birthday))/365) <= 17
         AND p.thuongTru REGEXP address
-		AND p.educationLevel != "trung học phổ thông"
-		AND p.educationLevel != "đại học"
-		AND p.educationLevel != "cao đẳng"
-		AND p.educationLevel != "giáo sư"
-		AND p.educationLevel != "tiến sĩ"
-		AND p.educationLevel != "cử nhân"
+		AND p.educationLevel != "Trung Học Phổ Thông"
+        AND p.educationLevel != "Trung Cấp"
+		AND p.educationLevel != "Đại Học"
+		AND p.educationLevel != "Cao Đẳng"
+		AND p.educationLevel != "Bậc Sau Đại Học"
 		AND p.sex = sex;
     END IF;
 END IF;
@@ -574,82 +558,55 @@ DELIMITER ;
 -- CALL getPercentEducationFemale();
 
 -- ------------------------------- Hàm tính % theo giới tính và nơi ở -------------------------
+CREATE INDEX sex ON citizens.persons(sex);
+CREATE INDEX thuongTru ON citizens.persons(thuongTru);
 DELIMITER $$
-CREATE FUNCTION getPercentGenderDetails(address VARCHAR(255), sex BOOLEAN) 
+CREATE FUNCTION getPercentGenderDetails(address VARCHAR(255), sex BOOLEAN, totalPerson INTEGER) 
 RETURNS FLOAT
 NO SQL 
 BEGIN
-DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
 IF (address = "nationwide") THEN
-	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
-    
 	SELECT COUNT(*) INTO ts FROM citizens.persons p WHERE p.sex = sex;
-    
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
 ELSE
-	SELECT COUNT(*) INTO totalPerson 
-    FROM citizens.persons p
-    WHERE p.thuongTru REGEXP address;
-    
 	SELECT COUNT(*) INTO ts 
     FROM citizens.persons p 
     WHERE p.sex = sex
     AND p.thuongTru REGEXP address;
-    
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
 END IF;
 RETURN ts / totalPerson;
 END $$
 DELIMITER ;
 
--- DROP FUNCTION getPercentGender;
+-- DROP FUNCTION getPercentGenderDetails;
 -- SELECT getPercentMale("tỉnh An Giang|thành phố Hồ Chí Minh");
 
 -- ---------------------------- Chương trình lấy cơ cấu theo giới tính ------------------------
 DELIMITER $$
-CREATE PROCEDURE getPercentGender(IN address VARCHAR(255)) 
+CREATE PROCEDURE getPercentGender(IN address VARCHAR(255), IN totalPerson INTEGER) 
 BEGIN
-	SELECT getPercentGenderDetails(address, true) g_1;
-    SELECT getPercentGenderDetails(address, false) g_2;
+	SELECT getPercentGenderDetails(address, true, totalPerson) g_1;
+    SELECT getPercentGenderDetails(address, false, totalPerson) g_2;
 END $$
 DELIMITER ;
 
+-- DROP PROCEDURE getPercentGender;
 -- CALL getPercentGender("huyện khu 4, tỉnh An Giang");
 
 -- -------------------------- Hàm tính % thất nghiệp theo nơi ở ---------------------------------
 DELIMITER $$
-CREATE FUNCTION getPercentUnemployment(address VARCHAR(255)) 
+CREATE FUNCTION getPercentUnemployment(address VARCHAR(255), totalPerson INTEGER) 
 RETURNS FLOAT
 NO SQL 
 BEGIN
-DECLARE totalPerson INTEGER DEFAULT -1;
 DECLARE ts INTEGER DEFAULT 0;
 IF (address = "nationwide") THEN
-	SELECT COUNT(*) INTO totalPerson FROM citizens.persons;
-    
-	SELECT COUNT(*) INTO ts FROM citizens.persons p WHERE p.job = "thất nghiệp";
-    
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
+	SELECT COUNT(*) INTO ts FROM citizens.persons p WHERE p.job = "Thất Nghiệp";
 ELSE
-	SELECT COUNT(*) INTO totalPerson 
-    FROM citizens.persons 
-    WHERE p.thuongTru REGEXP address;
-    
 	SELECT COUNT(*) INTO ts 
     FROM citizens.persons p 
-    WHERE p.job = "thất nghiệp"
+    WHERE p.job = "Thất Nghiệp"
     AND p.thuongTru REGEXP address;
-    
-	IF (totalPerson = 0) THEN 
-		SET totalPerson = -1;
-	END IF;
 END IF;
 RETURN ts / totalPerson;
 END $$

@@ -145,12 +145,15 @@ class ChartMiddleware {
     if (address == "") {
       return res.json({ status: 0, error: "IDS_OR_TAG_ERROR!" });
     }
+    const temp = Math.random();
+    console.time(`amountPersonTime${temp}`);
     const amountPerson = await Person.getAmountPerson(address);
+    console.timeEnd(`amountPersonTime${temp}`);
     if (amountPerson == 0) {
       return res.json({ status: 0, error: "AMOUNT_PERSON_ZERO!" });
     }
     req.address = address;
-    req.amountPerson = await Person.getAmountPerson(address);
+    req.amountPerson = amountPerson;
     next();
   }
 }

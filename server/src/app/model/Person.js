@@ -5,15 +5,16 @@ const db = require("../../config/db");
 const sequelize = db.sequelize;
 
 class Person extends Model {
-  static async getPercentAgeMale(address) {
+  static async getPercentAgeMale(address, totalPerson) {
     const percentAgeMale = [];
     try {
       const result = await sequelize.query(
-        "CALL getPercentAgeMale( :address );",
+        "CALL getPercentAgeMale( :address, :totalPerson );",
         {
           type: QueryTypes.SELECT,
           replacements: {
             address: address,
+            totalPerson: totalPerson
           },
         }
       );
@@ -26,15 +27,16 @@ class Person extends Model {
     }
   }
 
-  static async getPercentAgeFemale(address) {
+  static async getPercentAgeFemale(address, totalPerson) {
     const percentAgeFemale = [];
     try {
       const result = await sequelize.query(
-        "CALL getPercentAgeFemale( :address );",
+        "CALL getPercentAgeFemale( :address, :totalPerson );",
         {
           type: QueryTypes.SELECT,
           replacements: {
             address: address,
+            totalPerson: totalPerson,
           },
         }
       );
@@ -64,14 +66,15 @@ class Person extends Model {
     }
   }
 
-  static async getPercentRegionCity(address) {
+  static async getPercentRegionCity(address, totalPerson) {
     try {
       const result = await sequelize.query(
-        "SELECT getPercentRegionCity( :address ) as r;",
+        "SELECT getPercentRegionCity( :address, :totalPerson ) as r;",
         {
           type: QueryTypes.SELECT,
           replacements: {
             address: address,
+            totalPerson: totalPerson,
           },
         }
       );
@@ -81,11 +84,14 @@ class Person extends Model {
     }
   }
 
-  static async getPercentMigrate() {
+  static async getPercentMigrate(totalPerson) {
     const percentMigrate = [];
     try {
-      const result = await sequelize.query("CALL getPercentMigrate();", {
+      const result = await sequelize.query("CALL getPercentMigrate(:totalPerson);", {
         type: QueryTypes.SELECT,
+        replacements: {
+          totalPerson: totalPerson
+        }
       });
       for (let i = 0; i < result.length - 1; i++) {
         percentMigrate.push(result[i]["0"][`row_${i + 1}`]);
@@ -96,15 +102,16 @@ class Person extends Model {
     }
   }
 
-  static async getPercentGroupAge(address) {
+  static async getPercentGroupAge(address, totalPerson) {
     const percentGroupAge = [];
     try {
       const result = await sequelize.query(
-        "CALL getPercentGroupAge( :address );",
+        "CALL getPercentGroupAge( :address, :totalPerson );",
         {
           type: QueryTypes.SELECT,
           replacements: {
             address: address,
+            totalPerson: totalPerson,
           },
         }
       );
@@ -117,15 +124,16 @@ class Person extends Model {
     }
   }
 
-  static async getPercentReligion(address) {
+  static async getPercentReligion(address, totalPerson) {
     const percentReligion = [];
     try {
       const result = await sequelize.query(
-        "CALL getPercentReligion( :address );",
+        "CALL getPercentReligion( :address, :totalPerson);",
         {
           type: QueryTypes.SELECT,
           replacements: {
             address: address,
+            totalPerson: totalPerson,
           },
         }
       );
@@ -181,15 +189,16 @@ class Person extends Model {
     }
   }
 
-  static async getPercentGender(address) {
+  static async getPercentGender(address, totalPerson) {
     try {
       const percentGender = [];
       const result = await sequelize.query(
-        "CALL getPercentGender( :address );",
+        "CALL getPercentGender( :address, :totalPerson);",
         {
           type: QueryTypes.SELECT,
           replacements: {
             address: address,
+            totalPerson: totalPerson,
           },
         }
       );
@@ -202,14 +211,15 @@ class Person extends Model {
     }
   }
 
-  static async getPercentUnemployment(address) {
+  static async getPercentUnemployment(address, totalPerson) {
     try {
       const result = await sequelize.query(
-        "SELECT getPercentUnemployment( :address ) as u;",
+        "SELECT getPercentUnemployment( :address, :totalPerson ) as u;",
         {
           type: QueryTypes.SELECT,
           replacements: {
             address: address,
+            totalPerson: totalPerson
           },
         }
       );
