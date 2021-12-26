@@ -123,12 +123,12 @@ CREATE TABLE `villages` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- Bảng lưu số lượng bản ghi đã xóa
-CREATE TABLE record_deletes (
+CREATE TABLE records (
 	id INT AUTO_INCREMENT PRIMARY KEY,
     amount INT NOT NULL DEFAULT 0
 );
--- INSERT INTO record_deletes(amount) VALUES (0);
--- DROP TABLE amountRecordDelete;
+INSERT INTO records(amount) VALUES (0);
+-- DROP TABLE records;
 
 -- ============================> Store Procedure and Function <================================
 
@@ -248,12 +248,7 @@ DECLARE maxSttPerson INTEGER DEFAULT 0;
 DECLARE minSttPerson INTEGER DEFAULT 0;
 DECLARE amountRecordDelete INTEGER DEFAULT 0;
 IF (address = "nationwide") THEN 
-	SELECT stt INTO minSttPerson FROM citizens.persons ORDER BY stt LIMIT 1;
-    SELECT stt INTO maxSttPerson FROM citizens.persons ORDER BY stt DESC LIMIT 1;
-	-- SELECT COUNT(*) INTO amountPerson
-	-- 	FROM citizens.persons;
-    SELECT amount INTO amountRecordDelete FROM citizens.record_deletes WHERE id = 1;
-	SET amountPerson =  maxSttPerson - minSttPerson + 1 - amountRecordDelete;
+	SELECT amount INTO amountPerson FROM records;
 ELSE 
 	SELECT COUNT(*) INTO amountPerson
 	FROM citizens.persons p
@@ -265,18 +260,29 @@ END $$
 DELIMITER ;
 
 -- DROP FUNCTION getAmountPerson;
+-- SELECT COUNT(*) FROM citizens.persons;
 
+-- Trigger cập nhập lại số lượng dân số sau khi thêm, xóa
 DELIMITER $$
-
 CREATE TRIGGER afterPersonDelete
     AFTER DELETE
     ON citizens.persons FOR EACH ROW
 BEGIN
-    DECLARE amountRecordDelete INTEGER DEFAULT 0;
-    SELECT amount INTO amountRecordDelete FROM record_deletes WHERE id = 1;
-    UPDATE record_deletes SET amount = amountRecordDelete + 1 WHERE id = 1;
-END$$    
-
+    DECLARE amountPerson INTEGER DEFAULT 0;
+    SELECT COUNT(*) INTO amountPerson FROM citizens.persons;
+	UPDATE records SET amount = amountPerson WHERE id = 1;
+END$$
+DELIMITER ;
+-- DROP TRIGGER afterPersonDelete;
+DELIMITER $$
+CREATE TRIGGER afterPersonInsert
+    AFTER INSERT
+    ON citizens.persons FOR EACH ROW
+BEGIN
+    DECLARE amountPerson INTEGER DEFAULT 0;
+    SELECT COUNT(*) INTO amountPerson FROM citizens.persons;
+	UPDATE records SET amount = amountPerson WHERE id = 1;
+END$$
 DELIMITER ;
 
 
