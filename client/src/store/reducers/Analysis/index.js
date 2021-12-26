@@ -219,7 +219,9 @@ const analysis = createSlice({
       }
     },
     getDataError(state, action) {
-      console.log("get data analysis error");
+      if (action.payload.error === "AMOUNT_PERSON_ZERO!") {
+        state.amountPerson = 0;
+      }
     },
   },
 });

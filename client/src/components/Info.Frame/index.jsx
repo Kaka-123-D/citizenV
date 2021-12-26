@@ -4,18 +4,12 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import { formatTimeClock } from "../../validation";
 
 // props setClose = false -> ẩn frame
-export default function FrameInfo({ tag, data, setClose, executor }) {
-  let progress = 0;
-
-  function handleComplete(event) {
-    event.preventDefault();
-    progress = 100;
-    console.log("handle");
-  }
-
+export default function FrameInfo({ tag, data, setClose }) {
   const handleShowByTag = () => {
     switch (tag) {
       case "REGION": {
+        let progress = 0;
+
         if (data.progress > 0) {
           progress = data.progress;
         }
@@ -41,20 +35,18 @@ export default function FrameInfo({ tag, data, setClose, executor }) {
               <label htmlFor="time-end">Thời gian kết thúc:</label>
               <span id="time-end">{formatTimeClock(data.timeEnd)}</span>
             </div>
-            <h2>Tiến độ</h2>
-            <ProgressBar
-              variant="success"
-              animated
-              label={`${progress}%`}
-              now={progress}
-              className="progress-bar-custom"
-            />
-            {executor === "b1" ? <button
-              className="confirm-complete-btn"
-              onClick={(e) => handleComplete(e)}
-            >
-              Xác nhận hoàn thành điều tra
-            </button> : null }
+            {/* {executor === "a1" || executor === "a2" ? ( */}
+              <>
+                <h2>Tiến độ</h2>
+                <ProgressBar
+                  variant="success"
+                  animated
+                  label={`${progress}%`}
+                  now={progress}
+                  className="progress-bar-custom"
+                />
+              </>
+            {/* ) : null} */}
           </div>
         );
       }

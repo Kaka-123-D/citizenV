@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Select from "react-select";
 import makeAnimated from "react-select/animated";
+import "./style.scss"
 
 const animatedComponents = makeAnimated();
 
@@ -13,11 +14,15 @@ export default function RegionSelect({
   districts,
   wards,
   setRegionListToState,
+  getArrayIdLatest,
 }) {
   const [checkShow1, setCheckShow1] = useState(false);
   const [checkShow2, setCheckShow2] = useState(false);
   const [checkChange1, setCheckChange1] = useState(false);
-  const [checkChange2, setCheckChange2] = useState(false)
+  const [checkChange2, setCheckChange2] = useState(false);
+  const [isDisabled1, setIsDisabled1] = useState(false);
+  const [isDisabled2, setIsDisabled2] = useState(false);
+  const [arraySelect, setArraySelect] = useState([[], [], []]);
 
   useEffect(() => {
     setRegionListToState(executor);
@@ -32,12 +37,14 @@ export default function RegionSelect({
   }, [checkChange1]);
 
   useEffect(() => {
-    if (executor !== "b2") getRegions(executor, "wards", ids);
+    if (executor !== "b2" && executor !== "b1" && executor !== "a3")
+      getRegions(executor, "wards", ids);
   }, [checkChange2]);
 
   const handleSelect1 = (selected) => {
+    arraySelect[0] = selected;
     setCheckChange1(!checkChange1);
-    if (selected) setCheckShow1(true);
+    if (selected.length > 0) setCheckShow1(true);
     else setCheckShow1(false);
     setIds(
       selected.map((select) => {
@@ -47,14 +54,30 @@ export default function RegionSelect({
   };
 
   const handleSelect2 = (selected) => {
+     setIds(
+       selected.map((select) => {
+         return select.value;
+       })
+     );
+    arraySelect[1] = selected;
+
+    if (selected.length > 0) {
+      // disable select 1
+      setIsDisabled1(true);
+      setCheckShow2(true);
       setCheckChange2(!checkChange2);
-    if (selected) setCheckShow2(true);
-    else setCheckShow2(false);
-    setIds(
-      selected.map((select) => {
-        return select.value;
-      })
-    );
+    } else {
+      // enable select 1
+      setIsDisabled1(false);
+       setIds(
+         arraySelect[0].map((select) => {
+           return select.value;
+         })
+       );
+        setCheckShow2(false);
+   
+    }
+    
   };
 
   const handleSelect3 = (selected) => {
@@ -63,10 +86,22 @@ export default function RegionSelect({
         return select.value;
       })
     );
+    arraySelect[2] = selected;
+    if (selected.length > 0) {
+      // disable select 1
+      setIsDisabled2(true);
+    } else {
+      // enable select 1
+      setIsDisabled2(false);
+      setIds(arraySelect[1].map((select) => {
+        return select.value;
+      }))
+    }
+    
   };
 
   return (
-    <div>
+    <div className="select-group">
       <Select
         closeMenuOnSelect={false}
         components={animatedComponents}
@@ -75,6 +110,8 @@ export default function RegionSelect({
           return { value: region.id, label: region.name };
         })}
         onChange={handleSelect1}
+        isDisabled={isDisabled1}
+        className="select-bar select1"
       />
       {executor === "a1" ? (
         <>
@@ -87,6 +124,8 @@ export default function RegionSelect({
                 return { value: region.id, label: region.name };
               })}
               onChange={handleSelect2}
+              isDisabled={isDisabled2}
+              className="select-bar select2"
             />
           ) : null}
           {checkShow2 ? (
@@ -98,6 +137,7 @@ export default function RegionSelect({
                 return { value: region.id, label: region.name };
               })}
               onChange={handleSelect3}
+              className="select-bar select3"
             />
           ) : null}
         </>
@@ -114,6 +154,7 @@ export default function RegionSelect({
                     return { value: region.id, label: region.name };
                   })}
                   onChange={handleSelect3}
+                  className="select-bar select2"
                 />
               ) : null}
             </>

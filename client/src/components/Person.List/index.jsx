@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./style.scss";
 import SelectRegion from "../Region.Select/connectStore";
+import FrameInfo from "../Info.Frame";
 
 export default function PersonList({
   personList,
@@ -11,21 +12,37 @@ export default function PersonList({
   getListAllPersonInRegion,
 }) {
   const [ids, setIds] = useState([]);
+  const [clickedRow, setClickedRow] = useState(false);
+  const [data, setData] = useState({});
+  const [tag, setTag] = useState("");
 
   useEffect(() => {
-    if (executor === "a1") getListAllPersonInRegion(executor);
-    // if (executor === "a2") getList
+    getListAllPersonInRegion(executor);
   }, []);
 
   function handleClickViewList(event) {
     event.preventDefault();
-    getPersonList(executor, ids);
+    if (ids.length === 0) {
+      getListAllPersonInRegion(executor);
+    } else getPersonList(executor, ids);
+  }
+
+  function handleViewInfo(index, person) {
+
+
+
+    setClickedRow(true);
+    setData(data);
+    setTag("PERSON");
   }
 
   return (
-    <div>
+    <div className="person-wrap">
       {console.log(ids)}
-      <br />
+      {clickedRow ? (
+        <FrameInfo tag={tag} data={data} setClose={setClickedRow} />
+      ) : null}
+      <div className="select-group"></div>
       <h2>Danh sách dân số: </h2>
 
       {executor !== "b2" ? (
@@ -33,6 +50,7 @@ export default function PersonList({
           <SelectRegion setIds={setIds} ids={ids} />
 
           <button
+          className="view-btn"
             onClick={(e) => {
               handleClickViewList(e);
             }}
@@ -59,20 +77,35 @@ export default function PersonList({
         <tbody>
           {Array.isArray(personList) && personList.length == 0
             ? null
-            : personList.map((person) => {
+            : personList.map((person, index) => {
                 return (
-                  <tr key={person.personId}>
-                    <td>{person.fullName}</td>
-                    <td>{person.birthday}</td>
-                    <td>{person.sex ? "Nam" : "Nữ"}</td>
-                    <td>{person.village}</td>
-                    <td>{person.thuongTru}</td>
-                    <td>{person.tamTru}</td>
-                    <td>{person.religion}</td>
-                    <td>{person.educationLevel}</td>
-                    <td>{person.job}</td>
-                    <td>
-                      <button onClick={(e) => this.handleEdit(e)}>Edit</button>
+                  <tr key={person.personId} className="person-row">
+                    <td onClick={() => handleViewInfo(index, person)}>
+                      {person.fullName}
+                    </td>
+                    <td onClick={() => handleViewInfo(index, person)}>
+                      {person.birthday}
+                    </td>
+                    <td onClick={() => handleViewInfo(index, person)}>
+                      {person.sex ? "Nam" : "Nữ"}
+                    </td>
+                    <td onClick={() => handleViewInfo(index, person)}>
+                      {person.village}
+                    </td>
+                    <td onClick={() => handleViewInfo(index, person)}>
+                      {person.thuongTru}
+                    </td>
+                    <td onClick={() => handleViewInfo(index, person)}>
+                      {person.tamTru}
+                    </td>
+                    <td onClick={() => handleViewInfo(index, person)}>
+                      {person.religion}
+                    </td>
+                    <td onClick={() => handleViewInfo(index, person)}>
+                      {person.educationLevel}
+                    </td>
+                    <td onClick={() => handleViewInfo(index, person)}>
+                      {person.job}
                     </td>
                     <td>
                       <button

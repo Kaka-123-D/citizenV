@@ -70,7 +70,8 @@ export default function Analysis({
   }
 
   return (
-    <>
+    <div className="analysis-wrap">
+      {console.log(ids)}
       <SelectRegion setIds={setIds} ids={ids} />
 
       <button
@@ -80,7 +81,7 @@ export default function Analysis({
       >
         Phân tích dữ liệu
       </button>
-      <h2>Tổng số dân: {amountPerson}</h2>
+      <h1>Tổng số dân: {amountPerson}</h1>
       {amountPerson !== 0 ? (
         <>
           <div className="pie-chart">
@@ -102,7 +103,7 @@ export default function Analysis({
             <h2>Biểu đồ tôn giáo</h2>
             <Pie data={dataReligion} className="religion" />
           </div>
-
+          <h2 className="last">Tỉ lệ thất nghiệp: {unemployedRate} %</h2>
           {executor === "a1" ? (
             <div className="horizontal-chart">
               <h2>Luồng di cư và đô thị hóa</h2>
@@ -115,7 +116,11 @@ export default function Analysis({
           ) : null}
           <div className="horizontal-chart">
             <h2>Tháp độ tuổi</h2>
-            <Bar data={dataTowerAge} options={optionsTowerAge} />
+            <Bar
+              data={dataTowerAge}
+              options={optionsTowerAge}
+              className="tower-age"
+            />
           </div>
           {executor === "a1" || executor === "a2" ? (
             <div className="vertical-chart">
@@ -130,9 +135,8 @@ export default function Analysis({
               />
             </div>
           ) : null}
-          <h2>Tỉ lệ thất nghiệp: {unemployedRate} %</h2>
         </>
       ) : null}
-    </>
+    </div>
   );
 }

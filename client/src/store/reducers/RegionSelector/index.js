@@ -47,7 +47,7 @@ export const getRegions = (executor, tag, ids) => async (dispatch) => {
           else if (tag === "wards") dispatch(setWards(data.wards));
       } else {
         //   toast.error("Server đang gặp sự cố. Vui lòng thử lại sau!");
-        console.log("get provinces error");
+        console.log("get",tag," error");
       }
     });
 };

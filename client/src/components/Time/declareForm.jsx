@@ -136,14 +136,33 @@ export default function Declare({
   }
 
   // Hàm check trạng thái quyền khai báo
-  function handleCheckStatus(permission) {
-    // return 0 nếu chưa cáp quyền
-    if (!permission || permission.isFinish) return 0;
-    // return 1 nếu đã cấp quyền nhưng đang trong tgian khai báo
-    if (!permission.isComplete) return 1;
-    // return 2 nếu đã hoàn thành khai báo
-    return 2;
+  function handleCheckStatus(permissionValue) {
+    if (!permissionValue) return 0;
+    if (executor !== "a1" && permissionValue.timeStart < permission.timeStart)
+      return 0;
+    if (permissionValue.isFinish) return 0;
+    if (permissionValue.isComplete) return 2;
+    return 1;
   }
+
+  const handleShowStatus = (region) => {
+    let status = handleCheckStatus(region.permission);
+    if (status === 0) return <span>Chưa bắt đầu</span>;
+    if (status === 2)
+      return (
+        <span className="complete tdStatus">
+          <i className="fas fa-check-circle"></i>{" "}
+        </span>
+      );
+    if (status === 1)
+      return (
+        <span>
+          <span className="tdStatus incomplete">
+            <i class="fas fa-hourglass-half"></i>
+          </span>
+        </span>
+      );
+  };
 
   const handleShowIcon = (permission, id) => {
     const status = handleCheckStatus(permission);
@@ -155,19 +174,13 @@ export default function Declare({
           onChange={() => handleAddArrayId(id)}
         />
       );
-    if (status === 1)
+    else
       return (
         <span
           className="cancel tdStatus"
           onClick={(e) => handleCancelDeclareTime(e, id)}
         >
           <i className="fas fa-window-close"></i>
-        </span>
-      );
-    if (status === 2)
-      return (
-        <span className="complete tdStatus">
-          <i className="fas fa-check-circle"></i>{" "}
         </span>
       );
   };
@@ -189,7 +202,7 @@ export default function Declare({
     )
       return (
         <button
-          className="completeBtn"
+          className="complete-btn"
           onClick={(e) => handleConfirmComplete(e)}
         >
           Hoàn thành điều tra
@@ -199,7 +212,7 @@ export default function Declare({
       (permission && checkTimePassed(permission.timeStart)) ||
       executor === "a1"
     ) {
-      let progress = (countSuccess * 100) / regions.length;
+      let progress = Math.round((countSuccess * 10000) / regions.length) / 100;
       return (
         <div className="progress-declare">
           <h3>Tiến độ</h3>
@@ -225,12 +238,18 @@ export default function Declare({
       tdStatus[index + 1].checked = !tdStatus[index + 1].checked;
     } else {
       // hiện khung thông tin gồm time start, time end, tiến độ
+      let progress = 0;
+      if (executor === "a1" || executor === "a2") {
+        progress = Math.round(region.progress * 100);
+      } else {
+        region.permission.isComplete ? (progress = 100) : 0;
+      }
       const data = {
         id: region.id,
         name: region.name,
         timeStart: region.permission.timeStart,
         timeEnd: region.permission.timeEnd,
-        progress: Math.round(region.progress * 100),
+        progress: progress,
       };
       setClickedRow(true);
       setData(data);
@@ -241,7 +260,12 @@ export default function Declare({
   return (
     <>
       {clickedRow ? (
-        <FrameInfo tag={tag} data={data} setClose={setClickedRow} />
+        <FrameInfo
+          tag={tag}
+          data={data}
+          setClose={setClickedRow}
+          executor={executor}
+        />
       ) : null}
       <div className="provide-time-form">
         <div className="clock-countdown">
@@ -315,7 +339,7 @@ export default function Declare({
                     <th className="field">Tên</th>
                     <th className="field">Mô tả</th>
                     <th className="field">
-                      Trạng thái <br />
+                      Thêm/Hủy <br />
                       <input
                         type="checkbox"
                         onChange={() => handleTickAll()}
@@ -323,8 +347,7 @@ export default function Declare({
                         className="tickBox tdStatus"
                       />
                     </th>
-                    {/* <th className="field">Tiến độ</th> */}
-                    {/* <th className="field">Hủy quyền khai báo</th> */}
+                    <th className="field">Trạng thái</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -360,6 +383,9 @@ export default function Declare({
                             </td>
                             <td className="status-column">
                               {handleShowIcon(region.permission, region.id)}
+                            </td>
+                            <td className="complete-column">
+                              {handleShowStatus(region)}
                             </td>
                           </tr>
                         );

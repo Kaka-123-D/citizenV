@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import "./style.scss" 
 
-export default function InputPerson({ addPerson, executor }) {
+export default function InputPerson({ addPerson, executor, confirmDeclareComplete }) {
   const [id, setId] = useState("");
   const [fullName, setFullName] = useState("");
   const [birthday, setBirthday] = useState("");
@@ -29,8 +30,19 @@ export default function InputPerson({ addPerson, executor }) {
     );
   }
 
+  function handleConfirmComplete(e) {
+    e.preventDefault();
+    confirmDeclareComplete(executor);
+  }
+
   return (
     <form className="form-info">
+      <button
+        className="confirm-complete-btn"
+        onClick={(e) => handleConfirmComplete(e)}
+      >
+        Xác nhận hoàn thành nhập liệu
+      </button>
       <input
         type="text"
         value={id}
@@ -111,13 +123,7 @@ export default function InputPerson({ addPerson, executor }) {
         className="input-info"
       />{" "}
       <br />
-      <button
-        onClick={(e) =>
-          handleAddPerson(e)
-        }
-      >
-        Add
-      </button>
+      <button onClick={(e) => handleAddPerson(e)}>Add</button>
     </form>
   );
 }

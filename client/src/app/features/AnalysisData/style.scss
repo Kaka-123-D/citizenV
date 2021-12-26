@@ -1,28 +1,79 @@
-.pie-chart {
-  width: 30vw;
-  height: 30vh;
-  display: inline-block;
-  margin-bottom: 300px;
-  .region {
-    // background-color: #843543;
+.analysis-wrap {
+  h1 {
+    margin-top: 20px;
+    margin-left: 20px;
+    color: rgb(48, 23, 139);
+    font-weight: bold;
+    font-size: 40px;
+    @media (max-width: 700px) {
+      font-size: 30px;
+    }
   }
-  .age {
-    // background-color: #490349;
-  }
-  .religion {
-    // background-color: #989222;
-  }
-  .gender {
-    
-  }
-}
+  
+  .pie-chart {
+    min-width: 300px;
+    min-height: 300px;
+    max-width: 380px;
+    width: 35vw;
+    height: 35vh;
+    display: block;
+    margin-bottom: 15vh;
+    margin-top: 5vh;
+    display: inline-flex;
+    margin-left: 12vw;
 
-.migration {
+    @media (max-width: 876px) {
+      margin-left: 20vw;
+    }
+
+    @media (max-width: 575px) {
+      margin-left: 10vw;
+    }
+
+    .region {
+      // background-color: #843543;
+    }
+    .age {
+      // background-color: #490349;
+    }
+    .religion {
+      // background-color: #989222;
+    }
+    .gender {
+    }
+  }
+  h2 {
+    margin-left: 10px;
+    margin-top: 50px;
+    width: 1500px;
+  }
+
+  .migration {
     display: block;
     // background-color: #982392;
-}
+    max-width: 1100px;
+    max-height: 400px;
+    margin-left: 50px;
+    margin-right: 50px;
+  }
 
-.education {
+  .education {
     display: block;
     // background-color: #8a63e6;
+     max-width: 1100px;
+    max-height: 400px;
+    margin-left: 50px;
+    margin-right: 50px;
+  }
+  .tower-age {
+     max-width: 1100px;
+    max-height: 400px;
+    margin-left: 50px;
+    margin-right: 50px;
+
+  }
+  .last {
+    margin-bottom: 70px;
+    margin-top: 70px;
+  }
 }

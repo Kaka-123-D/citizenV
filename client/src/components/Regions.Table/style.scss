@@ -13,12 +13,17 @@
 
     td,
     th {
-      background-color: #65c77a;
+      // background-color: #65c77a;
       border: 1px solid black;
       padding: 10px;
     }
 
-    .id-column {
+    .region-row {
+      &:hover {
+        cursor: pointer;
+        background-color: #77e268;
+      }
+      .id-column {
       width: 10vw;
       padding: 5px;
       color: #3c4fe0;
@@ -34,5 +39,8 @@
       cursor: pointer;
       // width: 10%;
     }
+    }
+
+    
   }
 }
