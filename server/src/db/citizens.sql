@@ -130,6 +130,32 @@ CREATE TABLE records (
 INSERT INTO records(amount) VALUES (0);
 -- DROP TABLE records;
 
+-- Không nên đánh index ở trường birthday
+-- CREATE INDEX birthday ON citizens.persons(birthday);
+CREATE INDEX sex ON citizens.persons(sex);
+-- CREATE INDEX thuongTru ON citizens.persons(thuongTru);
+CREATE INDEX religion ON citizens.persons(religion);
+CREATE INDEX educationLevel ON citizens.persons(educationLevel);
+CREATE INDEX job ON citizens.persons(job);
+
+ALTER TABLE persons
+DROP INDEX birthday;
+
+ALTER TABLE persons
+DROP INDEX sex;
+
+ALTER TABLE persons
+DROP INDEX thuongTru;
+
+-- ALTER TABLE persons
+-- DROP INDEX religon;
+
+-- ALTER TABLE persons
+-- DROP INDEX educationLevel;
+
+-- ALTER TABLE persons
+-- DROP INDEX job;
+
 -- ============================> Store Procedure and Function <================================
 
 -- ------------------------------ Lấy %Person theo tuổi, giới tính, nơi ở  --------------------------
@@ -139,49 +165,75 @@ RETURNS FLOAT
 NO SQL 
 BEGIN
 DECLARE ratio FLOAT DEFAULT 0;
+DECLARE minDay DATE;
+DECLARE maxDay DATE;
+SET minDay = DATE_SUB(NOW(), INTERVAL maxAge YEAR);
+SET maxDay = DATE_SUB(NOW(), INTERVAL minAge YEAR);
 IF (address = "nationwide") THEN
 	IF (sex = 1) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
-		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge AND p.sex = true;
+		WHERE p.birthday >= minDay
+        AND p.birthday <= maxDay
+        AND p.sex = true;
 	ELSEIF (sex = 0) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
-		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge AND p.sex = false;
+		WHERE p.birthday >= minDay
+        AND p.birthday <= maxDay
+        AND p.sex = false;
 	ELSEIF (sex = -1) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
-		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge;
+		WHERE p.birthday >= minDay
+        AND p.birthday <= maxDay;
 	END IF;
 ELSE 
 	IF (sex = 1) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
-		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge
-        AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge 
+		WHERE p.birthday >= minDay
+        AND p.birthday <= maxDay
         AND p.thuongTru REGEXP address
         AND p.sex = true;
 	ELSEIF (sex = 0) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
-		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge 
-        AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge 
+		WHERE p.birthday >= minDay
+        AND p.birthday <= maxDay
         AND p.thuongTru REGEXP address
         AND p.sex = false;
 	ELSEIF (sex = -1) THEN
 		SELECT COUNT(*) INTO ratio
 		FROM citizens.persons p
-		WHERE ((DATEDIFF(NOW(), p.birthday))/365) >= minAge 
+		WHERE p.birthday >= minDay
         AND p.thuongTru REGEXP address
-        AND ((DATEDIFF(NOW(), p.birthday))/365) <= maxAge;
+        AND p.birthday <= maxDay;
 	END IF;
 END IF;
 RETURN ratio / totalPerson;
 END $$
 DELIMITER ;
 
--- DROP FUNCTION calRatioPopulationWithAge;
--- EXPLAIN SELECT calRatioPopulationWithAge(0, 4, 1, "nationwide", 50000);
+-- SET @minDay = DATE_SUB(NOW(), INTERVAL 4 YEAR);
+-- SET @maxDay = DATE_SUB(NOW(), INTERVAL 0 YEAR);
+
+-- SELECT COUNT(*)
+-- FROM citizens.persons p
+-- WHERE p.sex = 1
+-- AND p.birthday >= @minDay 
+-- AND p.birthday <=  @maxDay;
+
+-- SET profiling = 1;
+-- SELECT COUNT(*)
+-- FROM citizens.persons p
+-- WHERE (DATEDIFF(NOW(), p.birthday) / 365) >= 0
+-- AND (DATEDIFF(NOW(), p.birthday) / 365) <= 4
+-- AND p.sex = 1;
+SHOW PROFILES;
+
+DROP FUNCTION calRatioPopulationWithAge;
+SELECT calRatioPopulationWithAge(0, 4, 1, "nationwide", 59275);
 
 -- ----------------------------------------- Lấy %Nam các tuổi -----------------------------
 DELIMITER $$
@@ -208,7 +260,7 @@ END $$
 DELIMITER ;
 
 -- DROP PROCEDURE getPercentAgeMale;
--- CALL getPercentAgeMale("nationwide", 50000);
+CALL getPercentAgeMale("nationwide", 59275);
 
 -- ------------------------------------- Lấy %Nữ các tuổi -----------------------------
 DELIMITER $$
@@ -284,6 +336,7 @@ BEGIN
 	UPDATE records SET amount = amountPerson WHERE id = 1;
 END$$
 DELIMITER ;
+DROP TRIGGER afterPersonInsert;
 
 
 -- ------------------------------------ Lấy % thành thị ---------------------------------
@@ -381,6 +434,8 @@ END IF;
 RETURN ts / totalPerson;
 END $$
 DELIMITER ;
+
+-- EXPLAIN SELECT COUNT(*) ts FROM citizens.persons p WHERE p.religion = "Kitô Giáo";
 
 -- DROP FUNCTION getPercentReligionDetails;
 -- SELECT getPercentReligionDetails("Kitô Giáo", "thành phố Hồ Chí Minh");
@@ -564,8 +619,6 @@ DELIMITER ;
 -- CALL getPercentEducationFemale();
 
 -- ------------------------------- Hàm tính % theo giới tính và nơi ở -------------------------
--- CREATE INDEX sex ON citizens.persons(sex);
--- CREATE INDEX thuongTru ON citizens.persons(thuongTru);
 DELIMITER $$
 CREATE FUNCTION getPercentGenderDetails(address VARCHAR(255), sex BOOLEAN, totalPerson INTEGER) 
 RETURNS FLOAT
