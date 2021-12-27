@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./style.scss";
-import { setMessageError } from "../../store/reducers/Message";
+import { setAlertError } from "../../store/reducers/Message";
 // import { toast } from "react-toastify";
 // import "react-toastify/dist/ReactToastify.css";
 import { isNumber } from "../../validation";
@@ -57,13 +57,13 @@ export default function DeclareForm({ declareRegion, executor, message }) {
   function renderSwitch() {
     switch (executor) {
       case "a1":
-        return ["Tỉnh", "Thành phố"];
+        return ["Tỉnh", "Thành Phố"];
       case "a2":
-        return ["Huyện", "Quận", "Thành phố"];
+        return ["Huyện", "Quận", "Thành Phố"];
       case "a3":
-        return ["Xã", "Phường", "Thị trấn"];
+        return ["Xã", "Phường", "Thị Trấn"];
       case "b1":
-        return ["Thôn", "Bản", "Tổ dân phố", "Xóm"];
+        return ["Thôn", "Bản", "Tổ Dân Phố", "Xóm"];
       default:
         return ["error"];
     }
@@ -124,7 +124,7 @@ export default function DeclareForm({ declareRegion, executor, message }) {
             onChange={(event) => setDescription(event.target.value)}
           />
         </div>
-        {message && (
+        {message && !message.includes("Mật khẩu") && (
           <div>
             <div className="alert" role="alert">
               {message}

@@ -2,7 +2,8 @@ const District = require('../model/District');
 const Ward = require('../model/Ward');
 const User = require('../model/User');
 const Person = require('../model/Person');
-const Permission = require('../model/Permission')
+const Permission = require('../model/Permission');
+const { Op } = require("sequelize");
 
 const siteController = require('./SiteController');
 

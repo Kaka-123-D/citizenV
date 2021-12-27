@@ -139,20 +139,20 @@ export const addPerson =
     );
 
     if (res.data.status === 1) {
-      const temp = {
-        stt: res.data.stt,
-        personId,
-        fullName,
-        birthday,
-        sex,
-        village,
-        thuongTru,
-        tamTru,
-        religion,
-        educationLevel,
-        job,
-      };
-      dispatch(addSuccess(temp));
+      // const temp = {
+      //   stt: res.data.stt,
+      //   personId,
+      //   fullName,
+      //   birthday,
+      //   sex,
+      //   village,
+      //   thuongTru,
+      //   tamTru,
+      //   religion,
+      //   educationLevel,
+      //   job,
+      // };
+      // dispatch(addSuccess(temp));
       toast.success("Thêm thành công");
     } else {
       dispatch(addError());

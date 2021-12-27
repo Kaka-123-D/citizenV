@@ -29,7 +29,7 @@ const data = fs.readFileSync(
 const address_arr = JSON.parse(data);
 
 async function fakePerson() {
-  for (let i = 0; i < 200; i++) {
+  for (let i = 0; i < 5000; i++) {
     await Person.create({
       personId: Math.round(Math.random() * 1000000000),
       fullName: faker.name.findName(),

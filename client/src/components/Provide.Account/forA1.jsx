@@ -50,7 +50,7 @@ export default function forA1({ createAccount }) {
       return;
     }
     if (!strongPassword(password)) return;
-    createAccount(username, password, fullName, phone, role, group);
+    createAccount(username, password, fullName, "+84" + phone, role, group);
   }
 
   return (
@@ -90,7 +90,7 @@ export default function forA1({ createAccount }) {
         <input
           type="tel"
           value={phone}
-          onChange={(event) => setPhone("+84" + event.target.value)}
+          onChange={(event) => setPhone(event.target.value)}
           placeholder="Phone"
           className="input-info"
         ></input>

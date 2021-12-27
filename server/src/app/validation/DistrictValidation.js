@@ -96,7 +96,7 @@ class DistrictValidation {
   }
 
   validationDistrictType(districtType) {
-    const districtTypes = ["huyện", "quận", "thành phố"];
+    const districtTypes = ["Huyện", "Quận", "Thành Phố"];
     if (!districtType) return false;
     if (!districtTypes.includes(districtType)) return false;
     return true;

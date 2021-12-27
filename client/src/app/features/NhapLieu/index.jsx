@@ -17,7 +17,7 @@ export default function NhapLieu({
   const [permanent, setPermanent] = useState("");
   const [temporary, setTemporary] = useState("");
   const [religion, setReligion] = useState("");
-  const [educationLevel, setEducationLevel] = useState("");
+  const [educationLevel, setEducationLevel] = useState("Tiểu Học");
   const [job, setJob] = useState("");
 
   function handleConfirmComplete(e) {
