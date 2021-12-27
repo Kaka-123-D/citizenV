@@ -92,7 +92,7 @@ class ProvinceValidation {
   }
 
   validationProvinceType(provinceType) {
-    const provinceTypes = ['tỉnh', 'thành phố'];
+    const provinceTypes = ['Tỉnh', 'Thành Phố'];
     if (!provinceType) return false;
     if (!provinceTypes.includes(provinceType)) return false;
     return true;

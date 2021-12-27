@@ -110,11 +110,9 @@ class PersonValidation {
     }
   }
   async validationPersonId(personId, tag, username, group) {
-    console.log(personId)
     if (!personId) return true;
     personId = personId.toString();
     if (!personId.match(/^[\d]{9,12}$/g)) return false;
-    console.log(personId);
     try {
       var person = null;
       person = await Person.findOne({

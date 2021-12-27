@@ -100,7 +100,7 @@ class VillageValidation {
   }
 
   validationVillageType(villageType) {
-    const villageTypes = ["thôn", "bản", "tổ dân phố", "làng", "xóm"];
+    const villageTypes = ["Thôn", "Bản", "Tổ Dân Phố", "Làng", "Xóm"];
     if (!villageType) return false;
     if (!villageTypes.includes(villageType)) return false;
     return true;

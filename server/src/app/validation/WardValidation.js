@@ -96,7 +96,7 @@ class WardValidation {
   }
 
   validationWardType(wardType) {
-    const wardTypes = ["xã", "phường", "thị trấn"];
+    const wardTypes = ["Xã", "Phường", "Thị Trấn"];
     if (!wardType) return false;
     if (!wardTypes.includes(wardType)) return false;
     return true;

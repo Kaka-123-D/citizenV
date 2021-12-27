@@ -4,6 +4,7 @@ const User = require('../model/User');
 const Person = require('../model/Person');
 const Permission = require('../model/Permission');
 const siteController = require('./SiteController');
+const { Op } = require("sequelize");
 
 const {
   validationVillageId,
@@ -141,6 +142,7 @@ class B1Controller {
       });
       return res.json({ status: 1, persons });
     } catch (e) {
+      console.log(e);
       return res.json({ status: 0, error: "GET_PERSON_WARD_ALL_ERROR!" });
     }
   }

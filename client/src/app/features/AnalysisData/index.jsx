@@ -102,7 +102,7 @@ export default function Analysis({
         </button>
       </div>
 
-      <h1>Tổng số dân: {amountPerson}</h1>
+      <h1>Tổng số dân trong khu vực: {amountPerson}</h1>
       {amountPerson !== 0 ? (
         <>
           <div className="pie-chart">
